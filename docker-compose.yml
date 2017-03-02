@@ -1,4 +1,4 @@
-st2:
+st2-upstart:
   # st2api (9101),
   # st2garbagecollector,
   # st2stream (9102),
@@ -8,7 +8,7 @@ st2:
   # st2resultstracker,
   # st2rulesengine,
   # st2web (80)
-  image: st2:latest
+  image: st2-upstart:latest
   expose:
     - "22"
     - "80"
@@ -20,8 +20,8 @@ st2:
     - "22:22"
   links:
     - mongo
-    - rmq
-    - pg
+    - rabbitmq
+    - postgres
 
 mongo:
   image: mongo:3.4
@@ -32,7 +32,7 @@ mongo:
   expose:
     - "27017"
 
-rmq:
+rabbitmq:
   image: rabbitmq:management
   environment:
     - "RABBITMQ_DEFAULT_USER=rmq-user"
@@ -41,7 +41,7 @@ rmq:
   expose:
     - "5672"
 
-pg:
+postgres:
   image: postgres
   environment:
     - "POSTGRES_USER=mistral-user"
