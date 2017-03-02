@@ -1,0 +1,51 @@
+st2:
+  # st2api (9101),
+  # st2garbagecollector,
+  # st2stream (9102),
+  # st2actionrunner,
+  # st2auth (9100), 
+  # st2notifier,
+  # st2resultstracker,
+  # st2rulesengine,
+  # st2web (80)
+  image: st2:latest
+  expose:
+    - "22"
+    - "80"
+    - "443"
+    - "9100"
+    - "9101"
+    - "9102"
+  ports:
+    - "22:22"
+  links:
+    - mongo
+    - rmq
+    - pg
+
+mongo:
+  image: mongo:3.4
+  environment:
+    - "MONGODB_USER=stackstorm-user"
+    - "MONGODB_PASS=stackstorm-pass"
+    - "MONGODB_DATABASE=stackstorm-db"
+  expose:
+    - "27017"
+
+rmq:
+  image: rabbitmq:management
+  environment:
+    - "RABBITMQ_DEFAULT_USER=rmq-user"
+    - "RABBITMQ_DEFAULT_USER=rmq-pass"
+  hostname: rabbitmq
+  expose:
+    - "5672"
+
+pg:
+  image: postgres
+  environment:
+    - "POSTGRES_USER=mistral-user"
+    - "POSTGRES_PASSWORD=mistral-pass"
+    - "POSTGRES_DB=mistral"
+  expose:
+    - "5432"
