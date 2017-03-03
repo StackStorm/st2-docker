@@ -35,8 +35,8 @@ mongo:
 rabbitmq:
   image: rabbitmq:management
   environment:
-    - "RABBITMQ_DEFAULT_USER=rmq-user"
-    - "RABBITMQ_DEFAULT_USER=rmq-pass"
+    - "RABBITMQ_DEFAULT_USER=admin"
+    - "RABBITMQ_DEFAULT_PASS=pwd123"
   hostname: rabbitmq
   expose:
     - "5672"
