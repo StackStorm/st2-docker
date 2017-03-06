@@ -1,13 +1,4 @@
 st2-upstart:
-  # st2api (9101),
-  # st2garbagecollector,
-  # st2stream (9102),
-  # st2actionrunner,
-  # st2auth (9100), 
-  # st2notifier,
-  # st2resultstracker,
-  # st2rulesengine,
-  # st2web (80)
   image: st2-upstart:latest
   expose:
     - "22"
@@ -21,7 +12,6 @@ st2-upstart:
   links:
     - mongo
     - rabbitmq
-    - postgres
 
 mongo:
   image: mongo:3.4
