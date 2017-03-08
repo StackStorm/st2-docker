@@ -9,9 +9,12 @@ st2-upstart:
     - "9102"
   ports:
     - "22:22"
+  volumes:
+    - ./packs:/opt/stackstorm/packs
   links:
     - mongo
     - rabbitmq
+    - postgres
 
 mongo:
   image: mongo:3.4

@@ -8,7 +8,7 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/stable/scrip
 # Install st2, st2web, crudini and uuid-runtime
 #  - crudini is used to update the st2.conf file
 #  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
-RUN sudo apt-get install -y st2 st2web crudini uuid-runtime
+RUN sudo apt-get install -y st2 st2web crudini uuid-runtime apache2-utils
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22
 EXPOSE 80 443 9100 9101 9102
@@ -47,5 +47,11 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
     echo "stanley    ALL=(ALL)       NOPASSWD: SETENV: ALL" >> /etc/sudoers.d/st2 && \
     chmod 0440 /etc/sudoers.d/st2 && \
     sed -i -r "s/^Defaults\s+\+?requiretty/# Defaults +requiretty/g" /etc/sudoers
+
+# Setup admin account
+RUN htpasswd -bs /etc/st2/htpasswd admin Ch@ngeMe
+
+# Make a copy of the packs directory so it can be copied to shared volume on host
+RUN cp -R /opt/stackstorm/packs /opt/stackstorm/packs.pkg
 
 CMD ["/sbin/init"]
