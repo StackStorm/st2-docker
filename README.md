@@ -80,7 +80,12 @@ class MyEchoAction(Action):
     return (False, message)
   ```
 
-When you rename, or create a new action, you must run `st2ctl reload`. Next, run `st2 run packs.echo_action message=working`.
+When you rename, or create a new action, you must run `st2ctl reload`. Next, run:
+
+  ```
+  st2 run packs.echo_action message=working
+  ```
+
 You should see output similar to the following:
 
   ```
@@ -97,3 +102,5 @@ result:
 
     '
   ```
+
+Congratulations! You have successfully added your first action!
