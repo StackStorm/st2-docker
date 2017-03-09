@@ -43,7 +43,7 @@ To stop the docker environment, run:
   docker-compose down
   ```
 
-# Adding a new action
+## Adding a new action
 
 As an example of how to create a new action, let's add a new action called `echo_action`.
 
@@ -80,7 +80,8 @@ class MyEchoAction(Action):
     return (False, message)
   ```
 
-When you rename, or create a new action, you must run `st2ctl reload`. Next, run:
+When you rename, or create a new action, you must run `st2ctl reload` inside the st2-upstart
+container (usually named `st2docker_st2-upstart_1`). Next, run:
 
   ```
   st2 run packs.echo_action message=working

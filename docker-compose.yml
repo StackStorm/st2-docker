@@ -4,9 +4,6 @@ st2-upstart:
     - "22"
     - "80"
     - "443"
-    - "9100"
-    - "9101"
-    - "9102"
   ports:
     - "22:22"
   volumes:
@@ -14,7 +11,6 @@ st2-upstart:
   links:
     - mongo
     - rabbitmq
-    - postgres
 
 mongo:
   image: mongo:3.4
