@@ -6,7 +6,7 @@ The initial container configuration is as follows:
  - mongo
  - rabbitmq
 
-## Instructions
+## Usage
 
 To install the SSH keys before the docker environment is brought up the first time, run:
 
@@ -35,4 +35,10 @@ To overwrite `./packs` with the packs provided by st2, run:
   ```
   rm -rf /opt/stackstorm/packs/*
   cp -R /opt/stackstorm/packs.pkg/* /opt/stackstorm/packs
+  ```
+
+To stop the docker environment, run:
+
+  ```
+  docker-compose down
   ```
