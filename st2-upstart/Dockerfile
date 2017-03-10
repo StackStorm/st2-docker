@@ -1,7 +1,5 @@
 FROM stackstorm/packagingtest:trusty-upstart
 
-RUN apt-get update && apt-get upgrade -y
-
 # Default value of ST2_REPO is "stable"
 ARG ST2_REPO=stable
 
@@ -11,10 +9,8 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 # Install st2, st2web, crudini and uuid-runtime
 #  - crudini is used to update the st2.conf file
 #  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
+RUN apt-get update && apt-get upgrade -y
 RUN sudo apt-get install -y st2 st2web crudini uuid-runtime apache2-utils
-
-# stackstorm/packagingtest:trusty-upstart already exposes port 22
-EXPOSE 80 443
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf && \
@@ -42,5 +38,8 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
 
 # Make a copy of the packs directory so it can be copied to shared volume on host
 RUN cp -R /opt/stackstorm/packs /opt/stackstorm/packs.pkg
+
+# stackstorm/packagingtest:trusty-upstart already exposes port 22
+EXPOSE 80 443
 
 CMD ["/sbin/init"]
