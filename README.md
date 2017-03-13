@@ -8,6 +8,13 @@ The initial container configuration is as follows:
 
 ## Usage
 
+To build the st2-upstart image:
+
+  ```
+  cd st2-upstart
+  docker build -t st2-upstart:latest .
+  ```
+
 To install the SSH keys before the docker environment is brought up the first time, run:
 
   ```
