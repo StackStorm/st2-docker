@@ -25,7 +25,8 @@ RUN mkdir -p /etc/st2/keys && \
 
 # Set the MongoDB hostname, as well as the RabbitMQ username, password and hostname
 RUN crudini --set /etc/st2/st2.conf database host mongo && \
-    crudini --set /etc/st2/st2.conf messaging url amqp://admin:pwd123@rabbitmq:5672
+    crudini --set /etc/st2/st2.conf messaging url amqp://admin:pwd123@rabbitmq:5672 && \
+    crudini --set /etc/st2/st2.conf auth enable True
 
 # Setup SSH and SUDO access for stanley user
 RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
@@ -38,6 +39,8 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
 
 # Make a copy of the packs directory so it can be copied to shared volume on host
 RUN cp -R /opt/stackstorm/packs /opt/stackstorm/packs.pkg
+
+COPY bin/setup_container.sh /usr/bin/setup_container.sh
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22
 EXPOSE 80 443

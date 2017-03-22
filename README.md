@@ -8,34 +8,50 @@ The initial container configuration is as follows:
 
 ## Usage
 
-To build the st2-upstart image:
+Build the st2-upstart image:
 
   ```
   cd st2-upstart
   docker build -t st2-upstart:latest .
   ```
 
-To install the SSH keys before the docker environment is brought up the first time, run:
-
-  ```
-  make setup
-  ```
-
-To start the docker environment, run:
+Start the docker environment:
 
   ```
   docker-compose up
   ```
 
-In another terminal, run:
+Install the SSH keys locally, and setup ST2 user (this only needs to be run once per `docker-compose up`):
+
+*NOTE: The default values for `ST2USER` and `ST2PASSWORD` are `st2admin` and `Ch@ngeMe`
+respectively. You only need to specify these variables if you do not want to use the default
+values.*
+
+  ```
+  make setup ST2USER=st2admin ST2PASSWORD=Ch@ngeMe
+  ```
+
+Use either `ssh` or `docker exec` to connect to the st2-upstart container:
 
   ```
   ssh -i ~/.ssh/id_busybee root@localhost
+  ```
+
+  ```
+  docker exec -it st2docker_st2-upstart_1 /bin/bash
+  ```
+
+Once connected to the st2-upstart container, verify that `st2-self-check` passes successfully.
+
+*NOTE: For now, the mistral tests will fail because st2mistral is not yet configured.*
+
+  ```
   st2ctl reload
+  . ~/st2.vars
   st2-self-check
   ```
 
-The `./packs` directory is mounted into the `st2-upstart` container at `/opt/stackstorm/packs`.
+*NOTE: The `./packs` directory is mounted into the `st2-upstart` container at `/opt/stackstorm/packs`.*
 
 To overwrite `./packs` with the packs provided by st2, run:
 
