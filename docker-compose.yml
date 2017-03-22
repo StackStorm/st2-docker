@@ -14,10 +14,6 @@ st2-upstart:
 
 mongo:
   image: mongo:3.4
-  environment:
-    - "MONGODB_USER=stackstorm-user"
-    - "MONGODB_PASS=stackstorm-pass"
-    - "MONGODB_DATABASE=stackstorm-db"
   expose:
     - "27017"
 
