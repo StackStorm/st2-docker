@@ -11,8 +11,7 @@ The initial container configuration is as follows:
 Build the st2-upstart image:
 
   ```
-  cd st2-upstart
-  docker build -t st2-upstart:latest .
+  make build
   ```
 
 Start the docker environment:
