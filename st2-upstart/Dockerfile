@@ -1,7 +1,7 @@
 FROM stackstorm/packagingtest:trusty-upstart
 
 # Default value of ST2_REPO is "stable"
-ARG ST2_REPO=stable
+ARG ST2_REPO=staging-unstable
 
 # Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
