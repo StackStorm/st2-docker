@@ -2,13 +2,13 @@
 
 The initial container configuration is as follows:
 
- - st2-upstart (st2 + st2web + sshd)
+ - st2 (st2 + st2web + sshd)
  - mongo
  - rabbitmq
 
 ## Usage
 
-Build the st2-upstart image:
+Build the st2 image:
 
   ```
   make build
@@ -17,47 +17,16 @@ Build the st2-upstart image:
 Start the docker environment:
 
   ```
-  docker-compose up
+  docker-compose up -d
   ```
 
-Install the SSH keys locally, and setup ST2 user (this only needs to be run once per `docker-compose up`):
-
-*NOTE: The default values for `ST2USER` and `ST2PASSWORD` are `st2admin` and `Ch@ngeMe`
-respectively. You only need to specify these variables if you do not want to use the default
-values.*
+Use `docker exec` to connect to the st2 container:
 
   ```
-  make setup ST2USER=st2admin ST2PASSWORD=Ch@ngeMe
+  docker exec -it st2 /bin/bash
   ```
 
-Use either `ssh` or `docker exec` to connect to the st2-upstart container:
-
-  ```
-  ssh -i ~/.ssh/id_busybee root@localhost
-  ```
-
-  ```
-  docker exec -it st2docker_st2-upstart_1 /bin/bash
-  ```
-
-Once connected to the st2-upstart container, verify that `st2-self-check` passes successfully.
-
-*NOTE: For now, the mistral tests will fail because st2mistral is not yet configured.*
-
-  ```
-  st2ctl reload
-  . ~/st2.vars
-  st2-self-check
-  ```
-
-*NOTE: The `./packs` directory is mounted into the `st2-upstart` container at `/opt/stackstorm/packs`.*
-
-To overwrite `./packs` with the packs provided by st2, run:
-
-  ```
-  rm -rf /opt/stackstorm/packs/*
-  cp -R /opt/stackstorm/packs.pkg/* /opt/stackstorm/packs
-  ```
+*NOTE: The `packs.dev` directory is mounted into the `st2` container at `/opt/stackstorm/packs.dev`.*
 
 To stop the docker environment, run:
 
@@ -102,8 +71,8 @@ class MyEchoAction(Action):
     return (False, message)
   ```
 
-When you rename, or create a new action, you must run `st2ctl reload` inside the st2-upstart
-container (usually named `st2docker_st2-upstart_1`). Next, run:
+When you rename, or create a new action, you must run `st2ctl reload` inside the `st2`
+container. Next, run:
 
   ```
   st2 run packs.echo_action message=working

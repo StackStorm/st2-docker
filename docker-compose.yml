@@ -1,36 +1,30 @@
-st2-upstart:
-  image: st2-upstart:latest
+st2:
+  image: st2:latest
+  container_name: st2
+  hostname: st2
   expose:
     - "22"
     - "80"
     - "443"
-  ports:
-    - "22:22"
   volumes:
-    - ./packs:/opt/stackstorm/packs
+    - ./packs.dev:/opt/stackstorm/packs.dev
   links:
     - mongo
     - rabbitmq
 
 mongo:
   image: mongo:3.4
+  container_name: mongodb
+  hostname: mongodb
   expose:
     - "27017"
 
 rabbitmq:
   image: rabbitmq:management
+  container_name: rabbitmq
+  hostname: rabbitmq
   environment:
     - "RABBITMQ_DEFAULT_USER=admin"
     - "RABBITMQ_DEFAULT_PASS=pwd123"
-  hostname: rabbitmq
   expose:
     - "5672"
-
-postgres:
-  image: postgres
-  environment:
-    - "POSTGRES_USER=mistral-user"
-    - "POSTGRES_PASSWORD=mistral-pass"
-    - "POSTGRES_DB=mistral"
-  expose:
-    - "5432"

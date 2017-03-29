@@ -40,7 +40,7 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
 # Make a copy of the packs directory so it can be copied to shared volume on host
 RUN cp -R /opt/stackstorm/packs /opt/stackstorm/packs.pkg
 
-COPY bin/setup_container.sh /usr/bin/setup_container.sh
+COPY conf/htpasswd /etc/st2/htpasswd
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22
 EXPOSE 80 443
