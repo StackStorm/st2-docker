@@ -3,3 +3,6 @@ build:
 
 up:
 	docker-compose up -d
+
+rmi:
+	docker rmi $$(docker images -f dangling=true -q)
