@@ -1,0 +1,30 @@
+st2:
+  image: st2:latest
+  container_name: st2
+  hostname: st2
+  expose:
+    - "22"
+    - "80"
+    - "443"
+  volumes:
+    - ./packs.dev:/opt/stackstorm/packs.dev
+  links:
+    - mongo
+    - rabbitmq
+
+mongo:
+  image: mongo:3.4
+  container_name: mongodb
+  hostname: mongodb
+  expose:
+    - "27017"
+
+rabbitmq:
+  image: rabbitmq:management
+  container_name: rabbitmq
+  hostname: rabbitmq
+  environment:
+    - "RABBITMQ_DEFAULT_USER=admin"
+    - "RABBITMQ_DEFAULT_PASS=pwd123"
+  expose:
+    - "5672"
