@@ -2,9 +2,6 @@ st2:
   image: st2-upstart:latest
   container_name: st2
   hostname: st2
-  environment:
-    - ST2_USER
-    - ST2_PASSWORD
   command: [$ST2_USER,$ST2_PASSWORD]
   expose:
     - "22"
@@ -29,8 +26,5 @@ rabbitmq:
   hostname: rabbitmq
   env_file:
     - conf/dev.env
-  environment:
-    - "RABBITMQ_DEFAULT_USER=admin"
-    - "RABBITMQ_DEFAULT_PASS=pwd123"
   expose:
     - "5672"

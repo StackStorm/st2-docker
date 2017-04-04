@@ -14,10 +14,10 @@ Build the st2 image:
   make build
   ```
 
-Start the docker environment:
+Start the docker environment (specifying a custom ST2 user and password if the defaults are not desired):
 
   ```
-  docker-compose up -d
+  [ST2_USER=<user>] [ST2_PASSWORD=<password>] docker-compose up -d
   ```
 
 Use `docker exec` to connect to the st2 container:
