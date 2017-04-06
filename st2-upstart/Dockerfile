@@ -25,7 +25,6 @@ RUN mkdir -p /etc/st2/keys && \
 
 # Set the MongoDB hostname, as well as the RabbitMQ username, password and hostname
 RUN crudini --set /etc/st2/st2.conf database host mongo && \
-    crudini --set /etc/st2/st2.conf messaging url amqp://admin:pwd123@rabbitmq:5672 && \
     crudini --set /etc/st2/st2.conf auth enable True && \
     crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
 
