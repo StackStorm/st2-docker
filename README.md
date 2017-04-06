@@ -14,10 +14,10 @@ Build the st2 image:
   make build
   ```
 
-Start the docker environment:
+Start the docker environment (specifying a custom ST2 user and password if the defaults are not desired):
 
   ```
-  docker-compose up -d
+  [ST2_USER=<user>] [ST2_PASSWORD=<password>] docker-compose up -d
   ```
 
 Use `docker exec` to connect to the st2 container:
@@ -25,8 +25,6 @@ Use `docker exec` to connect to the st2 container:
   ```
   docker exec -it st2 /bin/bash
   ```
-
-*NOTE: The `packs.dev` directory is mounted into the `st2` container at `/opt/stackstorm/packs.dev`.*
 
 To stop the docker environment, run:
 
@@ -38,9 +36,9 @@ To stop the docker environment, run:
 
 As an example of how to create a new action, let's add a new action called `echo_action`.
 
-First, on the host, we create the metadata file `./packs/packs/actions/my_echo_action.yaml`:
+First, on the host, we create the metadata file `./packs.dev/examples/actions/my_echo_action.yaml`:
 
-  ```yaml
+```yaml
 ---
 name: "echo_action"
 runner_type: "python-script"
@@ -53,11 +51,11 @@ parameters:
     description: "Message to print."
     required: true
     position: 0
-  ```
+```
 
-Then, add the action script at `./packs/packs/actions/my_echo_action.py`.
+Then, add the action script at `./packs.dev/examples/actions/my_echo_action.py`.
 
-  ```python
+```python
 import sys
 
 from st2actions.runners.pythonrunner import Action
@@ -69,18 +67,18 @@ class MyEchoAction(Action):
     if message == 'working':
       return (True, message)
     return (False, message)
-  ```
+```
 
 When you rename, or create a new action, you must run `st2ctl reload` inside the `st2`
 container. Next, run:
 
-  ```
+```
   st2 run packs.echo_action message=working
-  ```
+```
 
 You should see output similar to the following:
 
-  ```
+```
 .
 id: 58c0abcff4aa45009f42dca3
 status: succeeded
@@ -93,6 +91,6 @@ result:
   stdout: 'working
 
     '
-  ```
+```
 
 Congratulations! You have successfully added your first action!

@@ -25,9 +25,8 @@ RUN mkdir -p /etc/st2/keys && \
 
 # Set the MongoDB hostname, as well as the RabbitMQ username, password and hostname
 RUN crudini --set /etc/st2/st2.conf database host mongo && \
-    crudini --set /etc/st2/st2.conf messaging url amqp://admin:pwd123@rabbitmq:5672 && \
     crudini --set /etc/st2/st2.conf auth enable True && \
-    crudini --set /etc/st2/st2.conf content packs_base_paths = /opt/stackstorm/packs.dev
+    crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
 
 # Setup SSH and SUDO access for stanley user
 RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
@@ -38,10 +37,14 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
     chmod 0440 /etc/sudoers.d/st2 && \
     sed -i -r "s/^Defaults\s+\+?requiretty/# Defaults +requiretty/g" /etc/sudoers
 
-COPY conf/htpasswd /etc/st2/htpasswd
-COPY conf/st2config /root/.st2/config
+VOLUME ["/opt/stackstorm/packs.dev"]
+
+COPY bin/entrypoint.sh /entrypoint.sh
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22
 EXPOSE 80 443
 
-CMD ["/sbin/init"]
+# Default username/password is used unless overridden by supplying one or more arguments
+# to `docker run` after the name of the image:
+#   docker run [...] image $ST2_USER $ST2_PASSWORD
+ENTRYPOINT ["/entrypoint.sh"]

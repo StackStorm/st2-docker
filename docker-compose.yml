@@ -1,7 +1,10 @@
 st2:
-  image: st2:latest
+  image: st2-upstart:latest
   container_name: st2
   hostname: st2
+  env_file:
+    - conf/st2.env
+    - conf/rmq.env
   expose:
     - "22"
     - "80"
@@ -23,8 +26,7 @@ rabbitmq:
   image: rabbitmq:management
   container_name: rabbitmq
   hostname: rabbitmq
-  environment:
-    - "RABBITMQ_DEFAULT_USER=admin"
-    - "RABBITMQ_DEFAULT_PASS=pwd123"
+  env_file:
+    - conf/rmq.env
   expose:
     - "5672"
