@@ -2,7 +2,9 @@ st2:
   image: st2-upstart:latest
   container_name: st2
   hostname: st2
-  command: [$ST2_USER,$ST2_PASSWORD]
+  env_file:
+    - conf/st2.env
+    - conf/rmq.env
   expose:
     - "22"
     - "80"
@@ -25,6 +27,6 @@ rabbitmq:
   container_name: rabbitmq
   hostname: rabbitmq
   env_file:
-    - conf/dev.env
+    - conf/rmq.env
   expose:
     - "5672"
