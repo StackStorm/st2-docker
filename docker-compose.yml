@@ -5,10 +5,10 @@ st2:
   env_file:
     - conf/st2.env
     - conf/rmq.env
-  expose:
-    - "22"
-    - "80"
-    - "443"
+  ports:
+    - "22:22"
+    - "80:80"
+    - "443:443"
   volumes:
     - ./packs.dev:/opt/stackstorm/packs.dev
   links:

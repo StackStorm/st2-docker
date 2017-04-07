@@ -37,14 +37,29 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh && \
     chmod 0440 /etc/sudoers.d/st2 && \
     sed -i -r "s/^Defaults\s+\+?requiretty/# Defaults +requiretty/g" /etc/sudoers
 
-VOLUME ["/opt/stackstorm/packs.dev"]
+# Setup st2web
+RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - && \
+    echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list && \
+    echo "deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 && \
+    apt-get update && \
+    apt-get install -y nginx && \
+    cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d && \
+    mkdir -p /etc/ssl/st2 && \
+    openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
 
+COPY conf/config.js /opt/stackstorm/static/webui/config.js
 COPY bin/entrypoint.sh /entrypoint.sh
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22
 EXPOSE 80 443
 
-# Default username/password is used unless overridden by supplying one or more arguments
-# to `docker run` after the name of the image:
-#   docker run [...] image $ST2_USER $ST2_PASSWORD
+# Make /opt/stackstorm/packs.dev available on the host in the ./packs.dev directory.
+# NOTE: This is intended to be used for pack development.
+VOLUME ["/opt/stackstorm/packs.dev"]
+
+# Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
+# environment variables to `docker run` after the name of the image:
+#   docker run -e ST2_USER... image
 ENTRYPOINT ["/entrypoint.sh"]
