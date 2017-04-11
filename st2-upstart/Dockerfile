@@ -53,7 +53,7 @@ COPY conf/config.js /opt/stackstorm/static/webui/config.js
 COPY bin/entrypoint.sh /entrypoint.sh
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22
-EXPOSE 80 443
+EXPOSE 443
 
 # Make /opt/stackstorm/packs.dev available on the host in the ./packs.dev directory.
 # NOTE: This is intended to be used for pack development.

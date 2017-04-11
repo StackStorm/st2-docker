@@ -6,8 +6,6 @@ st2:
     - conf/st2.env
     - conf/rmq.env
   ports:
-    - "22:22"
-    - "80:80"
     - "443:443"
   volumes:
     - ./packs.dev:/opt/stackstorm/packs.dev
