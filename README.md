@@ -2,7 +2,7 @@
 
 The initial container configuration is as follows:
 
- - st2 (st2 + st2web + sshd)
+ - st2 (st2 + st2web)
  - mongo
  - rabbitmq
 

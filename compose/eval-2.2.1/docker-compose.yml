@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  st2:
+    image: stackstorm/stackstorm:latest
+    build:
+      context: ../../images
+    env_file:
+      - ../../conf/st2.env
+      - ../../conf/rmq.env
+    ports:
+      - "443:443"
+    networks:
+      - public
+      - private
+    volumes:
+      - ../../packs.dev:/opt/stackstorm/packs.dev
+  mongo:
+    image: mongo:3.4
+    networks:
+      - private
+  rabbitmq:
+    image: rabbitmq:management
+    env_file:
+      - ../../conf/rmq.env
+    networks:
+      - private
+
+#  postgres:
+#    image: postgres:latest
+#    networks:
+#      - private
+#  redis:
+#    image: redis:latest
+#    networks:
+#      - private
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
