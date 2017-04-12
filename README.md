@@ -8,11 +8,13 @@ The initial container configuration is as follows:
 
 ## Usage
 
-Build the st2 image:
+If you want to build the image yourself, execute:
 
   ```
   make build
   ```
+
+Otherwise, the following `docker-compose` command will download the image from docker hub.
 
 Start the docker environment (specifying a custom ST2 user and password if the defaults are not desired):
 

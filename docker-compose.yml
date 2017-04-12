@@ -1,5 +1,5 @@
 st2:
-  image: st2-upstart:latest
+  image: stackstorm/stackstorm:latest
   container_name: st2
   hostname: st2
   env_file:
