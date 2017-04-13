@@ -6,8 +6,8 @@ services:
     build:
       context: ../../images
     env_file:
-      - ../../conf/st2.env
-      - ../../conf/rmq.env
+      - conf/st2.env
+      - conf/rmq.env
     ports:
       - "443:443"
     networks:
@@ -22,7 +22,7 @@ services:
   rabbitmq:
     image: rabbitmq:management
     env_file:
-      - ../../conf/rmq.env
+      - conf/rmq.env
     networks:
       - private
 
