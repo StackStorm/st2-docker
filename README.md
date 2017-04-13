@@ -72,13 +72,19 @@ class MyEchoAction(Action):
 ```
 
 When you rename, or create a new action, you must run `st2ctl reload` inside the `st2`
-container. Next, run:
+container. Next, to initialize the virtualenv, run:
 
 ```
-  st2 run packs.echo_action message=working
+  st2 run packs.setup_virtualenv packs=examples
 ```
 
-You should see output similar to the following:
+Then you can run your action using the following:
+
+```
+  st2 run examples.echo_action message=working
+```
+
+You should see output similar to:
 
 ```
 .
