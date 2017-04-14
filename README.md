@@ -34,6 +34,42 @@ To stop the docker environment, run:
   docker-compose down
   ```
 
+## Adding a rule
+
+To perform a very basic end-to-end test of StackStorm, let's create a simple rule.
+Run the following from your docker host.
+
+```
+cp -R examples packs.dev
+```
+
+First, let's run `st2 login`:
+
+```
+docker exec eval_st2_1 st2 login -w -p Ch@ngeMe st2admin
+```
+
+We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
+`linux.FileWatchSensor` and then call `st2ctl reload`.
+
+```
+docker exec eval_st2_1 sh -c 'echo "    - /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml'
+docker exec eval_st2_1 st2 sensor enable linux.FileWatchSensor
+docker exec eval_st2_1 st2ctl reload
+```
+
+When we append to `/tmp/date.log`, the sensor will inject a trigger that matches the criteria.
+The `linux.file_touch` action is called, creating `/tmp/touch.log`.
+
+Now let's append a line to the file.
+
+```
+docker exec eval_st2_1 sh -c 'echo "hi" >> /tmp/date.log'
+```
+
+The file `/tmp/touch.log` should exist with a recent timestamp. Congratulations, you have created
+your first rule!
+
 ## Adding a new action
 
 As an example of how to create a new action, let's add a new action called `echo_action`.
