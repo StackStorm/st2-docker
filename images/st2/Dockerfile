@@ -49,7 +49,7 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - && \
     mkdir -p /etc/ssl/st2 && \
     openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
 
-COPY conf/config.js /opt/stackstorm/static/webui/config.js
+# COPY conf/config.js /opt/stackstorm/static/webui/config.js
 COPY bin/entrypoint.sh /entrypoint.sh
 
 # stackstorm/packagingtest:trusty-upstart already exposes port 22

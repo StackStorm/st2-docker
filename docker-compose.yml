@@ -3,8 +3,9 @@ version: '3'
 services:
   st2:
     image: stackstorm/stackstorm:latest
+    container_name: st2
     build:
-      context: ../../images
+      context: images/st2
     env_file:
       - conf/st2.env
       - conf/rmq.env
@@ -14,13 +15,15 @@ services:
       - public
       - private
     volumes:
-      - ../../packs.dev:/opt/stackstorm/packs.dev
+      - ./packs.dev:/opt/stackstorm/packs.dev
   mongo:
     image: mongo:3.4
+    container_name: mongo
     networks:
       - private
   rabbitmq:
     image: rabbitmq:management
+    container_name: rabbitmq
     env_file:
       - conf/rmq.env
     networks:

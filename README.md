@@ -22,12 +22,6 @@ Start the docker environment (specifying a custom ST2 user and password if the d
   [ST2_USER=<user>] [ST2_PASSWORD=<password>] docker-compose up -d
   ```
 
-Use `docker exec` to connect to the st2 container:
-
-  ```
-  docker exec -it st2 /bin/bash
-  ```
-
 To stop the docker environment, run:
 
   ```
@@ -43,28 +37,30 @@ Run the following from your docker host.
 cp -R examples packs.dev
 ```
 
-First, let's run `st2 login`:
-
-```
-docker exec eval_st2_1 st2 login -w -p Ch@ngeMe st2admin
-```
-
 We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
 `linux.FileWatchSensor` and then call `st2ctl reload`.
 
-```
-docker exec eval_st2_1 sh -c 'echo "    - /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml'
-docker exec eval_st2_1 st2 sensor enable linux.FileWatchSensor
-docker exec eval_st2_1 st2ctl reload
-```
+Use `docker exec` to connect to the st2 container:
+
+  ```
+  docker exec -it st2 /bin/bash
+  ```
+
+Within the container, run the following:
+
+  ```
+  echo "    - /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml
+  st2 sensor enable linux.FileWatchSensor
+  st2ctl reload
+  ```
 
 When we append to `/tmp/date.log`, the sensor will inject a trigger that matches the criteria.
 The `linux.file_touch` action is called, creating `/tmp/touch.log`.
 
-Now let's append a line to the file.
+Now let's append a line to the file in the container.
 
 ```
-docker exec eval_st2_1 sh -c 'echo "hi" >> /tmp/date.log'
+echo "hi" >> /tmp/date.log
 ```
 
 The file `/tmp/touch.log` should exist with a recent timestamp. Congratulations, you have created
