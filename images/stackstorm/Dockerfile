@@ -82,6 +82,7 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh \
     && chmod 0440 /etc/sudoers.d/st2 \
     && sed -i -r "s/^Defaults\s+\+?requiretty/# Defaults +requiretty/g" /etc/sudoers
 
+# Setup st2web
 RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
@@ -93,7 +94,6 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && mkdir /var/run/sshd \
     && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
 
-# Setup st2web
 EXPOSE 22 443
 
 # Make /opt/stackstorm/packs.dev available on the host in the ./packs.dev directory.

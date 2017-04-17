@@ -16,7 +16,7 @@ crudini --set /root/.st2/config credentials username ${ST2_USER}
 crudini --set /root/.st2/config credentials password ${ST2_PASSWORD}
 
 # After init is running:
-#  $ export ST2_AUTH_TOKEN=`st2 auth -t -p Ch@ngeMe st2admin`
+#
 #  $ st2 run packs.setup_virtualenv packs=examples
 
 exec /sbin/init

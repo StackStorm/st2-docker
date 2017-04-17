@@ -1,11 +1,11 @@
 version: '3'
 
 services:
-  st2:
+  stackstorm:
     image: stackstorm/stackstorm:latest
-    container_name: st2
+    container_name: stackstorm
     build:
-      context: images/st2
+      context: images/stackstorm
     env_file:
       - conf/st2.env
       - conf/rmq.env

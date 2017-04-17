@@ -1,5 +1,5 @@
 build:
-	docker build -t stackstorm/stackstorm:latest images/st2
+	docker build -t stackstorm/stackstorm:latest images/stackstorm
 
 up:
 	docker-compose up -d

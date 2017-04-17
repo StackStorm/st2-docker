@@ -2,7 +2,7 @@
 
 The initial container configuration is as follows:
 
- - st2 (st2 + st2web)
+ - stackstorm (st2 + st2web)
  - mongo
  - rabbitmq
 
@@ -40,10 +40,10 @@ cp -R examples packs.dev
 We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
 `linux.FileWatchSensor` and then call `st2ctl reload`.
 
-Use `docker exec` to connect to the st2 container:
+Use `docker exec` to connect to the stackstorm container:
 
   ```
-  docker exec -it st2 /bin/bash
+  docker exec -it stackstorm /bin/bash
   ```
 
 Within the container, run the following:
