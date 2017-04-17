@@ -100,7 +100,6 @@ EXPOSE 22 443
 # NOTE: This is intended to be used for pack development.
 VOLUME ["/opt/stackstorm/packs.dev"]
 
-# COPY conf/config.js /opt/stackstorm/static/webui/config.js
 COPY bin/entrypoint.sh /entrypoint.sh
 
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
