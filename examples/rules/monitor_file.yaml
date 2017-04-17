@@ -1,0 +1,19 @@
+---
+name: "monitor_file"
+pack: "examples"
+enabled: true
+description: "Monitor file for change"
+
+trigger:
+  type: "linux.file_watch.line"
+
+criteria:
+  trigger.file_name:
+    type: "equals"
+    pattern: "date.log"
+
+action:
+  ref: linux.file_touch
+  parameters:
+    file: "/tmp/touch.log"
+    hosts: "localhost"

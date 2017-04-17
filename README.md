@@ -2,7 +2,7 @@
 
 The initial container configuration is as follows:
 
- - st2 (st2 + st2web + sshd)
+ - stackstorm (st2 + st2web)
  - mongo
  - rabbitmq
 
@@ -22,17 +22,49 @@ Start the docker environment (specifying a custom ST2 user and password if the d
   [ST2_USER=<user>] [ST2_PASSWORD=<password>] docker-compose up -d
   ```
 
-Use `docker exec` to connect to the st2 container:
-
-  ```
-  docker exec -it st2 /bin/bash
-  ```
-
 To stop the docker environment, run:
 
   ```
   docker-compose down
   ```
+
+## Adding a rule
+
+To perform a very basic end-to-end test of StackStorm, let's create a simple rule.
+Run the following from your docker host.
+
+```
+cp -R examples packs.dev
+```
+
+We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
+`linux.FileWatchSensor` and then call `st2ctl reload`.
+
+Use `docker exec` to connect to the stackstorm container:
+
+  ```
+  docker exec -it stackstorm /bin/bash
+  ```
+
+Within the container, run the following:
+
+  ```
+  echo "    - /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml
+  st2 sensor enable linux.FileWatchSensor
+  st2ctl reload
+  ```
+
+When we append to `/tmp/date.log`, the sensor will inject a trigger that matches the criteria.
+The `linux.file_touch` action is called, creating `/tmp/touch.log`.
+
+Now let's append a line to the file in the container.
+
+```
+echo "hi" >> /tmp/date.log
+```
+
+The file `/tmp/touch.log` should exist with a recent timestamp. Congratulations, you have created
+your first rule!
 
 ## Adding a new action
 
@@ -72,13 +104,19 @@ class MyEchoAction(Action):
 ```
 
 When you rename, or create a new action, you must run `st2ctl reload` inside the `st2`
-container. Next, run:
+container. Next, to initialize the virtualenv, run:
 
 ```
-  st2 run packs.echo_action message=working
+  st2 run packs.setup_virtualenv packs=examples
 ```
 
-You should see output similar to the following:
+Then you can run your action using the following:
+
+```
+  st2 run examples.echo_action message=working
+```
+
+You should see output similar to:
 
 ```
 .
