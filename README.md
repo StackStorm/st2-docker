@@ -28,19 +28,83 @@ To stop the docker environment, run:
   docker-compose down
   ```
 
+## Adding a simple action
+
+We will add a simple action that runs a local shell command:
+
+```
+mkdir -p packs.dev/examples/actions
+cp -R examples/actions/actions.hello.yaml packs.dev/examples/actions
+```
+
+Use `docker exec` to connect to the `stackstorm` container:
+
+  ```
+  docker exec -it stackstorm /bin/bash
+  ```
+
+Within the container, run the following:
+
+`st2ctl reload` loads the new action into StackStorm.
+
+  ```
+  root@aff39eda0bdd:/# st2ctl reload
+
+  ... output trimmed ...
+
+  ```
+
+Let's run the action:
+
+  ```
+  root@aff39eda0bdd:/# st2 run examples.hello
+  .
+  id: 58f67dbf33a99300bdc4d618
+  status: succeeded
+  parameters: None
+  result:
+    failed: false
+    return_code: 0
+    stderr: ''
+    stdout: Hello dude!
+    succeeded: true
+  ```
+
+The action takes a single parameter `name`, which as we can see above,
+defaults to 'dude' if `name` is not specified. If we specify a name, then
+as expected, the value is found in `stdout`.
+
+  ```
+  root@aff39eda0bdd:/# st2 run examples.hello name=Stanley
+  .
+  id: 58f67dc533a99300bdc4d61b
+  status: succeeded
+  parameters:
+    name: Stanley
+  result:
+    failed: false
+    return_code: 0
+    stderr: ''
+    stdout: Hello Stanley!
+    succeeded: true
+  ```
+
+Congratulations, you have created your first simple action!
+
 ## Adding a rule
 
 To perform a very basic end-to-end test of StackStorm, let's create a simple rule.
 Run the following from your docker host.
 
-```
-cp -R examples packs.dev
-```
+  ```
+  mkdir packs.dev/examples/rules
+  cp -R examples/rules/monitor_file.yaml packs.dev/examples/rules
+  ```
 
 We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
 `linux.FileWatchSensor` and then call `st2ctl reload`.
 
-Use `docker exec` to connect to the stackstorm container:
+Use `docker exec` to connect to the `stackstorm` container:
 
   ```
   docker exec -it stackstorm /bin/bash
@@ -66,7 +130,7 @@ echo "hi" >> /tmp/date.log
 The file `/tmp/touch.log` should exist with a recent timestamp. Congratulations, you have created
 your first rule!
 
-## Adding a new action
+## Adding a new python action
 
 As an example of how to create a new action, let's add a new action called `echo_action`.
 
