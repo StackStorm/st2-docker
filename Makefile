@@ -6,3 +6,6 @@ up:
 
 rmi:
 	docker rmi $$(docker images -f dangling=true -q)
+
+exec:
+	docker exec -it stackstorm /bin/bash
