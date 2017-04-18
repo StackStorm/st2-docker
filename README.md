@@ -43,9 +43,8 @@ Use `docker exec` to connect to the `stackstorm` container:
   docker exec -it stackstorm /bin/bash
   ```
 
-Within the container, run the following:
-
-`st2ctl reload` loads the new action into StackStorm.
+`st2ctl reload` loads the new action into StackStorm. Within the container,
+run the following:
 
   ```
   root@aff39eda0bdd:/# st2ctl reload
@@ -54,7 +53,7 @@ Within the container, run the following:
 
   ```
 
-Let's run the action:
+Now, let's run the action:
 
   ```
   root@aff39eda0bdd:/# st2 run examples.hello
@@ -71,8 +70,8 @@ Let's run the action:
   ```
 
 The action takes a single parameter `name`, which as we can see above,
-defaults to 'dude' if `name` is not specified. If we specify a name, then
-as expected, the value is found in `stdout`.
+defaults to 'dude' if `name` is not specified. If we specify a value for
+`name`, then as expected, the value is found in `stdout`.
 
   ```
   root@aff39eda0bdd:/# st2 run examples.hello name=Stanley
