@@ -3,7 +3,7 @@ FROM ubuntu:trusty
 # let Upstart know it's in a container
 ENV container docker
 
-COPY init-fake.conf /etc/init/fake-container-events.conf
+COPY conf/init-fake.conf /etc/init/fake-container-events.conf
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
@@ -82,7 +82,7 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh \
     && chmod 0440 /etc/sudoers.d/st2 \
     && sed -i -r "s/^Defaults\s+\+?requiretty/# Defaults +requiretty/g" /etc/sudoers
 
-# Setup st2web
+# Install and configure nginx
 RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
