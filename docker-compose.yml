@@ -4,8 +4,6 @@ services:
   stackstorm:
     image: stackstorm/stackstorm:latest
     container_name: stackstorm
-    build:
-      context: images/stackstorm
     env_file:
       - conf/st2.env
       - conf/rmq.env
