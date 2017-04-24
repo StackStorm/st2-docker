@@ -19,7 +19,4 @@ crudini --set /root/.st2/config credentials password ${ST2_PASSWORD}
 #
 #  $ st2 run packs.setup_virtualenv packs=examples
 
-st2ctl reload --register-all
-
 exec /sbin/init
-

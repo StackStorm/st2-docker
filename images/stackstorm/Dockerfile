@@ -101,6 +101,7 @@ EXPOSE 22 443
 VOLUME ["/opt/stackstorm/packs.dev"]
 
 COPY bin/entrypoint.sh /entrypoint.sh
+COPY conf/local.conf /etc/init/local.conf
 
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
 # environment variables to `docker run` after the name of the image:
