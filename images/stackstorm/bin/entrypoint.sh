@@ -18,8 +18,4 @@ crudini --set /root/.st2/config credentials password ${ST2_PASSWORD}
 crudini --set /etc/st2/st2.conf mistral api_url http://127.0.0.1:9101
 crudini --set /etc/st2/st2.conf mistral v2_base_url http://127.0.0.1:8989/v2
 
-# After init is running:
-#
-#  $ st2 run packs.setup_virtualenv packs=examples
-
 exec /sbin/init
