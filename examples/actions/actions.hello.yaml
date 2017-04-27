@@ -9,5 +9,5 @@ parameters:
     default: "echo Hello {{name}}!"
   name:
     type: string
-    description: "Command line arguments passed to rm"
-    default: "dude"
+    description: "A human name"
+    default: "human"
