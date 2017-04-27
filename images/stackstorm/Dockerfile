@@ -61,6 +61,8 @@ RUN sudo apt-get install -y st2mistral
 # Unless these lines are changed, the services are not started when runlevel -> 2
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
     && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf
+RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/mistral.conf \
+    && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf
 
 # Setup symmetric crypto key for datastore
 RUN mkdir -p /etc/st2/keys \
