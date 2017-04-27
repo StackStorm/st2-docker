@@ -15,6 +15,18 @@ crudini --set /etc/st2/st2.conf messaging url amqp://${RMQ_USER}:${RMQ_PASS}@rab
 crudini --set /root/.st2/config credentials username ${ST2_USER}
 crudini --set /root/.st2/config credentials password ${ST2_PASSWORD}
 
+crudini --set /etc/st2/st2.conf mistral api_url None
+crudini --set /etc/st2/st2.conf mistral retry_exp_msec 1000
+crudini --set /etc/st2/st2.conf mistral insecure False
+crudini --set /etc/st2/st2.conf mistral keystone_username None
+crudini --set /etc/st2/st2.conf mistral keystone_project_name None
+crudini --set /etc/st2/st2.conf mistral keystone_password None
+crudini --set /etc/st2/st2.conf mistral keystone_auth_url None
+crudini --set /etc/st2/st2.conf mistral cacert None
+crudini --set /etc/st2/st2.conf mistral v2_base_url http://127.0.0.1:8989/v2
+crudini --set /etc/st2/st2.conf mistral retry_stop_max_msec 600000
+crudini --set /etc/st2/st2.conf mistral retry_exp_max_msec 300000
+
 # After init is running:
 #
 #  $ st2 run packs.setup_virtualenv packs=examples

@@ -47,7 +47,7 @@ RUN /usr/sbin/update-rc.d -f ondemand remove; \
   echo '# /lib/init/fstab: cleared out for bare-bones Docker' > /lib/init/fstab
 
 # Default value of ST2_REPO is "stable"
-ARG ST2_REPO=staging-unstable
+ARG ST2_REPO=stable
 
 # Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
@@ -56,6 +56,7 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 #  - crudini is used to update the st2.conf file
 #  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
 RUN sudo apt-get install -y st2 st2web
+RUN sudo apt-get install -y st2mistral
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
@@ -93,6 +94,8 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && mkdir -p /etc/ssl/st2 \
     && mkdir /var/run/sshd \
     && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
+
+RUN echo "    /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml
 
 EXPOSE 22 443
 
