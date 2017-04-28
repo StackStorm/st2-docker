@@ -13,7 +13,6 @@ services:
       - conf/mongo.env
       - conf/rabbitmq.env
       - conf/postgres.env
-      - conf/redis.env
     ports:
       - "443:443"
     networks:
