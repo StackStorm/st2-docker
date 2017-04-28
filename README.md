@@ -2,9 +2,11 @@
 
 The initial container configuration is as follows:
 
- - stackstorm (st2 + st2web)
+ - stackstorm (st2 + st2web + st2mistral)
  - mongo
  - rabbitmq
+ - postgres
+ - redis
 
 ## Usage
 
