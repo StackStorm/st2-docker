@@ -55,8 +55,7 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 # Install st2, st2web, crudini and uuid-runtime
 #  - crudini is used to update the st2.conf file
 #  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
-RUN sudo apt-get install -y st2 st2web
-RUN sudo apt-get install -y st2mistral
+RUN sudo apt-get install -y st2 st2web st2mistral
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
