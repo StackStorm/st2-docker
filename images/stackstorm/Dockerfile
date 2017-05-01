@@ -96,8 +96,6 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && mkdir /var/run/sshd \
     && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
 
-RUN echo "    /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml
-
 EXPOSE 22 443
 
 # Make /opt/stackstorm/packs.dev available on the host in the ./packs.dev directory.
