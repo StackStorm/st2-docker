@@ -19,7 +19,7 @@ crudini --set /root/.st2/config credentials password ${ST2_PASSWORD}
 crudini --set /etc/st2/st2.conf mistral api_url http://127.0.0.1:9101
 crudini --set /etc/st2/st2.conf mistral v2_base_url http://127.0.0.1:8989/v2
 
-crudini --set /etc/mistral/mistral.conf DEFAULT transport_url amqp://${RMQ_USER}:${RMQ_PASS}@rabbitmq:5672
+crudini --set /etc/mistral/mistral.conf DEFAULT transport_url rabbit://${RMQ_USER}:${RMQ_PASS}@rabbitmq:5672
 crudini --set /etc/mistral/mistral.conf database connection postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
 
 exec /sbin/init
