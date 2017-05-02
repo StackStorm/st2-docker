@@ -113,8 +113,8 @@ Within the container, run the following:
 
   ```
   echo "    - /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml
-  st2 sensor enable linux.FileWatchSensor
   st2ctl reload
+  st2 sensor enable linux.FileWatchSensor
   ```
 
 When we append to `/tmp/date.log`, the sensor will inject a trigger that matches the criteria.
