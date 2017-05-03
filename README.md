@@ -207,3 +207,32 @@ result:
 ```
 
 Congratulations! You have successfully added your first action!
+
+# Adding a simple mistral workflow
+
+To add a simple mistral workflow, run the following from your docker host.
+
+  ```
+  mkdir -p packs.dev/examples/actions/workflows
+  cp -R examples/actions/mistral-basic.yaml packs.dev/examples/actions/mistral-basic.yaml
+  cp -R examples/actions/workflows/mistral-basic.yaml packs.dev/examples/actions/workflows/mistral-basic.yaml
+  ```
+
+Use `docker exec` to connect to the `stackstorm` container:
+
+  ```
+  docker exec -it stackstorm /bin/bash
+  ```
+
+Within the container, run the following:
+
+  ```
+  st2 action create /opt/stackstorm/packs.dev/examples/actions/mistral-basic.yaml
+  st2 run examples.mistral-basic cmd=date -a
+  ```
+
+The `st2 run` command should complete successfully.  Please see
+[mistral documentation](https://docs.stackstorm.com/mistral.html#basic-workflow)
+for more details about this basic workflow.
+
+Congratulations, you have created your first mistral workflow!
