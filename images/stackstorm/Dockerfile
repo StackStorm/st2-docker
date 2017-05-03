@@ -62,6 +62,9 @@ RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel 
     && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/mistral.conf \
     && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf
+RUN sed -i '/start mistral-api/i\
+  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head\n\
+  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate\n' /etc/init/mistral.conf
 
 # Setup symmetric crypto key for datastore
 RUN mkdir -p /etc/st2/keys \
@@ -70,7 +73,6 @@ RUN mkdir -p /etc/st2/keys \
     && chgrp st2 /etc/st2/keys/datastore_key.json && chmod o-r /etc/st2/keys/datastore_key.json \
     && crudini --set /etc/st2/st2.conf keyvalue encryption_key_path /etc/st2/keys/datastore_key.json
 
-# Set the MongoDB hostname, as well as the RabbitMQ username, password and hostname
 RUN crudini --set /etc/st2/st2.conf database host mongo \
     && crudini --set /etc/st2/st2.conf auth enable True \
     && crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
