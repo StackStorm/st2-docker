@@ -208,7 +208,7 @@ result:
 
 Congratulations! You have successfully added your first action!
 
-# Adding a simple mistral workflow
+## Adding a simple mistral workflow
 
 To add a simple mistral workflow, run the following from your docker host.
 
