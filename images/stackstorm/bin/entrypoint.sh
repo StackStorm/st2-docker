@@ -17,9 +17,9 @@ ST2_CONF=/etc/st2/st2.conf
 crudini --set ${ST2_CONF} mistral api_url http://127.0.0.1:9101
 crudini --set ${ST2_CONF} mistral v2_base_url http://127.0.0.1:8989/v2
 crudini --set ${ST2_CONF} messaging url \
-  amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:5672
+  amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 crudini --set ${ST2_CONF} coordination url \
-  redis://${REDIS_PASSWORD}@${REDIS_HOST}:6379
+  redis://${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
 
 # NOTE: Only certain distros of MongoDB support SSL/TLS
 #  1) enterprise versions
@@ -35,8 +35,8 @@ crudini --set ${ST2_CONF} coordination url \
 MISTRAL_CONF=/etc/mistral/mistral.conf
 
 crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
-  rabbit://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:5672
+  rabbit://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 crudini --set ${MISTRAL_CONF} database connection \
-  postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}/${POSTGRES_DB}
+  postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
 
 exec /sbin/init
