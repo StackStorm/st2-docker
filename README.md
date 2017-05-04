@@ -13,15 +13,25 @@ The initial container configuration is as follows:
 We use Version 3 of the compose file format, so if you want to run docker-compose, you'll need to
 ensure you're running Docker Engine release 1.13.0+.
 
-Start the docker environment (specifying a custom ST2 user and password if the defaults are not desired):
+First, execute
 
   ```
-  [ST2_USER=<user>] [ST2_PASSWORD=<password>] docker-compose up -d
+  make env
   ```
 
-`docker-compose up -d` will pull the required images from docker hub, and then start them.
+to create the environment files used by docker-compose. You may want to change the values of the
+variables as necessary, but the defaults should be okay if you are not using any off-cluster
+services (e.g. mongo, redis, postgres, rabbitmq).
 
-If you modify the stackstorm image, you will need to build it. Run:
+Second, start the docker environment.
+
+  ```
+  docker-compose up -d
+  ```
+
+This will pull the required images from docker hub, and then start them.
+
+However, if you find need to modify the stackstorm image, you will need to build it. Run:
 
   ```
   REPO=stable
