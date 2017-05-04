@@ -2,11 +2,17 @@ version: '3'
 
 services:
   stackstorm:
-    image: stackstorm/stackstorm:latest
+    image: stackstorm/stackstorm:${TAG:-latest}
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
     container_name: stackstorm
     env_file:
-      - conf/st2.env
-      - conf/rmq.env
+      - conf/stackstorm.env
+      - conf/mongo.env
+      - conf/rabbitmq.env
+      - conf/postgres.env
     ports:
       - "443:443"
     networks:
@@ -14,27 +20,40 @@ services:
       - private
     volumes:
       - ./packs.dev:/opt/stackstorm/packs.dev
+
+### External Services
+
   mongo:
     image: mongo:3.4
     container_name: mongo
+    env_file:
+      - conf/mongo.env
     networks:
       - private
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
     env_file:
-      - conf/rmq.env
+      - conf/rabbitmq.env
+    networks:
+      - private
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    env_file:
+      - conf/postgres.env
+    networks:
+      - private
+  redis:
+    image: redis:latest
+    container_name: redis
+    env_file:
+      - conf/redis.env
     networks:
       - private
 
-#  postgres:
-#    image: postgres:latest
-#    networks:
-#      - private
-#  redis:
-#    image: redis:latest
-#    networks:
-#      - private
+volumes:
+  data:
 
 networks:
   public:

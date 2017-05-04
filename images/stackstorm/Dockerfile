@@ -47,7 +47,7 @@ RUN /usr/sbin/update-rc.d -f ondemand remove; \
   echo '# /lib/init/fstab: cleared out for bare-bones Docker' > /lib/init/fstab
 
 # Default value of ST2_REPO is "stable"
-ARG ST2_REPO=staging-unstable
+ARG ST2_REPO=stable
 
 # Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
@@ -55,11 +55,17 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 # Install st2, st2web, crudini and uuid-runtime
 #  - crudini is used to update the st2.conf file
 #  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
-RUN sudo apt-get install -y st2 st2web
+RUN sudo apt-get install -y st2 st2web st2mistral
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
     && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf
+RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/mistral.conf \
+    && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/mistral.conf
+
+# Call mistral-db-manage before mistral starts
+RUN sed -i '/start mistral-api/i\  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head\n\
+  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate\n' /etc/init/mistral.conf
 
 # Setup symmetric crypto key for datastore
 RUN mkdir -p /etc/st2/keys \
@@ -68,7 +74,6 @@ RUN mkdir -p /etc/st2/keys \
     && chgrp st2 /etc/st2/keys/datastore_key.json && chmod o-r /etc/st2/keys/datastore_key.json \
     && crudini --set /etc/st2/st2.conf keyvalue encryption_key_path /etc/st2/keys/datastore_key.json
 
-# Set the MongoDB hostname, as well as the RabbitMQ username, password and hostname
 RUN crudini --set /etc/st2/st2.conf database host mongo \
     && crudini --set /etc/st2/st2.conf auth enable True \
     && crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
