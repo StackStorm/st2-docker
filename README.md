@@ -112,17 +112,22 @@ Congratulations, you have created your first simple action!
 
 ### A Slight Variation: Concurrency
 
-If you want to take advantage of concurrency, use a slight variation on the above:
+If you want to take advantage of concurrency, use a slight variation on the above.
+On the host, run:
 
 ```
 mkdir -p packs.dev/examples/policies
 cp -R examples/actions/hello-concurrency.yaml packs.dev/examples/actions
 cp -R examples/policies/hello-concurrency.yaml packs.dev/examples/policies
+```
+
+Inside the `stackstorm` container, run:
+
+```
 st2ctl reload --register-all
 ```
 
-Open two terminals to the `stackstorm` container. We'll run the following commands seperated by ~5
-seconds. In the first, type:
+Open two terminals to the `stackstorm` container. In the first, type (but don't execute):
 
 ```
 st2 run examples.hello-concurrency name=1
