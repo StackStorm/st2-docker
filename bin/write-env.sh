@@ -12,7 +12,8 @@ function randpwd()
 mkdir -p ${CONF_DIR}
 
 if [ ! -f ${CONF_DIR}/mongo.env ]; then
-  touch ${CONF_DIR}/mongo.env
+  echo "MONGO_HOST=${MONGO_HOST:-mongo}" > ${CONF_DIR}/mongo.env
+  echo "MONGO_PORT=${MONGO_PORT:-27017}" >> ${CONF_DIR}/mongo.env
 fi
 if [ ! -f ${CONF_DIR}/postgres.env ]; then
   echo "POSTGRES_USER=${POSTGRES_USER:-mistral-user}" > ${CONF_DIR}/postgres.env

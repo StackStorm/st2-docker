@@ -20,6 +20,7 @@ crudini --set ${ST2_CONF} messaging url \
   amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 crudini --set ${ST2_CONF} coordination url \
   redis://${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
+crudini --set ${ST2_CONF} database host ${MONGO_HOST}
 
 # NOTE: Only certain distros of MongoDB support SSL/TLS
 #  1) enterprise versions
