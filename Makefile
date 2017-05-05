@@ -12,9 +12,3 @@ rmi:
 
 exec:
 	docker exec -it stackstorm /bin/bash
-
-clean:
-	docker system prune -f
-
-clean-all: clean
-	rm -rf conf
