@@ -13,6 +13,7 @@ services:
       - conf/mongo.env
       - conf/rabbitmq.env
       - conf/postgres.env
+      - conf/redis.env
     ports:
       - "443:443"
     networks:
@@ -30,6 +31,8 @@ services:
       - conf/mongo.env
     networks:
       - private
+    volumes:
+      - mongo-volume:/data/db
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -37,6 +40,8 @@ services:
       - conf/rabbitmq.env
     networks:
       - private
+    volumes:
+      - rabbitmq-volume:/var/lib/rabbitmq
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -44,6 +49,8 @@ services:
       - conf/postgres.env
     networks:
       - private
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
   redis:
     image: redis:latest
     container_name: redis
@@ -51,9 +58,14 @@ services:
       - conf/redis.env
     networks:
       - private
+    volumes:
+      - redis-volume:/data
 
 volumes:
-  data:
+  mongo-volume:
+  postgres-volume:
+  rabbitmq-volume:
+  redis-volume:
 
 networks:
   public:
