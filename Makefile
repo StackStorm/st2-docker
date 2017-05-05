@@ -12,3 +12,11 @@ rmi:
 
 exec:
 	docker exec -it stackstorm /bin/bash
+
+clean:
+	docker system prune -f
+
+clean-all: clean
+	docker volume rm -f st2docker_mongo-volume st2docker_postgres-volume \
+		st2docker_rabbitmq-volume st2docker_redis-volume
+	rm -rf conf
