@@ -85,12 +85,12 @@ Now, let's run the action:
     failed: false
     return_code: 0
     stderr: ''
-    stdout: Hello dude!
+    stdout: Hello human!
     succeeded: true
   ```
 
 The action takes a single parameter `name`, which as we can see above,
-defaults to 'dude' if `name` is not specified. If we specify a value for
+defaults to 'human' if `name` is not specified. If we specify a value for
 `name`, then as expected, the value is found in `result.stdout`.
 
   ```
@@ -109,6 +109,55 @@ defaults to 'dude' if `name` is not specified. If we specify a value for
   ```
 
 Congratulations, you have created your first simple action!
+
+### A Slight Variation: Concurrency
+
+If you want to take advantage of concurrency, use a slight variation on the above:
+
+```
+mkdir -p packs.dev/examples/policies
+cp -R examples/actions/hello-concurrency.yaml packs.dev/examples/actions
+cp -R examples/policies/hello-concurrency.yaml packs.dev/examples/policies
+st2ctl reload --register-all
+```
+
+Open two terminals to the `stackstorm` container. We'll run the following commands seperated by ~5
+seconds. In the first, type:
+
+```
+st2 run examples.hello-concurrency name=1
+```
+
+In the second, type:
+
+```
+st2 run examples.hello-concurrency name=2
+```
+
+Now, execute the command in the first terminal, wait 5 seconds and then execute the command in the
+second terminal. After a second or so, you should see the following in the second terminal:
+
+```
+root@258b11849aa7:/# st2 run examples.hello-concurrency name=2
+.
+id: 590cec228964ad01567f61e3
+status: delayed
+parameters:
+  name: 2
+result: None
+```
+
+If you run `st2 execution list` before 10 seconds have elapsed, the status of the last action should
+be "delayed".  After 10 seconds, the status of the last action should be "succeeded".
+
+```
++--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
+| id                       | action.ref                 | context.user | status                  | start_timestamp               | end_timestamp                 |
++--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
+| 590cec068964ad01567f61dd | examples.hello-concurrency | st2admin     | succeeded (10s elapsed) | Fri, 05 May 2017 21:17:58 UTC | Fri, 05 May 2017 21:18:08 UTC |
+| 590cec1f8964ad01567f61e0 | examples.hello-concurrency | st2admin     | succeeded (10s elapsed) | Fri, 05 May 2017 21:18:23 UTC | Fri, 05 May 2017 21:18:33 UTC |
+| 590cec228964ad01567f61e3 | examples.hello-concurrency | st2admin     | succeeded (17s elapsed) | Fri, 05 May 2017 21:18:26 UTC | Fri, 05 May 2017 21:18:43 UTC |
+```
 
 ## Adding a rule
 
