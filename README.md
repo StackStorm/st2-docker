@@ -1,12 +1,14 @@
 # StackStorm in Docker containers
 
-The initial container configuration is as follows:
+The default container configuration is as follows:
 
  - stackstorm (st2 + st2web + st2mistral)
  - mongo
  - rabbitmq
  - postgres
  - redis
+
+The mongo, rabbitmq, postgres and redis containers use persistent storage.
 
 ## Usage
 
@@ -34,7 +36,6 @@ This will pull the required images from docker hub, and then start them.
 However, if you find need to modify the stackstorm image, you will need to build it. Run:
 
   ```
-  REPO=stable
   docker build --build-arg ST2_REPO=${REPO} stackstorm/stackstorm:${REPO}
   ```
 
@@ -49,25 +50,25 @@ To stop the docker environment, run:
 
 ## Adding a simple action
 
-We will add a simple action that runs a local shell command:
+We will add a simple action that runs a local shell command.
+Run the following from your docker host.
 
 ```
 mkdir -p packs.dev/examples/actions
 cp -R examples/actions/actions.hello.yaml packs.dev/examples/actions
 ```
 
-Use `docker exec` to get a bash shell in the `stackstorm` container:
+Get a bash shell in the `stackstorm` container:
 
   ```
   docker exec -it stackstorm /bin/bash
   ```
 
-`st2ctl reload` loads the new action into StackStorm. Whenever you change
-the yaml file, you need to run `st2ctl reload`. Within the container,
-run the following:
+Load the new action into StackStorm. Whenever you change the yaml file, you need
+to run `st2ctl reload`. Within the container, run the following:
 
   ```
-  root@aff39eda0bdd:/# st2ctl reload
+  root@aff39eda0bdd:/# st2ctl reload --register-all
 
   ... output trimmed ...
 
