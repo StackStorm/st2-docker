@@ -152,8 +152,9 @@ parameters:
 result: None
 ```
 
-If you run `st2 execution list` before 10 seconds have elapsed, the status of the last action should
-be "delayed".  After 10 seconds, the status of the last action should be "succeeded".
+If you run `st2 execution list` before 10 seconds have elapsed, the status of the second action should
+be "delayed".  Between 10 and 20 seconds, the status of the second action should be "running". After
+20 seconds, the status of the second action should be "succeeded".
 
 ```
 +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
@@ -162,6 +163,7 @@ be "delayed".  After 10 seconds, the status of the last action should be "succee
 | 590cec068964ad01567f61dd | examples.hello-concurrency | st2admin     | succeeded (10s elapsed) | Fri, 05 May 2017 21:17:58 UTC | Fri, 05 May 2017 21:18:08 UTC |
 | 590cec1f8964ad01567f61e0 | examples.hello-concurrency | st2admin     | succeeded (10s elapsed) | Fri, 05 May 2017 21:18:23 UTC | Fri, 05 May 2017 21:18:33 UTC |
 | 590cec228964ad01567f61e3 | examples.hello-concurrency | st2admin     | succeeded (17s elapsed) | Fri, 05 May 2017 21:18:26 UTC | Fri, 05 May 2017 21:18:43 UTC |
++--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
 ```
 
 ## Adding a rule
