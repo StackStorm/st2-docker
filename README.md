@@ -36,6 +36,7 @@ This will pull the required images from docker hub, and then start them.
 However, if you find need to modify the stackstorm image, you will need to build it. Run:
 
   ```
+  REPO=stable
   docker build --build-arg ST2_REPO=${REPO} stackstorm/stackstorm:${REPO}
   ```
 
