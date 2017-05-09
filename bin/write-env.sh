@@ -4,6 +4,7 @@
 
 CONF_DIR=${1:-conf}
 
+# Create a random password of length specified by $1
 function randpwd()
 {
   echo $(openssl rand -base64 $1 | tr '/' 'A')
@@ -14,6 +15,21 @@ mkdir -p ${CONF_DIR}
 if [ ! -f ${CONF_DIR}/mongo.env ]; then
   echo "MONGO_HOST=${MONGO_HOST:-mongo}" > ${CONF_DIR}/mongo.env
   echo "MONGO_PORT=${MONGO_PORT:-27017}" >> ${CONF_DIR}/mongo.env
+  if [ -z ${MONGO_DB} ]; then
+    echo "#MONGO_DB=" >> ${CONF_DIR}/mongo.env
+  else
+    echo "MONGO_DB=${MONGO_DB}" >> ${CONF_DIR}/mongo.env
+  fi
+  if [ -z ${MONGO_USER} ]; then
+    echo "#MONGO_USER=" >> ${CONF_DIR}/mongo.env
+  else
+    echo "MONGO_USER=${MONGO_USER}" >> ${CONF_DIR}/mongo.env
+  fi
+  if [ -z ${MONGO_PASS} ]; then
+    echo "#MONGO_PASS=" >> ${CONF_DIR}/mongo.env
+  else
+    echo "MONGO_PASS=${MONGO_PASS}" >> ${CONF_DIR}/mongo.env
+  fi
 fi
 if [ ! -f ${CONF_DIR}/postgres.env ]; then
   echo "POSTGRES_USER=${POSTGRES_USER:-mistral-user}" > ${CONF_DIR}/postgres.env

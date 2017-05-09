@@ -21,6 +21,10 @@ crudini --set ${ST2_CONF} messaging url \
 crudini --set ${ST2_CONF} coordination url \
   redis://${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
 crudini --set ${ST2_CONF} database host ${MONGO_HOST}
+crudini --set ${ST2_CONF} database port ${MONGO_PORT}
+crudini --set ${ST2_CONF} database db_name ${MONGO_DB}
+crudini --set ${ST2_CONF} database username ${MONGO_USER}
+crudini --set ${ST2_CONF} database password ${MONGO_PASS}
 
 # NOTE: Only certain distros of MongoDB support SSL/TLS
 #  1) enterprise versions
