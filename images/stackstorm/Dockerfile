@@ -8,23 +8,21 @@ COPY conf/init-fake.conf /etc/init/fake-container-events.conf
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
     && apt-get install -y \
-    openssh-server \
-    sudo \
-    curl \
-    gdebi-core \
-    sshpass \
-    cron \
-    netcat \
-    net-tools \
-    crudini \
-    uuid-runtime \
-    apache2-utils
+      openssh-server \
+      sudo \
+      curl \
+      gdebi-core \
+      sshpass \
+      cron \
+      netcat \
+      net-tools \
+      crudini \
+      uuid-runtime \
+      apache2-utils
 
-RUN echo -e "#!/bin/sh\nexit 101\n" > /usr/sbin/policy-rc.d && \
-  rm /sbin/initctl; dpkg-divert --rename --remove /sbin/initctl
-
-# generate a nice UTF-8 locale for our use
-RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
+RUN echo -e "#!/bin/sh\nexit 101\n" > /usr/sbin/policy-rc.d \
+    && rm /sbin/initctl; dpkg-divert --rename --remove /sbin/initctl \
+    && locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
 
 # remove some pointless services
 RUN /usr/sbin/update-rc.d -f ondemand remove; \
@@ -58,13 +56,12 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 RUN sudo apt-get install -y st2 st2web st2mistral
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
-RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
-    && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf
-RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/mistral.conf \
-    && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/mistral.conf
-
 # Call mistral-db-manage before mistral starts
-RUN sed -i '/start mistral-api/i\  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head\n\
+RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
+    && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/st2*.conf \
+    && sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/mistral.conf \
+    && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/mistral.conf \
+    && sed -i '/start mistral-api/i\  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head\n\
   /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate\n' /etc/init/mistral.conf
 
 # Setup symmetric crypto key for datastore
@@ -72,9 +69,7 @@ RUN mkdir -p /etc/st2/keys \
     && st2-generate-symmetric-crypto-key --key-path /etc/st2/keys/datastore_key.json \
     && usermod -a -G st2 st2 && chgrp st2 /etc/st2/keys && chmod o-r /etc/st2/keys \
     && chgrp st2 /etc/st2/keys/datastore_key.json && chmod o-r /etc/st2/keys/datastore_key.json \
-    && crudini --set /etc/st2/st2.conf keyvalue encryption_key_path /etc/st2/keys/datastore_key.json
-
-RUN crudini --set /etc/st2/st2.conf database host mongo \
+    && crudini --set /etc/st2/st2.conf keyvalue encryption_key_path /etc/st2/keys/datastore_key.json \
     && crudini --set /etc/st2/st2.conf auth enable True \
     && crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
 
