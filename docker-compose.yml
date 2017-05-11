@@ -20,6 +20,7 @@ services:
       - public
       - private
     volumes:
+      - stackstorm-log-volume:/var/log
       - ./packs.dev:/opt/stackstorm/packs.dev
 
 ### External Services
@@ -66,6 +67,7 @@ volumes:
   postgres-volume:
   rabbitmq-volume:
   redis-volume:
+  stackstorm-log-volume:
 
 networks:
   public:
