@@ -8,7 +8,10 @@ The default container configuration is as follows:
  - postgres
  - redis
 
-The mongo, rabbitmq, postgres and redis containers use persistent storage.
+The mongo, rabbitmq, postgres and redis containers store their data
+on persistent storage. Additionally, the stackstorm container persists
+the contents of `/var/log`. If you do not wish to persist this data,
+then remove the appropriate entries from `docker-compose.yml`.
 
 ## Usage
 

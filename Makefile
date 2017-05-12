@@ -7,6 +7,9 @@ env:
 up:
 	docker-compose up -d
 
+down:
+	docker-compose down
+
 rmi:
 	docker rmi $$(docker images -f dangling=true -q)
 
