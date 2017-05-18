@@ -28,6 +28,30 @@ to create the environment files used by docker-compose. You may want to change t
 variables as necessary, but the defaults should be okay if you are not using any off-cluster
 services (e.g. mongo, redis, postgres, rabbitmq).
 
+Below is the complete list of available options that can be used to customize your container.
+
+| Parameter | Description |
+|-----------|-------------|
+| `ST2_USER`     | StackStorm account username |
+| `ST2_PASSWORD` | StackStorm account password |
+| `MONGO_HOST` | MongoDB server hostname |
+| `MONGO_PORT` | MongoDB server port (typically `27017`) |
+| `MONGO_DB`   | *(Optional)* MongoDB dbname (will use `st2` if not specified) |
+| `MONGO_USER` | *(Optional)* MongoDB username (will connect without credentials if this and `MONGO_PASS` are not specified) |
+| `MONGO_PASS` | *(Optional)* MongoDB password |
+| `RABBITMQ_HOST`         | RabbitMQ server hostname |
+| `RABBITMQ_PORT`         | RabbitMQ server port (typically `5672`) |
+| `RABBITMQ_DEFAULT_USER` | RabbitMQ username |
+| `RABBITMQ_DEFAULT_PASS` | RabbitMQ password |
+| `POSTGRES_HOST`     | PostgreSQL server hostname |
+| `POSTGRES_PORT`     | PostgreSQL server port (typically `5432`) |
+| `POSTGRES_DB`       | PostgreSQL database |
+| `POSTGRES_USER`     | PostgreSQL username |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `REDIS_HOST`     | Redis server hostname |
+| `REDIS_PORT`     | Redis server port |
+| `REDIS_PASSWORD` | *(Optional)* Redis password |
+
 Second, start the docker environment.
 
   ```
