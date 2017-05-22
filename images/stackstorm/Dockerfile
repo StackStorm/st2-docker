@@ -18,7 +18,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
       net-tools \
       crudini \
       uuid-runtime \
-      apache2-utils
+      apache2-utils \
+      bash-completion
+
+# enable bash-completion
+RUN dpkg-divert /etc/bash.bashrc && \
+    sed -i '/^# enable bash completion/,/^# sudo hint/{//p;//d;s/^#//}' /etc/bash.bashrc
 
 RUN echo -e "#!/bin/sh\nexit 101\n" > /usr/sbin/policy-rc.d \
     && rm /sbin/initctl; dpkg-divert --rename --remove /sbin/initctl \
