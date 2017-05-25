@@ -50,8 +50,4 @@ crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
 crudini --set ${MISTRAL_CONF} database connection \
   postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
 
-source /opt/stackstorm/st2/bin/activate
-pip install redis
-deactivate
-
 exec /sbin/init

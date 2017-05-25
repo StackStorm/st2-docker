@@ -78,6 +78,10 @@ RUN mkdir -p /etc/st2/keys \
     && crudini --set /etc/st2/st2.conf auth enable True \
     && crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
 
+# Install redis client library for coordination backend
+# see: https://docs.stackstorm.com/latest/reference/policies.html
+RUN bash -c 'source /opt/stackstorm/st2/bin/activate && pip install redis'
+
 # Setup SSH and SUDO access for stanley user
 RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh \
     && ssh-keygen -f /home/stanley/.ssh/stanley_rsa -P "" \
