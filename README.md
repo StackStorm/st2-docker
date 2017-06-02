@@ -83,7 +83,7 @@ Run the following from your docker host.
 
 ```
 mkdir -p packs.dev/examples/actions
-cp -R examples/actions/actions.hello.yaml packs.dev/examples/actions
+cp examples/actions/hello.yaml packs.dev/examples/actions
 ```
 
 Get a bash shell in the `stackstorm` container:
@@ -146,8 +146,8 @@ On the host, run:
 
 ```
 mkdir -p packs.dev/examples/policies
-cp -R examples/actions/hello-concurrency.yaml packs.dev/examples/actions
-cp -R examples/policies/hello-concurrency.yaml packs.dev/examples/policies
+cp examples/actions/hello-concurrency.yaml packs.dev/examples/actions
+cp examples/policies/hello-concurrency.yaml packs.dev/examples/policies
 ```
 
 Inside the `stackstorm` container, run:
@@ -202,7 +202,7 @@ Run the following from your docker host.
 
   ```
   mkdir packs.dev/examples/rules
-  cp -R examples/rules/monitor_file.yaml packs.dev/examples/rules
+  cp examples/rules/monitor_file.yaml packs.dev/examples/rules
   ```
 
 We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
