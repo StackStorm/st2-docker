@@ -91,7 +91,7 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh \
 RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ABF5BD827BD9BF62 \
     && apt-get update \
     && apt-get install -y nginx \
     && cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d \
@@ -99,6 +99,10 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && mkdir /var/run/sshd \
     && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
 
+# Install ChatOps
+RUN   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash - \
+     && apt-get install -y nodejs st2chatops 
+     
 EXPOSE 22 443
 
 # Share /opt/stackstorm/packs.dev with the host
