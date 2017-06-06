@@ -90,10 +90,15 @@ crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/c
 Then bind mount it to `/entrypoint.d/modify-st2-config.sh`
 
 - via `docker run`
+
   ```
-  docker run -v /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh stackstorm/stackstorm:latest
+  docker run -it -d --privileged \
+    -v /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh \
+    stackstorm/stackstorm:latest
   ```
+
 - via `docker-compose.yml`
+
   ```
   services:
     stackstorm:
