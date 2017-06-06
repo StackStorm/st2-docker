@@ -76,6 +76,23 @@ To stop the docker environment, run:
   docker-compose down
   ```
 
+## Running custom shell scripts on boot
+
+This container supports running arbitrary shell scripts on container boot. Any `*.sh` file located under `/docker-entrypoint.d` directory will be executed inside the container just before starting stackstorm services.
+
+For example, if you want to modify `/etc/st2/st2.conf` to set `system_packs_base_path` parameter, create `modify-st2-config.sh` with the follwing content:
+
+```
+/bin/bash
+crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/custom_packs
+```
+
+Then bind mount it to `/docker-entrypoint.d/modify-st2-config.sh`
+
+The above example shows just modifying st2 config but basically there is no limitation so you can do almost anything.
+
+Note: Scripts will be executed in alphabetical order of the file name.
+
 ## Adding a simple action
 
 We will add a simple action that runs a local shell command.

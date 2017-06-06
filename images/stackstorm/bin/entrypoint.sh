@@ -54,4 +54,13 @@ source /opt/stackstorm/st2/bin/activate
 pip install redis
 deactivate
 
+# Run custom init scripts
+for f in /entrypoint.d/*; do
+  case "$f" in
+    *.sh) echo "$0: running $f"; . "$f" ;;
+    *)    echo "$0: ignoring $f" ;;
+  esac
+  echo
+done
+
 exec /sbin/init
