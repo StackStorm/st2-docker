@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-postgres
+spec:
+  template:
+    metadata:
+      name: setup-postgres
+    spec:
+      containers:
+      - name: setup-postgres
+        image: postgres:latest
+        command: 
+        - runuser
+        - "-l"
+        - postgres
+        - "-c"
+        - >-
+          dropdb   -h postgres --if-exists mistral &&
+          dropuser -h postgres --if-exists mistral &&
+          psql     -h postgres -c "CREATE ROLE mistral WITH CREATEDB LOGIN ENCRYPTED PASSWORD 'StackStorm';" &&
+          psql     -h postgres -c "CREATE DATABASE mistral OWNER mistral;"
+      restartPolicy: Never

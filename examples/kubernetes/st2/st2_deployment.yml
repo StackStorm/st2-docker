@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2
+    spec:
+      containers:
+      - name: st2
+        image: stackstorm/stackstorm
+        ports:
+        - containerPort: 443
+        securityContext:
+          privileged: true
+        env:
+        - name: ST2_USER
+          value: admin
+        - name: ST2_PASSWORD
+          value: changeme
+        - name: MONGO_HOST
+          value: mongo
+        - name: MONGO_PORT
+          value: "27017"
+        - name: RABBITMQ_HOST
+          value: rabbitmq
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_DEFAULT_USER
+          value: guest
+        - name: RABBITMQ_DEFAULT_PASS
+          value: guest
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: mistral
+        - name: POSTGRES_USER
+          value: mistral
+        - name: POSTGRES_PASSWORD
+          value: StackStorm
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
+

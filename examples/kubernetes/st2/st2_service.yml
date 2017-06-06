@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: st2
+spec:
+  selector:
+    app: st2
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 443
+    nodePort: 443
