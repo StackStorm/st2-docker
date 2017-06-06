@@ -76,6 +76,44 @@ To stop the docker environment, run:
   docker-compose down
   ```
 
+## Running custom shell scripts on boot
+
+This container supports running arbitrary shell scripts on container boot. Any `*.sh` file located under `/entrypoint.d` directory will be executed inside the container just before starting stackstorm services.
+
+For example, if you want to modify `/etc/st2/st2.conf` to set `system_packs_base_path` parameter, create `modify-st2-config.sh` with the follwing content:
+
+```
+/bin/bash
+crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/custom_packs
+```
+
+Then bind mount it to `/entrypoint.d/modify-st2-config.sh`
+
+- via `docker run`
+
+  ```
+  docker run -it -d --privileged \
+    -v /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh \
+    stackstorm/stackstorm:latest
+  ```
+
+- via `docker-compose.yml`
+
+  ```
+  services:
+    stackstorm:
+      image: stackstorm/stackstorm:${TAG:-latest}
+       : (snip)
+      volumes:
+        - /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh
+  ```
+
+The above example shows just modifying st2 config but basically there is no limitation so you can do almost anything.
+
+You can also bind mount a specific directory to `/entrypoint.d` then place scripts as much as you want. All of them will be executed as long as the file name ends with `*.sh`.
+
+Note: scripts will be executed in alphabetical order of the file name.
+
 ## Adding a simple action
 
 We will add a simple action that runs a local shell command.
@@ -83,7 +121,7 @@ Run the following from your docker host.
 
 ```
 mkdir -p packs.dev/examples/actions
-cp -R examples/actions/actions.hello.yaml packs.dev/examples/actions
+cp examples/actions/hello.yaml packs.dev/examples/actions
 ```
 
 Get a bash shell in the `stackstorm` container:
@@ -146,8 +184,8 @@ On the host, run:
 
 ```
 mkdir -p packs.dev/examples/policies
-cp -R examples/actions/hello-concurrency.yaml packs.dev/examples/actions
-cp -R examples/policies/hello-concurrency.yaml packs.dev/examples/policies
+cp examples/actions/hello-concurrency.yaml packs.dev/examples/actions
+cp examples/policies/hello-concurrency.yaml packs.dev/examples/policies
 ```
 
 Inside the `stackstorm` container, run:
@@ -202,7 +240,7 @@ Run the following from your docker host.
 
   ```
   mkdir packs.dev/examples/rules
-  cp -R examples/rules/monitor_file.yaml packs.dev/examples/rules
+  cp examples/rules/monitor_file.yaml packs.dev/examples/rules
   ```
 
 We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the

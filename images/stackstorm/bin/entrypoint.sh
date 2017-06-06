@@ -50,4 +50,13 @@ crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
 crudini --set ${MISTRAL_CONF} database connection \
   postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
 
+# Run custom init scripts
+for f in /entrypoint.d/*; do
+  case "$f" in
+    *.sh) echo "$0: running $f"; . "$f" ;;
+    *)    echo "$0: ignoring $f" ;;
+  esac
+  echo
+done
+
 exec /sbin/init
