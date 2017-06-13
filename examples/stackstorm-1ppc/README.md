@@ -16,44 +16,47 @@ A sample `docker-compose.yml` file is located under `examples/stackstorm-1ppc` d
 
 1. Generate .env files
 
-    ```
+```
 (cd ../../ && make env)
 cp -r ../../conf .
 ```
 
 2. Start containers
 
-    ```
+```
 docker-compose up -d
 ```
-    Now you can access StackStorm Web UI.
+
+Now you can access StackStorm Web UI.
 
 3. Register initial content
 
-    ```
+```
 docker-compose exec st2actionrunner \
 st2-register-content --config-file /etc/st2/st2.conf \
 --register-all --register-setup-virtualenvs
 ```
-    Note: `/opt/stackstorm/virtualenvs` directory needs to be mounted as a shared volume on the container that you run the above command.
+
+Note: `/opt/stackstorm/virtualenvs` directory needs to be mounted as a shared volume on the container that you run the above command.
 
 4. Run simple action
 
-    ```
+```
 docker-compose exec st2client st2 run core.local cmd=date
 ```
 
 5. Install examples
 
-    ```
+```
 docker-compose exec st2client st2 pack install https://github.com/shusugmt/st2-pack-examples
 ```
 
 6. Run mistral example
 
-    ```
+```
 docker-compose exec st2client st2 run examples.mistral_examples
 ```
+
 
 **FAQ**
 
