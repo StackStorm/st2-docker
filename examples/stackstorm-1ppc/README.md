@@ -14,14 +14,32 @@ StackStorm Docker image that runs one st2 service per container.
 
 A sample `docker-compose.yml` file is located under `examples/stackstorm-1ppc` directory. Follow the instruction below to setup a running StackStorm instance which consists of containers that each are running individual st2 service.
 
-1. Generate .env files
+1. Build `stackstorm/stackstorm-1ppc:latest` image
+
+Since 1ppc image is not officially released yet, you need to build the image by yourself.
+
+```
+(cd ../../images/stackstorm-1ppc \
+  && docker build -t stackstorm/stackstorm-1ppc:latest .)
+```
+
+Alternatively, you can use prebuilt image available at [shusugmt/stackstorm-1ppc](https://hub.docker.com/r/shusugmt/stackstorm-1ppc/). To do so simply replace `stackstorm:stackstorm-1ppc` with `shusugmt/stackstorm-1ppc` in `docker-compose.yml`.
+
+```
+sed -i -e 's/stackstorm\/stackstorm\-1ppc/shusugmt\/stackstorm\-1ppc/g' docker-compose.yml
+
+# for BSD sed (Mac)
+sed -i '' -e 's/stackstorm\/stackstorm\-1ppc/shusugmt\/stackstorm\-1ppc/g' docker-compose.yml
+```
+
+2. Generate .env files
 
 ```
 (cd ../../ && make env)
 cp -r ../../conf .
 ```
 
-2. Start containers
+3. Start containers
 
 ```
 docker-compose up -d
@@ -29,29 +47,29 @@ docker-compose up -d
 
 Now you can access StackStorm Web UI.
 
-3. Register initial content
+4. Register initial content
 
 ```
 docker-compose exec st2actionrunner \
-st2-register-content --config-file /etc/st2/st2.conf \
---register-all --register-setup-virtualenvs
+  st2-register-content --config-file /etc/st2/st2.conf \
+    --register-all --register-setup-virtualenvs
 ```
 
 Note: `/opt/stackstorm/virtualenvs` directory needs to be mounted as a shared volume on the container that you run the above command.
 
-4. Run simple action
+5. Run simple action
 
 ```
 docker-compose exec st2client st2 run core.local cmd=date
 ```
 
-5. Install examples
+6. Install examples
 
 ```
 docker-compose exec st2client st2 pack install https://github.com/shusugmt/st2-pack-examples
 ```
 
-6. Run mistral example
+7. Run mistral example
 
 ```
 docker-compose exec st2client st2 run examples.mistral_examples
