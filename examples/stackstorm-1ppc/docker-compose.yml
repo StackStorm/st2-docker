@@ -61,10 +61,12 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=mistral-api
+    restart: on-failure
   mistral-server:
     <<: *base
     environment:
       - ST2_SERVICE=mistral-server
+    restart: on-failure
   st2web:
     <<: *base
     environment:
