@@ -65,5 +65,13 @@ case "$ST2_SERVICE" in
   "st2web" )
     exec /usr/sbin/nginx -g 'daemon off;'
     ;;
+  "st2-register-content" )
+    set -ex
+    PACKS=${PACKS:-"chatops core default linux packs"}
+    for PACK in ${PACKS}; do
+      st2-register-content --config-file /etc/st2/st2.conf --register-all --register-setup-virtualenvs \
+        --register-pack /opt/stackstorm/packs/${PACK}
+    done
+    ;;
 
 esac
