@@ -1,0 +1,451 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2api
+    spec:
+      containers:
+      - name: st2api
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2api
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        ports:
+        - containerPort: 9101
+        volumeMounts:
+        - name: st2-packs
+          mountPath: /opt/stackstorm/packs
+      volumes:
+      - name: st2-packs
+        persistentVolumeClaim:
+          claimName: st2-packs
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: st2api
+spec:
+  selector:
+    app: st2api
+  ports:
+  - protocol: TCP
+    port: 9101
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2auth
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2auth
+    spec:
+      containers:
+      - name: st2auth
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2auth
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        ports:
+        - containerPort: 9100
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: st2auth
+spec:
+  selector:
+    app: st2auth
+  ports:
+  - protocol: TCP
+    port: 9100
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2stream
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2stream
+    spec:
+      containers:
+      - name: st2stream
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2stream
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        ports:
+        - containerPort: 9102
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: st2stream
+spec:
+  selector:
+    app: st2stream
+  ports:
+  - protocol: TCP
+    port: 9102
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2sensorcontainer
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2sensorcontainer
+    spec:
+      containers:
+      - name: st2sensorcontainer
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2sensorcontainer
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        volumeMounts:
+        - name: st2-packs
+          mountPath: /opt/stackstorm/packs
+        - name: st2-virtualenvs
+          mountPath: /opt/stackstorm/virtualenvs
+      volumes:
+      - name: st2-packs
+        persistentVolumeClaim:
+          claimName: st2-packs
+      - name: st2-virtualenvs
+        persistentVolumeClaim:
+          claimName: st2-virtualenvs
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2rulesengine
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2rulesengine
+    spec:
+      containers:
+      - name: st2rulesengine
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2rulesengine
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2actionrunner
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2actionrunner
+    spec:
+      containers:
+      - name: st2actionrunner
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2actionrunner
+        - name: ST2_ACTION_AUTH_URL
+          value: http://st2auth:9100/
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        volumeMounts:
+        - name: st2-packs
+          mountPath: /opt/stackstorm/packs
+        - name: st2-virtualenvs
+          mountPath: /opt/stackstorm/virtualenvs
+      volumes:
+      - name: st2-packs
+        persistentVolumeClaim:
+          claimName: st2-packs
+      - name: st2-virtualenvs
+        persistentVolumeClaim:
+          claimName: st2-virtualenvs
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2resultstracker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2resultstracker
+    spec:
+      containers:
+      - name: st2resultstracker
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2resultstracker
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2notifier
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2notifier
+    spec:
+      containers:
+      - name: st2notifier
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2notifier
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2garbagecollector
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2garbagecollector
+    spec:
+      containers:
+      - name: st2garbagecollector
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2garbagecollector
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mistral-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mistral-api
+    spec:
+      containers:
+      - name: mistral-api
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: mistral-api
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        ports:
+        - containerPort: 8989
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mistral-api
+spec:
+  selector:
+    app: mistral-api
+  ports:
+  - protocol: TCP
+    port: 8989
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mistral-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mistral-server
+    spec:
+      containers:
+      - name: mistral-server
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: mistral-server
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2web
+    spec:
+      containers:
+      - name: st2web
+        image: stackstorm/stackstorm-1ppc:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2web
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+        ports:
+        - containerPort: 443
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: st2web
+spec:
+  selector:
+    app: st2web
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 443
+    nodePort: 443
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: st2web-dns
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2web-dns
+    spec:
+      containers:
+      - name: st2web-dns
+        image: janeczku/go-dnsmasq:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DNSMASQ_ENABLE_SEARCH
+          value: "1"
+        ports:
+        - containerPort: 53
+          protocol: UDP
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: st2web-dns
+spec:
+  selector:
+    app: st2web-dns
+  ports:
+  - protocol: UDP
+    port: 53
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: st2-packs
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: st2-virtualenvs
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
