@@ -73,6 +73,10 @@ RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel 
     && sed -i '/start mistral-api/i\  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head\n\
   /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate\n' /etc/init/mistral.conf
 
+# Install chatops and disable unless entrypoint.d file is present
+# Install st2-chatops with Node.js v4 requirement
+RUN curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override
+
 # Setup symmetric crypto key for datastore
 RUN mkdir -p /etc/st2/keys \
     && st2-generate-symmetric-crypto-key --key-path /etc/st2/keys/datastore_key.json \
