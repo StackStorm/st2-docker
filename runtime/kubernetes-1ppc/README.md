@@ -9,9 +9,11 @@ Tested environment:
     - Kubernetes v1.6.4
 
 ```
+# Run following commands in the same directory as this README.md
+
 # Start minikube cluster
 # Note: Allow assigning 443 for NodePort service, in order to access st2web
-minikube start --driver=xhyve --extra-config=apiserver.ServiceNodePortRange=443-32767
+minikube start --vm-driver=xhyve --extra-config=apiserver.ServiceNodePortRange=443-32767
 
 # Build 1ppc image
 eval $(minikube docker-env)
@@ -24,5 +26,6 @@ kubectl get pods --all-namespaces
 kubectl apply -Rf .
 
 # Access Web UI
+# Note: You can find default credentials in configmaps.yaml
 minikube service st2web --https
 ```
