@@ -1,4 +1,4 @@
-# Stackstorm Docker image All-In-One
+# StackStorm Docker image all-in-one (stackstorm-all)
 
 ## Intro:
 
