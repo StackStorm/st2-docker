@@ -52,13 +52,18 @@ RUN /usr/sbin/update-rc.d -f ondemand remove; \
 # Default value of ST2_REPO is "stable"
 ARG ST2_REPO=stable
 
+# Override these values if you want to specify different package versions
+ARG ST2_VERSION="2.3.0-2"
+ARG ST2WEB_VERSION="2.3.0-1"
+ARG ST2MISTRAL_VERSION="2.3.0-6"
+
 # Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
 
 # Install st2, st2web, crudini and uuid-runtime
 #  - crudini is used to update the st2.conf file
 #  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
-RUN sudo apt-get install -y st2 st2web st2mistral
+RUN sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts
