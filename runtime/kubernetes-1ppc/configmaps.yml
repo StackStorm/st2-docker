@@ -1,0 +1,39 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: st2
+data:
+  ST2_USER: admin
+  ST2_PASSWORD: changeme
+  ST2_AUTH_URL: http://st2auth:9100/
+  ST2_API_URL: http://st2api:9101/
+  ST2_STREAM_URL: http://st2stream:9102/
+  ST2_MISTRAL_API_URL: http://mistral-api:8989/v2
+  MONGO_HOST: mongo
+  MONGO_PORT: "27017"
+  RABBITMQ_HOST: rabbitmq
+  RABBITMQ_PORT: "5672"
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rabbitmq
+data:
+  RABBITMQ_DEFAULT_USER: admin
+  RABBITMQ_DEFAULT_PASS: 9jS+w1u07NbHtZke1m+jW4Cj
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: postgres
+data:
+  POSTGRES_USER: mistral-user
+  POSTGRES_PASSWORD: 2PehgWO824hcUCUMNbaVwDMT
+  POSTGRES_DB: mistral

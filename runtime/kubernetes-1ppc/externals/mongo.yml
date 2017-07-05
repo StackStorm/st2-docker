@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:3.4
+        ports:
+        - containerPort: 27107
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mongo
+spec:
+  selector:
+    app: mongo
+  ports:
+  - protocol: TCP
+    port: 27017

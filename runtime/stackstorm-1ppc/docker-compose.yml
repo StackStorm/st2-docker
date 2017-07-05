@@ -1,0 +1,133 @@
+version: '3'
+
+services:
+  st2client: &base
+    image: stackstorm/stackstorm-1ppc
+    env_file:
+      - conf/stackstorm.env
+      - conf/mongo.env
+      - conf/rabbitmq.env
+      - conf/postgres.env
+      - conf/redis.env
+      - common.env
+    networks:
+      - private
+  st2api:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2api
+    volumes:
+      - stackstorm-packs:/opt/stackstorm/packs
+  st2auth:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2auth
+  st2stream:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2stream
+  st2sensorcontainer:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2sensorcontainer
+    volumes:
+      - stackstorm-packs:/opt/stackstorm/packs
+      - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs
+  st2rulesengine:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2rulesengine
+  st2actionrunner:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2actionrunner
+      - ST2_ACTION_AUTH_URL=http://st2auth:9100/
+    volumes:
+      - stackstorm-packs:/opt/stackstorm/packs
+      - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs
+  st2resultstracker:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2resultstracker
+  st2notifier:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2notifier
+  st2garbagecollector:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2garbagecollector
+  mistral-api:
+    <<: *base
+    environment:
+      - ST2_SERVICE=mistral-api
+    restart: on-failure
+  mistral-server:
+    <<: *base
+    environment:
+      - ST2_SERVICE=mistral-server
+    restart: on-failure
+  st2web:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2web
+    ports:
+      - "443:443"
+    networks:
+      - public
+      - private
+  st2web-dns:
+    image: janeczku/go-dnsmasq:latest
+    environment:
+      - DNSMASQ_ENABLE_SEARCH=1
+    networks:
+      - private
+
+### External Services
+
+  mongo:
+    image: mongo:3.4
+    env_file:
+      - conf/mongo.env
+    networks:
+      - private
+    volumes:
+      - mongo-volume:/data/db
+  rabbitmq:
+    image: rabbitmq:management
+    env_file:
+      - conf/rabbitmq.env
+    networks:
+      - private
+    volumes:
+      - rabbitmq-volume:/var/lib/rabbitmq
+  postgres:
+    image: postgres:latest
+    env_file:
+      - conf/postgres.env
+    networks:
+      - private
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+  redis:
+    image: redis:latest
+    env_file:
+      - conf/redis.env
+    networks:
+      - private
+    volumes:
+      - redis-volume:/data
+
+volumes:
+  mongo-volume:
+  postgres-volume:
+  rabbitmq-volume:
+  redis-volume:
+  stackstorm-packs:
+  stackstorm-virtualenvs:
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
