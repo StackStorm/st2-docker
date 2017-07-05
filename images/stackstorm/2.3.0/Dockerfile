@@ -5,6 +5,7 @@ ENV container docker
 
 COPY conf/init-fake.conf /etc/init/fake-container-events.conf
 
+# uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
     && apt-get install -y \
@@ -60,9 +61,7 @@ ARG ST2MISTRAL_VERSION="2.3.0-6"
 # Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
 
-# Install st2, st2web, crudini and uuid-runtime
-#  - crudini is used to update the st2.conf file
-#  - uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
+# Install st2, st2web, and st2mistral
 RUN sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
