@@ -54,7 +54,7 @@ RUN /usr/sbin/update-rc.d -f ondemand remove; \
 ARG ST2_REPO=stable
 
 # Override these values if you want to specify different package versions
-ARG ST2_VERSION="2.2.1-5"
+ARG ST2_VERSION="2.2.1-6"
 ARG ST2WEB_VERSION="2.2.1-1"
 ARG ST2MISTRAL_VERSION="2.2.1-4"
 
