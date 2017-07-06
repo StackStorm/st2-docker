@@ -3,7 +3,7 @@ FROM ubuntu:trusty
 # let Upstart know it's in a container
 ENV container docker
 
-COPY conf/init-fake.conf /etc/init/fake-container-events.conf
+COPY config/init-fake.conf /etc/init/fake-container-events.conf
 
 # uuid-runtime is required, otherwise the last test in 'test_quickstart_key.yaml' fails
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -114,7 +114,7 @@ EXPOSE 22 443
 VOLUME ["/opt/stackstorm/packs.dev"]
 
 COPY bin/entrypoint.sh /entrypoint.sh
-COPY conf/local.conf /etc/init/local.conf
+COPY config/local.conf /etc/init/local.conf
 
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
 # environment variables to `docker run` after the name of the image:
