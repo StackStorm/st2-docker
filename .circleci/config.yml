@@ -13,6 +13,14 @@ jobs:
           reusable: true
           exclusive: true
       - run:
-          rame: Build application Docker image
-          command: |
-            docker build -t stackstorm/stackstorm:2.3.1 images/stackstorm/2.3.1
+          name: Build image for 2.2.1
+          command: docker build -t stackstorm/stackstorm:2.2.1 images/stackstorm/2.2.1
+      - run:
+          name: Build image for 2.3.0
+          command: docker build -t stackstorm/stackstorm:2.3.0 images/stackstorm/2.3.0
+      - run:
+          name: Build image for 2.3.1
+          command: docker build -t stackstorm/stackstorm:2.3.1 images/stackstorm/2.3.1
+      - run:
+          name: Build image for latest (2.3.1)
+          command: docker build -t stackstorm/stackstorm:latest images/stackstorm/2.3.1
