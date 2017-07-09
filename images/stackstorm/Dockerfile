@@ -19,8 +19,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
       crudini \
       uuid-runtime \
       apache2-utils \
-      bash-completion \
-      docker.io 
+      bash-completion
 
 # enable bash-completion
 RUN dpkg-divert /etc/bash.bashrc && \
@@ -103,7 +102,9 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
 # Install ChatOps
 RUN   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash - \
      && apt-get install -y nodejs st2chatops 
-     
+# Install Docker client 
+RUN apt-get update ; apt-get install docker.io  -y 
+
 EXPOSE 22 443
 
 # Share /opt/stackstorm/packs.dev with the host
