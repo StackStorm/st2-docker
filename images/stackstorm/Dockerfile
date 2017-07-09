@@ -19,7 +19,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
       crudini \
       uuid-runtime \
       apache2-utils \
-      bash-completion
+      bash-completion \
+      docker.io 
 
 # enable bash-completion
 RUN dpkg-divert /etc/bash.bashrc && \
@@ -98,6 +99,10 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && mkdir -p /etc/ssl/st2 \
     && mkdir /var/run/sshd \
     && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
+     
+# Install ChatOps
+RUN   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash - \
+     && apt-get install -y nodejs st2chatops 
      
 EXPOSE 22 443
 
