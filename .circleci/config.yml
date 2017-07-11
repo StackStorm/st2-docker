@@ -14,12 +14,15 @@ jobs:
           reusable: true
           exclusive: true
       - run:
+          name: Install dependencies
+          command: apk add --no-cache bash
+      - run:
           name: Build image
-          command: pwd && ls -l && ls -l /bin && ~/build/bin/build.sh
+          command: ls -l /bin/ && bin/build.sh
       - deploy:
           name: Deploy image to Docker Hub
           tag: /^v.*/
           command: |
             if [ "${CIRCLE_BRANCH}" == "feature/circleci" ]; then
-              ~/build/bin/deploy.sh
+              bin/deploy.sh
             fi
