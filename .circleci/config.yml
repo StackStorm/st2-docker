@@ -17,12 +17,5 @@ jobs:
           name: Install bash
           command: apk add --no-cache bash
       - run:
-          name: Build image
+          name: Build and Push image to Docker Hub
           command: bin/build.sh
-      - deploy:
-          name: Deploy image to Docker Hub
-          command: |
-            # Deploy only if tag begins with 'v'
-            if [ "${CIRCLE_TAG}" == v* ]; then
-              bin/deploy.sh
-            fi

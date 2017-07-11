@@ -1,16 +1,17 @@
 #!/bin/bash
 
-echo DOCKER_USER=${DOCKER_USER}
-echo DOCKER_PASSWORD=${DOCKER_PASSWORD}
-
-exit 0
-
 docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD} --email ${DOCKER_EMAIL}
-docker push stackstorm:stackstorm/${ST2_TAG}
 
-docker build --build-arg ST2_TAG=${ST2_TAG} -t stackstorm/stackstorm:${ST2_TAG} images/stackstorm
+# If CIRCLE_TAG is not zero length and starts with "v", then build the specific tag
+# (this only happens after that StackStorm release)
+if [[ $CIRCLE_TAG =~ ^v(.+)$ ]]; then
+  ST2_TAG=${BASH_REMATCH[1]}
+  docker push stackstorm:stackstorm/${ST2_TAG}
+fi
 
-if [ "$ST2_TAG" == "$LATEST" ]; then
-  # Also build the latest image
-  docker build --build-arg ST2_TAG=${ST2_TAG} -t stackstorm/stackstorm:latest images/stackstorm
+# If TAG is zero length, then only build the 'latest' image
+# (this usually happens when developing st2-docker)
+if [ -z $CIRCLE_TAG ]; then
+  # Build the latest image (using $LATEST version of ST2)
+  docker push stackstorm:stackstorm/latest
 fi
