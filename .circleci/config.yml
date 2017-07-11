@@ -15,11 +15,11 @@ jobs:
           exclusive: true
       - run:
           name: Build image
-          command: bin/build.sh
+          command: pwd && ~/build/bin/build.sh
       - deploy:
           name: Deploy image to Docker Hub
           tag: /^v.*/
           command: |
             if [ "${CIRCLE_BRANCH}" == "feature/circleci" ]; then
-              ./deploy.sh
+              ~/build/bin/deploy.sh
             fi
