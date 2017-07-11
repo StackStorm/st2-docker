@@ -15,7 +15,7 @@ jobs:
           exclusive: true
       - run:
           name: Build image
-          command: pwd && ls -l && ~/build/bin/build.sh
+          command: pwd && ls -l && ls -l /bin && ~/build/bin/build.sh
       - deploy:
           name: Deploy image to Docker Hub
           tag: /^v.*/
