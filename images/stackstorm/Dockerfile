@@ -62,6 +62,7 @@ ARG ST2_TAG
 # The following variable is the most recent commit in
 # the st2-docker repo used to fetch this Dockerfile.
 ARG ST2_DOCKER_SHA1="unknown"
+RUN apt-cache madison st2
 ARG ST2_VERSION=`apt-cache madison st2 | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
 ARG ST2WEB_VERSION=`apt-cache madison st2web | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
 ARG ST2MISTRAL_VERSION=`apt-cache madison st2mistral | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
