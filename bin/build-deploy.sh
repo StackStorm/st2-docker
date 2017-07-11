@@ -13,7 +13,8 @@ docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
 # (this only happens after that StackStorm release)
 if [[ $CIRCLE_TAG =~ ^v(.+)$ ]]; then
   ST2_TAG=${BASH_REMATCH[1]}
-  docker build --build-arg ST2_TAG=${ST2_TAG} -t stackstorm/stackstorm:${ST2_TAG} images/stackstorm
+  docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+    -t stackstorm/stackstorm:${ST2_TAG} images/stackstorm
   echo "docker push stackstorm/stackstorm:${ST2_TAG}"
 fi
 
@@ -21,7 +22,10 @@ fi
 # (this usually happens when developing st2-docker)
 if [ -z $CIRCLE_TAG ]; then
   # Build the latest image (using $LATEST version of ST2)
-  docker build --build-arg ST2_TAG=${LATEST} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+  if [[ $LATEST =~ ^v(.+)$ ]]; then
+    ST2_TAG=${BASH_REMATCH[1]}
+  fi
+  docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
     -t stackstorm/stackstorm:latest images/stackstorm
   echo "docker push stackstorm/stackstorm:latest"
 fi
