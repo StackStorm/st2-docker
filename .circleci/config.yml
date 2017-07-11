@@ -1,3 +1,4 @@
+# 
 version: 2
 jobs:
   build:
@@ -13,14 +14,13 @@ jobs:
           reusable: true
           exclusive: true
       - run:
-          name: Build image for 2.2.1
-          command: docker build -t stackstorm/stackstorm:2.2.1 images/stackstorm/2.2.1
-      - run:
-          name: Build image for 2.3.0
-          command: docker build -t stackstorm/stackstorm:2.3.0 images/stackstorm/2.3.0
-      - run:
-          name: Build image for 2.3.1
-          command: docker build -t stackstorm/stackstorm:2.3.1 images/stackstorm/2.3.1
-      - run:
-          name: Build image for latest (2.3.1)
-          command: docker build -t stackstorm/stackstorm:latest images/stackstorm/2.3.1
+          name: Build image
+          command: bin/build.sh
+
+  deploy:
+    name: Deploy image to Docker Hub
+      tag: /^v.*/
+      command: |
+        if [ "${CIRCLE_BRANCH}" == "master" ]; then
+          ./deploy.sh
+        fi

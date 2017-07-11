@@ -53,13 +53,16 @@ RUN /usr/sbin/update-rc.d -f ondemand remove; \
 # Default value of ST2_REPO is "stable"
 ARG ST2_REPO=stable
 
-# Override these values if you want to specify different package versions
-ARG ST2_VERSION="2.3.1-3"
-ARG ST2WEB_VERSION="2.3.1-1"
-ARG ST2MISTRAL_VERSION="2.3.1-3"
-
 # Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
+
+# Override these values if you want to specify different package versions
+ARG ST2_TAG
+ARG ST2_VERSION=`apt-cache madison st2 | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
+ARG ST2WEB_VERSION=`apt-cache madison st2web | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
+ARG ST2MISTRAL_VERSION=`apt-cache madison st2mistral | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
+
+RUN echo "Installed versions: st2-${ST2_VERSION} st2web-${ST2WEB_VERSION} st2mistral-${ST2MISTRAL_VERSION}" > /st2-manifest.txt
 
 # Install st2, st2web, and st2mistral
 RUN sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
