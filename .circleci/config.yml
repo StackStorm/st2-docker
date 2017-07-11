@@ -17,10 +17,10 @@ jobs:
           name: Build image
           command: bin/build.sh
 
-  deploy:
-    name: Deploy image to Docker Hub
-    tag: /^v.*/
-    command: |
-      if [ "${CIRCLE_BRANCH}" == "master" ]; then
-        ./deploy.sh
-      fi
+    deploy:
+      name: Deploy image to Docker Hub
+      tag: /^v.*/
+      command: |
+        if [ "${CIRCLE_BRANCH}" == "master" ]; then
+          ./deploy.sh
+        fi
