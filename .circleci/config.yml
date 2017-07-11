@@ -16,6 +16,12 @@ jobs:
       - run:
           name: Install bash
           command: apk add --no-cache bash
-      - run:
+      - deploy:
           name: Build and Push image to Docker Hub
           command: bin/build-deploy.sh
+deployment:
+  fake_deploy_for_cci2:
+    tag: /v.*/
+    name: Build and Push image to Docker Hub
+    commands:
+      - echo "Make tags run in 2.0"
