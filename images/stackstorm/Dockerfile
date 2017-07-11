@@ -61,10 +61,8 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 # the st2-docker repo used to fetch this Dockerfile.
 ARG ST2_DOCKER_SHA1="unknown"
 
-
 # Override these values if you want to specify different package versions
-ARG ST2_TAG=$(date)
-RUN echo $ST2_TAG
+ARG ST2_TAG
 ARG ST2_VERSION
 ARG ST2WEB_VERSION
 ARG ST2MISTRAL_VERSION
