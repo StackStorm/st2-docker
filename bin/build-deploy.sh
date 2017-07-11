@@ -7,7 +7,7 @@ echo CIRCLE_TAG=${CIRCLE_TAG}
 LATEST=`git tag -l | sort -r | head -1`
 echo LATEST=${LATEST}
 
-docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD} --email ${DOCKER_EMAIL}
+docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
 
 # If CIRCLE_TAG is not zero length and starts with "v", then build the specific tag
 # (this only happens after that StackStorm release)
