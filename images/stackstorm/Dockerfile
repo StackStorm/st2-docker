@@ -57,22 +57,22 @@ ARG ST2_REPO=stable
 # are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
 
-# Override these values if you want to specify different package versions
-ARG ST2_TAG
 # The following variable is the most recent commit in
 # the st2-docker repo used to fetch this Dockerfile.
 ARG ST2_DOCKER_SHA1="unknown"
-RUN apt-cache madison st2
-ARG ST2_VERSION=`apt-cache madison st2 | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
-ARG ST2WEB_VERSION=`apt-cache madison st2web | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
-ARG ST2MISTRAL_VERSION=`apt-cache madison st2mistral | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1`
-ARG DATE=`date`
 
-RUN echo "Installed versions: st2-${ST2_VERSION} st2web-${ST2WEB_VERSION} st2mistral-${ST2MISTRAL_VERSION}" > /st2-manifest.txt
-RUN echo "Image built using st2-docker @ ${ST2_DOCKER_SHA1} : ${DATE}" >> /st2-manifest.txt
 
-# Install st2, st2web, and st2mistral
-RUN sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
+# Override these values if you want to specify different package versions
+ARG ST2_TAG=$(date)
+RUN echo $ST2_TAG
+ARG ST2_VERSION
+ARG ST2WEB_VERSION
+ARG ST2MISTRAL_VERSION
+
+COPY bin/install.sh /install.sh
+
+# It is not possible to dynamically set ARG's, so we do the needful in bin/install.sh
+RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} --st2mistral=${ST2MISTRAL_VERSION}
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts
