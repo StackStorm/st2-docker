@@ -14,15 +14,15 @@ jobs:
           reusable: true
           exclusive: true
       - run:
-          name: Install dependencies
+          name: Install bash
           command: apk add --no-cache bash
       - run:
           name: Build image
-          command: ls -l /bin/ && bin/build.sh
+          command: bin/build.sh
       - deploy:
           name: Deploy image to Docker Hub
-          tag: /^v.*/
           command: |
-            if [ "${CIRCLE_BRANCH}" == "feature/circleci" ]; then
+            # Deploy only if tag begins with 'v'
+            if [ "${CIRCLE_TAG}" == v* ]; then
               bin/deploy.sh
             fi
