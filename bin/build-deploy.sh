@@ -13,9 +13,11 @@ docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
 # (this only happens after that StackStorm release)
 if [[ $CIRCLE_TAG =~ ^v(.+)$ ]]; then
   ST2_TAG=${BASH_REMATCH[1]}
-  docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
-    -t stackstorm/stackstorm:${ST2_TAG} images/stackstorm
-  echo "docker push stackstorm/stackstorm:${ST2_TAG}"
+  for name in stackstorm; do
+    docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+      -t stackstorm/${name}:${ST2_TAG} images/${name}
+    echo "docker push stackstorm/${name}:${ST2_TAG}"
+  done
 fi
 
 # If TAG is zero length, then only build the 'latest' image
@@ -26,7 +28,9 @@ if [ -z $CIRCLE_TAG ]; then
     ST2_TAG=${BASH_REMATCH[1]}
   fi
   echo ST2_TAG=${ST2_TAG}
-  docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
-    -t stackstorm/stackstorm:latest images/stackstorm
-  echo "docker push stackstorm/stackstorm:latest"
+  for name in stackstorm stackstorm-all; do
+    docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+      -t stackstorm/${name}:latest images/${name}
+    echo "docker push stackstorm/${name}:latest"
+  done
 fi
