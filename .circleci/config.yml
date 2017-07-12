@@ -5,9 +5,6 @@ jobs:
     working_directory: ~/build
     docker:
       - image: docker:17.06.0-ce-git
-    branches:
-      only:
-        - feature/circleci
     steps:
       - checkout
       - setup_remote_docker:
