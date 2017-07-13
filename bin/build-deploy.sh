@@ -22,6 +22,9 @@
 # to the above image:
 #
 #   stackstorm/stackstorm:latest
+#
+# If BUILD_DEV environment variable is defined, this triggers an image build based
+# on unstable.
 
 set -euo pipefail
 IDS=$'\n\t'
@@ -35,6 +38,7 @@ if [ -z ${CIRCLE_SHA1:-} ]; then
 fi
 
 echo CIRCLE_TAG=${CIRCLE_TAG:-}
+echo BUILD_DEV=${BUILD_DEV:-}
 latest=`git tag -l | sort -r | head -1`
 echo latest=${latest}
 
@@ -69,13 +73,27 @@ fi
 docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
 
 for name in stackstorm; do
-  docker build --build-arg ST2_TAG=${tag} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
-    -t stackstorm/${name}:${tag} images/${name}
-  docker push stackstorm/${name}:${tag}
-  if [ "v${tag}" == "${latest}" ]; then
-    docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
-    docker push stackstorm/${name}:latest
+  if [ -z ${BUILD_DEV:-} ]; then
+    # This is not a dev build
+    docker build --build-arg ST2_TAG=${tag} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+      -t stackstorm/${name}:${tag} images/${name}
+    docker push stackstorm/${name}:${tag}
+
+    if [ "v${tag}" == "${latest}" ]; then
+      docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
+      docker push stackstorm/${name}:latest
+    else
+      echo "v${tag} != ${latest}"
+    fi
   else
-    echo "v${tag} != ${latest}"
+    # Triggered to run nightly via ops-infra
+    # Build unstable, and tag as "dev".
+
+    # TODO: Potentially useful to prepend "dev" with revision of latest unstable
+    #       release (e.g. "2.4dev")
+
+    docker build --build-arg ST2_REPO=unstable --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+      -t stackstorm/${name}:dev images/${name}
+    docker push stackstorm/${name}:dev
   fi
 done
