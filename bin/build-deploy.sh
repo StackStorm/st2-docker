@@ -75,5 +75,7 @@ for name in stackstorm; do
   if [ "v${tag}" == "${latest}" ]; then
     docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
     echo "docker push stackstorm/${name}:latest"
+  else
+    echo "v${tag} != ${latest}"
   fi
 done
