@@ -71,10 +71,10 @@ docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
 for name in stackstorm; do
   docker build --build-arg ST2_TAG=${tag} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
     -t stackstorm/${name}:${tag} images/${name}
-  echo "docker push stackstorm/${name}:${tag}"
+  docker push stackstorm/${name}:${tag}
   if [ "v${tag}" == "${latest}" ]; then
     docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
-    echo "docker push stackstorm/${name}:latest"
+    docker push stackstorm/${name}:latest
   else
     echo "v${tag} != ${latest}"
   fi
