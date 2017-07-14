@@ -77,11 +77,17 @@ for name in stackstorm; do
     # This is not a dev build
     docker build --build-arg ST2_TAG=${tag} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
       -t stackstorm/${name}:${tag} images/${name}
-    docker push stackstorm/${name}:${tag}
+
+    if [ "${CIRCLE_BRANCH}" == "master" ]; then
+      docker push stackstorm/${name}:${tag}
+    fi
 
     if [ "v${tag}" == "${latest}" ]; then
       docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
-      docker push stackstorm/${name}:latest
+
+      if [ "${CIRCLE_BRANCH}" == "master" ]; then
+        docker push stackstorm/${name}:latest
+      fi
     else
       echo "v${tag} != ${latest}"
     fi
@@ -94,6 +100,9 @@ for name in stackstorm; do
 
     docker build --build-arg ST2_REPO=unstable --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
       -t stackstorm/${name}:dev images/${name}
-    docker push stackstorm/${name}:dev
+
+    if [ "${CIRCLE_BRANCH}" == "master" ]; then
+      docker push stackstorm/${name}:dev
+    fi
   fi
 done
