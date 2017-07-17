@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# This script runs within the CircleCI environment to build and deploy
-# st2-docker images to Docker Hub.
+# This script runs within the CircleCI environment to build stackstorm images.
 #
 # Generally speaking, we only maintain the image containing the latest release
 # of StackStorm tagged in the st2-docker repo. To build an image with a
@@ -61,33 +60,17 @@ fi
 
 echo tag=${tag}
 
-if [ -z ${DOCKER_USER:-} ] || [ -z ${DOCKER_PASSWORD:-} ] ; then
-  echo "ERROR: DOCKER_USER and/or DOCKER_PASSWORD are not defined."
-  echo "To resolve, run:"
-  echo "  $ export DOCKER_USER=<docker_login>"
-  echo "  $ export DOCKER_PASSWORD=<docker_password>"
-  echo "  $ $0"
-  exit 1
-fi
-
-docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
-
 for name in stackstorm; do
   if [ -z ${BUILD_DEV:-} ]; then
     # This is not a dev build
-    docker build --build-arg ST2_TAG=${tag} --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+    docker build --build-arg ST2_TAG=${tag} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1:-} \
+      --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
+      --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
+      --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
       -t stackstorm/${name}:${tag} images/${name}
-
-    if [ "${CIRCLE_BRANCH}" == "master" ]; then
-      docker push stackstorm/${name}:${tag}
-    fi
 
     if [ "v${tag}" == "${latest}" ]; then
       docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
-
-      if [ "${CIRCLE_BRANCH}" == "master" ]; then
-        docker push stackstorm/${name}:latest
-      fi
     else
       echo "v${tag} != ${latest}"
     fi
@@ -98,11 +81,10 @@ for name in stackstorm; do
     # TODO: Potentially useful to prepend "dev" with revision of latest unstable
     #       release (e.g. "2.4dev")
 
-    docker build --build-arg ST2_REPO=unstable --build-arg ST2_DOCKER_SHA1=${CIRCLE_SHA1} \
+    docker build --build-arg ST2_REPO=unstable --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} \
+      --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME} \
+      --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME} \
+      --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
       -t stackstorm/${name}:dev images/${name}
-
-    if [ "${CIRCLE_BRANCH}" == "master" ]; then
-      docker push stackstorm/${name}:dev
-    fi
   fi
 done

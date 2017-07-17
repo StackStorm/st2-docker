@@ -59,7 +59,10 @@ RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/
 
 # The following variable is the most recent commit in
 # the st2-docker repo used to fetch this Dockerfile.
-ARG ST2_DOCKER_SHA1="unknown"
+ARG CIRCLE_SHA1
+ARG CIRCLE_BUILD_URL
+ARG CIRCLE_PROJECT_USERNAME
+ARG CIRCLE_PROJECT_REPONAME
 
 # Override these values if you want to specify different package versions
 ARG ST2_TAG
@@ -70,7 +73,7 @@ ARG ST2MISTRAL_VERSION
 COPY bin/install.sh /install.sh
 
 # It is not possible to dynamically set ARG's, so we do the needful in bin/install.sh
-RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} --st2mistral=${ST2MISTRAL_VERSION}
+RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} --st2mistral=${ST2MISTRAL_VERSION} --user=${CIRCLE_PROJECT_USERNAME} --repo=${CIRCLE_PROJECT_REPONAME} --buildurl=${CIRCLE_BUILD_URL} --sha=${CIRCLE_SHA1}
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts

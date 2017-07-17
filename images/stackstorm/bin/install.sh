@@ -5,11 +5,14 @@ IDS=$'\n\t'
 
 # Parse options
 while [[ "$#" > 1 ]]; do case $1 in
-  --sha) ST2_DOCKER_SHA1="$2";;
+  --tag) ST2_TAG="$2";;
   --st2) ST2_VERSION="$2";;
   --st2web) ST2WEB_VERSION="$2";;
   --st2mistral) ST2MISTRAL_VERSION="$2";;
-  --tag) ST2_TAG="$2";;
+  --repo) CIRCLE_PROJECT_REPONAME="$2";;
+  --user) CIRCLE_PROJECT_USERNAME="$2";;
+  --buildurl) CIRCLE_BUILD_URL="$2";;
+  --sha) CIRCLE_SHA1="$2";;
   *) break;;
 esac; shift; shift;
 done
@@ -37,14 +40,26 @@ if [ -z ${ST2MISTRAL_VERSION:-} ]; then
   fi
 fi
 
+# Install st2, st2web, and st2mistral
+sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
+
 MANIFEST="/st2-manifest.txt"
 
-echo "Image built at $(date) using st2-docker:${ST2_DOCKER_SHA1}" > $MANIFEST
+echo "Image built at $(date)" > $MANIFEST
+
+if [ -n ${CIRCLE_PROJECT_REPONAME:-} ] && [ -n ${CIRCLE_PROJECT_USERNAME:-} ] && [ -n ${CIRCLE_SHA1} ]; then
+  echo "GitHub URL: https://github.com/${CIRCLE_PROJECT_USERNAME:-}/${CIRCLE_PROJECT_REPONAME:-}/commit/${CIRCLE_SHA1:-}" >> $MANIFEST
+fi
+if [ -n ${CIRCLE_BUILD_URL:-} ]; then
+  echo "Build URL: ${CIRCLE_BUILD_URL:-}" >> $MANIFEST
+fi
+if [ -n ${ST2_TAG:-} ]; then
+  echo "Tag: ${ST2_TAG:-}" >> $MANIFEST
+fi
+
 echo "" >> $MANIFEST
+
 echo "Installed versions:" >> $MANIFEST
 echo "  - st2-${ST2_VERSION}" >> $MANIFEST
 echo "  - st2web-${ST2WEB_VERSION}" >> $MANIFEST
 echo "  - st2mistral-${ST2MISTRAL_VERSION}" >> $MANIFEST
-
-# Install st2, st2web, and st2mistral
-sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
