@@ -2,7 +2,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/build
+    working_directory: /build
     docker:
       - image: docker:17.06.0-ce-git
     steps:
@@ -13,9 +13,17 @@ jobs:
       - run:
           name: Install bash
           command: apk add --no-cache bash
+      - run:
+          name: Build image
+          command: bin/build.sh
       - deploy:
-          name: Build and Push image to Docker Hub
-          command: bin/build-deploy.sh
+          name: Deploy image to Docker Hub
+          branches:
+            only:
+              - feature/circleci
+          command: |
+            docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+            bin/deploy.sh
 deployment:
   trigger_tag:
     tag: /v.*/
