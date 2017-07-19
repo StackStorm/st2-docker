@@ -243,8 +243,8 @@ Run the following from your docker host.
   cp examples/rules/monitor_file.yaml packs.dev/examples/rules
   ```
 
-We need to tell the FileWatchSensor to watch `/tmp/date.log`, enable the
-`linux.FileWatchSensor` and then call `st2ctl reload`.
+Take a look at `monitor_file.yaml`. The `core.local` action is triggered when the
+contents of `/tmp/watcher.log` change.
 
 Use `docker exec` to connect to the `stackstorm` container:
 
@@ -252,25 +252,44 @@ Use `docker exec` to connect to the `stackstorm` container:
   docker exec -it stackstorm /bin/bash
   ```
 
-Within the container, run the following:
+Run the following:
 
   ```
-  echo "    - /tmp/date.log" >> /opt/stackstorm/packs/linux/config.yaml
   st2ctl reload
-  st2 sensor enable linux.FileWatchSensor
   ```
 
-When we append to `/tmp/date.log`, the sensor will inject a trigger that matches the criteria.
-The `linux.file_touch` action is called, creating `/tmp/touch.log`.
-
-Now let's append a line to the file in the container.
+When we append to `/tmp/watcher.log`, the sensor will inject a trigger and the
+action will be executed. Now let's append a line to the file in the container.
 
 ```
-echo "hi" >> /tmp/date.log
+echo "hello" >> /tmp/watcher.log
 ```
 
-The file `/tmp/touch.log` should exist with a recent timestamp. Congratulations, you have created
-your first rule!
+You should see that the action was fired:
+
+  ```
+  st2 execution list
+  root@4ff11fdda3a9:/opt/stackstorm/packs.dev/examples/rules# st2 execution list
+  +--------------------------+----------------+--------------+-------------------------+-------------------------------+-------------------------------+
+  | id                       | action.ref     | context.user | status                  | start_timestamp               | end_timestamp                 |
+  +--------------------------+----------------+--------------+-------------------------+-------------------------------+-------------------------------+
+  ...
+  | 590cec068964ad01567f61dd | core.local     | st2admin     | succeeded (10s elapsed) | Wed, 19 May 2017 21:17:58 UTC | Fri, 05 May 2017 21:18:08 UTC |
+  +--------------------------+----------------+--------------+-------------------------+-------------------------------+-------------------------------+
+  root@4ff11fdda3a9:/opt/stackstorm/packs.dev/examples/rules# st2 execution get 590cec068964ad01567f61dd
+  id: 590cec068964ad01567f61dd
+  status: succeeded (0s elapsed)
+  parameters:
+    cmd: 'echo "{''file_name'': u''watcher.log'', ''line'': u''hello'', ''file_path'': u''/tmp/watcher.log''}"'
+  result:
+    failed: false
+    return_code: 0
+    stderr: ''
+    stdout: '{''file_name'': u''watcher.log'', ''line'': u''hello'', ''file_path'': u''/tmp/watcher.log''}'
+    succeeded: true
+  ```
+
+Congratulations, you have created your first rule!
 
 ## Adding a python action
 
