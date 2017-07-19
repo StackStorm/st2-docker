@@ -47,7 +47,7 @@ MANIFEST="/st2-manifest.txt"
 
 echo "Image built at $(date)" > $MANIFEST
 
-if [ -n ${CIRCLE_PROJECT_REPONAME:-} ] && [ -n ${CIRCLE_PROJECT_USERNAME:-} ] && [ -n ${CIRCLE_SHA1} ]; then
+if [ -n ${CIRCLE_PROJECT_REPONAME:-} ] && [ -n ${CIRCLE_PROJECT_USERNAME:-} ] && [ -n ${CIRCLE_SHA1:-} ]; then
   echo "GitHub URL: https://github.com/${CIRCLE_PROJECT_USERNAME:-}/${CIRCLE_PROJECT_REPONAME:-}/commit/${CIRCLE_SHA1:-}" >> $MANIFEST
 fi
 if [ -n ${CIRCLE_BUILD_URL:-} ]; then
