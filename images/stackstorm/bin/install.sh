@@ -41,19 +41,23 @@ if [ -z ${ST2MISTRAL_VERSION:-} ]; then
 fi
 
 # Install st2, st2web, and st2mistral
+sudo apt-get update
 sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
 
 MANIFEST="/st2-manifest.txt"
 
 echo "Image built at $(date)" > $MANIFEST
 
-if [ -n ${CIRCLE_PROJECT_REPONAME:-} ] && [ -n ${CIRCLE_PROJECT_USERNAME:-} ] && [ -n ${CIRCLE_SHA1:-} ]; then
+if [[ "${CIRCLE_PROJECT_REPONAME:-}" != "" ]] && [[ "${CIRCLE_PROJECT_USERNAME:-}" != "" ]] && [[ "${CIRCLE_SHA1:-}" != "" ]]; then
   echo "GitHub URL: https://github.com/${CIRCLE_PROJECT_USERNAME:-}/${CIRCLE_PROJECT_REPONAME:-}/commit/${CIRCLE_SHA1:-}" >> $MANIFEST
 fi
-if [ -n ${CIRCLE_BUILD_URL:-} ]; then
+if [[ "${CIRCLE_PROJECT_REPONAME:-}" == "" ]] && [[ "${CIRCLE_PROJECT_USERNAME:-}" == "" ]] && [[ "${CIRCLE_SHA1:-}" != "" ]]; then
+  echo "Commit SHA: ${CIRCLE_SHA1:-}" >> $MANIFEST
+fi
+if [[ "${CIRCLE_BUILD_URL:-}" != "" ]]; then
   echo "Build URL: ${CIRCLE_BUILD_URL:-}" >> $MANIFEST
 fi
-if [ -n ${ST2_TAG:-} ]; then
+if [[ "${ST2_TAG:-}" != "" ]]; then
   echo "Tag: ${ST2_TAG:-}" >> $MANIFEST
 fi
 

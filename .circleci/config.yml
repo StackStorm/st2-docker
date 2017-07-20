@@ -20,7 +20,7 @@ jobs:
           name: Deploy image to Docker Hub
           branches:
             only:
-              - feature/circleci
+              - master
           command: |
             docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
             bin/deploy.sh
