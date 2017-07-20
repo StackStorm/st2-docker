@@ -64,11 +64,11 @@ echo tag=${tag}
 for name in stackstorm; do
   if [ -z ${BUILD_DEV:-} ]; then
     # This is not a dev build
-    echo docker push stackstorm/${name}:${tag}
+    docker push stackstorm/${name}:${tag}
 
     if [ "v${tag}" == "${latest}" ]; then
       docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
-      echo docker push stackstorm/${name}:latest
+      docker push stackstorm/${name}:latest
     else
       echo "v${tag} != ${latest}"
     fi
@@ -78,6 +78,6 @@ for name in stackstorm; do
 
     # TODO: Potentially useful to prepend "dev" with revision of latest unstable
     #       release (e.g. "2.4dev")
-    echo docker push stackstorm/${name}:dev
+    docker push stackstorm/${name}:dev
   fi
 done
