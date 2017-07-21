@@ -1,19 +1,17 @@
 ---
-name: "monitor_file"
+name: monitor_file
 pack: "examples"
-enabled: true
 description: "Monitor file for change"
+enabled: true
 
 trigger:
-  type: "linux.file_watch.line"
+  parameters:
+    file_path: /tmp/watcher.log
+  type: linux.file_watch.line
 
-criteria:
-  trigger.file_name:
-    type: "equals"
-    pattern: "date.log"
+criteria: {}
 
 action:
-  ref: linux.file_touch
   parameters:
-    file: "/tmp/touch.log"
-    hosts: "localhost"
+    cmd: echo "{{trigger}}"
+  ref: core.local
