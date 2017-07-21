@@ -53,16 +53,27 @@ RUN /usr/sbin/update-rc.d -f ondemand remove; \
 # Default value of ST2_REPO is "stable"
 ARG ST2_REPO=stable
 
-# Override these values if you want to specify different package versions
-ARG ST2_VERSION="2.2.1-5"
-ARG ST2WEB_VERSION="2.2.1-1"
-ARG ST2MISTRAL_VERSION="2.2.1-4"
-
-# Configure system so that the "stable" ST2 packages are fetched from packagecloud.io
+# Configure system so that the "stable" ST2 packages
+# are fetched from packagecloud.io
 RUN curl -s https://packagecloud.io/install/repositories/StackStorm/${ST2_REPO}/script.deb.sh | sudo bash
 
-# Install st2, st2web, and st2mistral
-RUN sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
+# The following variable is the most recent commit in
+# the st2-docker repo used to fetch this Dockerfile.
+ARG CIRCLE_SHA1
+ARG CIRCLE_BUILD_URL
+ARG CIRCLE_PROJECT_USERNAME
+ARG CIRCLE_PROJECT_REPONAME
+
+# Override these values if you want to specify different package versions
+ARG ST2_TAG
+ARG ST2_VERSION
+ARG ST2WEB_VERSION
+ARG ST2MISTRAL_VERSION
+
+COPY bin/install.sh /install.sh
+
+# It is not possible to dynamically set ARG's, so we do the needful in bin/install.sh
+RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} --st2mistral=${ST2MISTRAL_VERSION} --user=${CIRCLE_PROJECT_USERNAME} --repo=${CIRCLE_PROJECT_REPONAME} --buildurl=${CIRCLE_BUILD_URL} --sha=${CIRCLE_SHA1}
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts
