@@ -18,12 +18,14 @@ jobs:
           command: bin/build.sh
       - deploy:
           name: Deploy image to Docker Hub
-          branches:
-            only:
-              - master
           command: |
-            docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
-            bin/deploy.sh
+            beginswith() { case $2 in "$1"*) true;; *) false;; esac; }
+            if beginswith v "$CIRCLE_TAG" || [ ${CIRCLE_BRANCH} == "master" ]; then
+              docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+              bin/deploy.sh
+            else
+              echo "Skipping deploy"
+            fi
 deployment:
   trigger_tag:
     tag: /v.*/
