@@ -1,5 +1,8 @@
 # StackStorm in Docker containers
 
+[![Circle CI Build Status](https://circleci.com/gh/StackStorm/st2-docker/tree/master.svg?style=shield)](https://circleci.com/gh/StackStorm/st2-docker)
+[![Go to Docker Hub](https://img.shields.io/badge/Docker%20Hub-%E2%86%92-blue.svg)](https://hub.docker.com/r/stackstorm/stackstorm/)
+
 The default container configuration is as follows:
 
  - stackstorm (st2 + st2web + st2mistral)
