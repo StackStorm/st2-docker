@@ -117,7 +117,9 @@ You can also bind mount a specific directory to `/entrypoint.d` then place scrip
 
 Note: scripts will be executed in alphabetical order of the file name.
 
-## To enable chatops
+## To enable/disable chatops
+
+Chatops is installed in the `stackstorm` image, but not started by default.
 
 To enable chatops, delete the file `/etc/init/st2chatops.override` using a script in
 `/entrypoint.d`.
