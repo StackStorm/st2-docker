@@ -85,10 +85,10 @@ This container supports running arbitrary shell scripts on container boot. Any `
 
 For example, if you want to modify `/etc/st2/st2.conf` to set `system_packs_base_path` parameter, create `modify-st2-config.sh` with the follwing content:
 
-```
-/bin/bash
-crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/custom_packs
-```
+  ```
+  #/bin/bash
+  crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/custom_packs
+  ```
 
 Then bind mount it to `/entrypoint.d/modify-st2-config.sh`
 
@@ -116,6 +116,27 @@ The above example shows just modifying st2 config but basically there is no limi
 You can also bind mount a specific directory to `/entrypoint.d` then place scripts as much as you want. All of them will be executed as long as the file name ends with `*.sh`.
 
 Note: scripts will be executed in alphabetical order of the file name.
+
+## To enable/disable chatops
+
+Chatops is installed in the `stackstorm` image, but not started by default.
+
+To enable chatops, delete the file `/etc/init/st2chatops.override` using a script in
+`/entrypoint.d`.
+
+  ```
+  #!/bin/bash
+
+  sudo rm /etc/init/st2chatops.override
+  ```
+
+If you need to disable chatops, run the following using a script in `/entrypoint.d`:
+
+  ```
+  #!/bin/bash
+
+  echo manual | sudo tee /etc/init/st2chatops.override
+  ```
 
 ## Adding a simple action
 
