@@ -3,10 +3,6 @@ version: '3'
 services:
   stackstorm:
     image: stackstorm/stackstorm:${TAG:-latest}
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - seccomp:unconfined
     container_name: stackstorm
     env_file:
       - conf/stackstorm.env
