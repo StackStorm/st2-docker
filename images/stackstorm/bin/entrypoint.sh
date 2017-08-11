@@ -59,4 +59,9 @@ for f in /entrypoint.d/*; do
   echo
 done
 
+# 1ppc: launch entrypoint-1ppc.sh via dumb-init if $ST2_SERVICE is set
+if [ ! -z ${ST2_SERVICE} ]; then
+  exec /dumb-init -- /entrypoint-1ppc.sh
+fi
+
 exec /sbin/init

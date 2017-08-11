@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: st2api
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
       - name: st2auth
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -95,7 +95,7 @@ spec:
     spec:
       containers:
       - name: st2stream
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -133,7 +133,7 @@ spec:
     spec:
       containers:
       - name: st2sensorcontainer
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -169,7 +169,7 @@ spec:
     spec:
       containers:
       - name: st2rulesengine
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -193,7 +193,7 @@ spec:
     spec:
       containers:
       - name: st2actionrunner
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -231,7 +231,7 @@ spec:
     spec:
       containers:
       - name: st2resultstracker
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -255,7 +255,7 @@ spec:
     spec:
       containers:
       - name: st2notifier
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -279,7 +279,7 @@ spec:
     spec:
       containers:
       - name: st2garbagecollector
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -303,7 +303,7 @@ spec:
     spec:
       containers:
       - name: mistral-api
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -341,7 +341,7 @@ spec:
     spec:
       containers:
       - name: mistral-server
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE
@@ -365,7 +365,7 @@ spec:
     spec:
       containers:
       - name: st2web
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ST2_SERVICE

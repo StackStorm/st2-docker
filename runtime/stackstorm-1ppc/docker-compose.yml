@@ -2,7 +2,7 @@ version: '3'
 
 services:
   st2client: &base
-    image: stackstorm/stackstorm-1ppc
+    image: stackstorm/stackstorm:latest
     env_file:
       - conf/stackstorm.env
       - conf/mongo.env
@@ -12,6 +12,9 @@ services:
       - common.env
     networks:
       - private
+    restart: on-failure
+    environment:
+      - ST2_SERVICE=nop
   st2api:
     <<: *base
     environment:
