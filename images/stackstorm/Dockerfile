@@ -135,3 +135,11 @@ COPY config/local.conf /etc/init/local.conf
 # environment variables to `docker run` after the name of the image:
 #   docker run -e ST2_USER... image
 ENTRYPOINT ["/entrypoint.sh"]
+
+# 1ppc: Install dumb-init
+RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
+    && chmod +x /dumb-init
+
+# 1ppc
+COPY bin/entrypoint-1ppc.sh /entrypoint-1ppc.sh
+COPY config/st2-1ppc.conf /etc/nginx/conf.d/st2-1ppc.conf.disable
