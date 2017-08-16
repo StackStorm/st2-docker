@@ -43,6 +43,7 @@ workflows:
             branches:
               only:
                 - master
+                - /^wvw.*/
             tags:
               only:
                 - /^v.*/
