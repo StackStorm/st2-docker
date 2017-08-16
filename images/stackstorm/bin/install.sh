@@ -17,6 +17,9 @@ while [[ "$#" > 1 ]]; do case $1 in
 esac; shift; shift;
 done
 
+# apt-cache may not have current package data without apt-get update
+apt-get update
+
 # FIXME: De-duplicate following commands - initial effort to do so failed
 if [ -z ${ST2_VERSION:-} ]; then
   if [[ -n ${ST2_TAG:-} ]]; then
