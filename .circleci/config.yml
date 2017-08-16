@@ -22,6 +22,9 @@ jobs:
   deploy:
     <<: *defaults
     steps:
+      - setup_remote_docker:
+          reusable: true
+          exclusive: true
       - run:
           name: Install bash
           command: apk add --no-cache bash
