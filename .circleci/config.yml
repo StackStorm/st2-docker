@@ -1,10 +1,13 @@
 # 
+defaults: &defaults
+  working_directory: /build
+  docker:
+    - image: docker:17.06.0-ce-git
+
 version: 2
 jobs:
   build:
-    working_directory: /build
-    docker:
-      - image: docker:17.06.0-ce-git
+    <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
@@ -16,16 +19,34 @@ jobs:
       - run:
           name: Build image
           command: bin/build.sh
-      - deploy:
+  deploy:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          reusable: true
+          exclusive: true
+      - run:
+          name: Install bash
+          command: apk add --no-cache bash
+      - run:
           name: Deploy image to Docker Hub
           command: |
-            beginswith() { case $2 in "$1"*) true;; *) false;; esac; }
-            if beginswith v "$CIRCLE_TAG" || [ ${CIRCLE_BRANCH} == "master" ]; then
-              docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
-              bin/deploy.sh
-            else
-              echo "Skipping deploy"
-            fi
-deployment:
-  trigger_tag:
-    tag: /v.*/
+            docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+            bin/deploy.sh
+
+workflows:
+  version: 2
+  build_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+            tags:
+              only:
+                - /^v.*/
