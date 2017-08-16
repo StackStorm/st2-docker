@@ -22,6 +22,7 @@ jobs:
   deploy:
     <<: *defaults
     steps:
+      - checkout
       - setup_remote_docker:
           reusable: true
           exclusive: true
