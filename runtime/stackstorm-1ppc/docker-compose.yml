@@ -2,7 +2,7 @@ version: '3'
 
 services:
   st2client: &base
-    image: stackstorm/stackstorm:latest
+    image: stackstorm/stackstorm:${TAG:-latest}
     env_file:
       - conf/stackstorm.env
       - conf/mongo.env
