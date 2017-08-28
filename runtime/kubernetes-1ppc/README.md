@@ -15,10 +15,6 @@ Tested environment:
 # Note: Allow assigning 443 for NodePort service, in order to access st2web
 minikube start --vm-driver=xhyve --extra-config=apiserver.ServiceNodePortRange=443-32767
 
-# Build 1ppc image
-eval $(minikube docker-env)
-docker build -t stackstorm/stackstorm-1ppc ../../images/stackstorm-1ppc
-
 # Check cluster is ready...
 kubectl get pods --all-namespaces
 
