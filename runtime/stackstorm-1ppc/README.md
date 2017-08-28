@@ -14,32 +14,14 @@ StackStorm Docker image that runs one st2 service per container.
 
 A sample `docker-compose.yml` file is located under `examples/stackstorm-1ppc` directory. Follow the instruction below to setup a running StackStorm instance which consists of containers that each are running individual st2 service.
 
-1. Build `stackstorm/stackstorm-1ppc:latest` image
-
-Since 1ppc image is not officially released yet, you need to build the image by yourself.
-
-```
-(cd ../../images/stackstorm-1ppc \
-  && docker build -t stackstorm/stackstorm-1ppc:latest .)
-```
-
-Alternatively, you can use prebuilt image available at [shusugmt/stackstorm-1ppc](https://hub.docker.com/r/shusugmt/stackstorm-1ppc/). To do so simply replace `stackstorm:stackstorm-1ppc` with `shusugmt/stackstorm-1ppc` in `docker-compose.yml`.
-
-```
-sed -i -e 's/stackstorm\/stackstorm\-1ppc/shusugmt\/stackstorm\-1ppc/g' docker-compose.yml
-
-# for BSD sed (Mac)
-sed -i '' -e 's/stackstorm\/stackstorm\-1ppc/shusugmt\/stackstorm\-1ppc/g' docker-compose.yml
-```
-
-2. Generate .env files
+1. Generate .env files
 
 ```
 (cd ../../ && make env)
 cp -r ../../conf .
 ```
 
-3. Start containers
+2. Start containers
 
 ```
 docker-compose up -d
@@ -47,7 +29,7 @@ docker-compose up -d
 
 Now you can access StackStorm Web UI.
 
-4. Register initial content
+3. Register initial content
 
 ```
 docker-compose exec st2actionrunner \
@@ -57,24 +39,23 @@ docker-compose exec st2actionrunner \
 
 Note: `/opt/stackstorm/virtualenvs` directory needs to be mounted as a shared volume on the container that you run the above command.
 
-5. Run simple action
+4. Run simple action
 
 ```
 docker-compose exec st2client st2 run core.local cmd=date
 ```
 
-6. Install examples
+5. Install examples
 
 ```
 docker-compose exec st2client st2 pack install https://github.com/shusugmt/st2-pack-examples
 ```
 
-7. Run mistral example
+6. Run mistral example
 
 ```
 docker-compose exec st2client st2 run examples.mistral_examples
 ```
-
 
 **FAQ**
 
