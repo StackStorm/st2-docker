@@ -67,7 +67,7 @@ container, use:
 On the other hand, if you want to run one process per container, use:
 
   ```
-  docker-compose -f runtime/stackstorm-1ppc/docker-compose.yml run -d
+  docker-compose -f runtime/compose-1ppc/docker-compose.yml run -d
   ```
 
 This will pull the required images from docker hub, and then start them.

@@ -12,7 +12,7 @@ StackStorm Docker image that runs one st2 service per container.
 
 ## Getting started
 
-A sample `docker-compose.yml` file is located under `runtime/stackstorm-1ppc` directory.
+A sample `docker-compose.yml` file is located under `runtime/compose-1ppc` directory.
 Follow the instruction below to setup a running StackStorm instance which consists of
 containers that each are running individual st2 service.
 
@@ -64,7 +64,10 @@ docker-compose exec st2client st2 run examples.mistral_examples
 
 - Q: Fails to run mistral actions
 - A: Restart `mistrap-api` or `mistral-server` container once by `docker-compose up -d --force-recreate mistral-api`
-    - This is caused by the conflict of `mistral-db-manage` command being invoked by both `mistral-api` and `mistral-server`. When you first run `docker-compose up -d` the command runs in both containers almost at the same time and simply fails to load the required content into database. Restarting one of them will re-run the command again and populate postgres with a proper data.
+    - This is caused by the conflict of `mistral-db-manage` command being invoked by both `mistral-api` and
+      `mistral-server`. When you first run `docker-compose up -d` the command runs in both containers almost at the
+      same time and simply fails to load the required content into database. Restarting one of them will re-run
+      the command again and populate postgres with a proper data.
 - Q: I can login to the Web UI but when I click any link, I'm redirected back to login page
 - A: Check you docker host clock
 
