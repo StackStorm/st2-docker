@@ -12,7 +12,9 @@ StackStorm Docker image that runs one st2 service per container.
 
 ## Getting started
 
-A sample `docker-compose.yml` file is located under `examples/stackstorm-1ppc` directory. Follow the instruction below to setup a running StackStorm instance which consists of containers that each are running individual st2 service.
+A sample `docker-compose.yml` file is located under `runtime/stackstorm-1ppc` directory.
+Follow the instruction below to setup a running StackStorm instance which consists of
+containers that each are running individual st2 service.
 
 1. Generate .env files
 
@@ -37,7 +39,8 @@ docker-compose exec st2actionrunner \
     --register-all --register-setup-virtualenvs
 ```
 
-Note: `/opt/stackstorm/virtualenvs` directory needs to be mounted as a shared volume on the container that you run the above command.
+Note: `/opt/stackstorm/virtualenvs` directory needs to be mounted as a shared volume on
+the container that you run the above command.
 
 4. Run simple action
 
@@ -68,7 +71,7 @@ docker-compose exec st2client st2 run examples.mistral_examples
 ### Scaling out
 
 ```
-docker-compose scale st2actionrunner=3
+docker-compose up --scale st2actionrunner=3 -d
 ```
 
 ### Sharing Content
@@ -82,13 +85,6 @@ See [official document](https://docs.stackstorm.com/reference/ha.html#sharing-co
 - `/opt/stackstorm/virtualenvs`
     - st2actionrunner
     - st2sensorcontainer
-
-## For developers
-
-### Policies
-
-- Use `stackstorm:stackstorm` as a base image to avoid code duplication
-- Try to make changes minimal as possible so that it can be easily integrated into one *universal* image in the future
 
 ### Notes
 
