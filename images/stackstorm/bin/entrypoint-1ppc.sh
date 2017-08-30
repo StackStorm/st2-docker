@@ -9,10 +9,8 @@ crudini --set ${ST2_CONF} mistral v2_base_url ${ST2_MISTRAL_API_URL}
 # st2api gunicorn process is directly exposed to clients in 1ppc mode
 crudini --set ${ST2_CONF} api allow_origin '*'
 
-# Overwrite nginx config for st2web
-# to support load balancing to st2api, st2auth and st2stream
-mv /etc/nginx/conf.d/st2-1ppc.conf.disable /etc/nginx/conf.d/st2.conf
-
+# Overwrite nginx config for st2web to support load balancing to st2api, st2auth and st2stream
+( cd /etc/nginx/conf.d && ln -sf st2-1ppc.conf st2.conf )
 
 case "$ST2_SERVICE" in
   "nop" )
