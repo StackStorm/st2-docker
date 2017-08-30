@@ -64,4 +64,8 @@ if [ ! -z ${ST2_SERVICE} ]; then
   exec /dumb-init -- /entrypoint-1ppc.sh
 fi
 
+# Ensure the base st2 nginx config is used
+
+( cd /etc/nginx/conf.d && ln -sf st2-base.cnf st2.conf )
+
 exec /sbin/init

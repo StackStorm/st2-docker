@@ -91,7 +91,9 @@ See [official document](https://docs.stackstorm.com/reference/ha.html#sharing-co
 
 ### Notes
 
-- In `/etc/nginx/nginx.conf` some hostnames are hardcoded and cannot set via environment variables, which means those services must be accessible by that hardcoded hostnames (and are configured so by default)
+- In `/etc/nginx/conf.d/st2.conf` some hostnames are hardcoded and cannot set via environment
+  variables. This means those services must be accessible by those hardcoded hostnames.
     - `proxy_pass` directive for `st2auth`, `st2api` and `st2stream`
     - `resolver` directive
-- Currently all inter-service connections are done via plain http, which might be a problem in production setup
+- Currently all inter-service connections are done via plain http, which might be a problem in
+  production setup.
