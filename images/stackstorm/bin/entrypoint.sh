@@ -59,4 +59,13 @@ for f in /entrypoint.d/*; do
   echo
 done
 
+# 1ppc: launch entrypoint-1ppc.sh via dumb-init if $ST2_SERVICE is set
+if [ ! -z ${ST2_SERVICE} ]; then
+  exec /dumb-init -- /entrypoint-1ppc.sh
+fi
+
+# Ensure the base st2 nginx config is used
+
+( cd /etc/nginx/conf.d && ln -sf st2-base.cnf st2.conf )
+
 exec /sbin/init

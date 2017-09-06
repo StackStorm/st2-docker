@@ -5,8 +5,12 @@ crudini --set ${ST2_CONF} auth    api_url     ${ST2_API_URL}
 crudini --set ${ST2_CONF} mistral api_url     ${ST2_API_URL}
 crudini --set ${ST2_CONF} mistral v2_base_url ${ST2_MISTRAL_API_URL}
 
+# Configure CORS to accept any source
+# st2api gunicorn process is directly exposed to clients in 1ppc mode
 crudini --set ${ST2_CONF} api allow_origin '*'
 
+# Overwrite nginx config for st2web to support load balancing to st2api, st2auth and st2stream
+( cd /etc/nginx/conf.d && ln -sf st2-1ppc.cnf st2.conf )
 
 case "$ST2_SERVICE" in
   "nop" )
@@ -14,15 +18,15 @@ case "$ST2_SERVICE" in
     ;;
   "st2api" )
     DAEMON_ARGS="-k eventlet -b 0.0.0.0:9101 --workers 1 --threads 1 --graceful-timeout 10 --timeout 30"
-    exec /opt/stackstorm/st2/bin/gunicorn_pecan /opt/stackstorm/st2/lib/python2.7/site-packages/st2api/gunicorn_config.py $DAEMON_ARGS
+    exec /opt/stackstorm/st2/bin/gunicorn st2api.wsgi:application $DAEMON_ARGS
     ;;
   "st2auth" )
     DAEMON_ARGS="-k eventlet -b 0.0.0.0:9100 --workers 1 --threads 1 --graceful-timeout 10 --timeout 30"
-    exec /opt/stackstorm/st2/bin/gunicorn_pecan /opt/stackstorm/st2/lib/python2.7/site-packages/st2auth/gunicorn_config.py $DAEMON_ARGS
+    exec /opt/stackstorm/st2/bin/gunicorn st2auth.wsgi:application $DAEMON_ARGS
     ;;
   "st2stream" )
     DAEMON_ARGS="-k eventlet -b 0.0.0.0:9102 --workers 1 --threads 10 --graceful-timeout 10 --timeout 30"
-    exec /opt/stackstorm/st2/bin/gunicorn_pecan /opt/stackstorm/st2/lib/python2.7/site-packages/st2stream/gunicorn_config.py $DAEMON_ARGS
+    exec /opt/stackstorm/st2/bin/gunicorn st2stream.wsgi:application $DAEMON_ARGS
     ;;
   "st2sensorcontainer" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
@@ -69,7 +73,9 @@ case "$ST2_SERVICE" in
     set -ex
     PACKS=${PACKS:-"chatops core default linux packs"}
     for PACK in ${PACKS}; do
-      st2-register-content --config-file /etc/st2/st2.conf --register-all --register-setup-virtualenvs \
+      st2-register-content --config-file /etc/st2/st2.conf \
+        --register-all \
+        --register-setup-virtualenvs \
         --register-pack /opt/stackstorm/packs/${PACK}
     done
     ;;

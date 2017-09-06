@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: init-st2-default-files
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         securityContext:
           capabilities:
@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: init-st2-register-content
-        image: stackstorm/stackstorm-1ppc:latest
+        image: stackstorm/stackstorm:latest
         imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef: { name: st2 }

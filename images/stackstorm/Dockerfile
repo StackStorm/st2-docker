@@ -117,7 +117,8 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
     && apt-get update \
     && apt-get install -y nginx \
-    && cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d \
+    && cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/st2-base.cnf \
+    && ( cd /etc/nginx/conf.d && ln -s st2-base.cnf st2.conf ) \
     && mkdir -p /etc/ssl/st2 \
     && mkdir /var/run/sshd \
     && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
@@ -135,3 +136,9 @@ COPY config/local.conf /etc/init/local.conf
 # environment variables to `docker run` after the name of the image:
 #   docker run -e ST2_USER... image
 ENTRYPOINT ["/entrypoint.sh"]
+
+# 1ppc
+RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
+    && chmod +x /dumb-init
+COPY bin/entrypoint-1ppc.sh /entrypoint-1ppc.sh
+COPY config/st2-1ppc.conf /etc/nginx/conf.d/st2-1ppc.cnf
