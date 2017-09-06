@@ -10,7 +10,7 @@ crudini --set ${ST2_CONF} mistral v2_base_url ${ST2_MISTRAL_API_URL}
 crudini --set ${ST2_CONF} api allow_origin '*'
 
 # Overwrite nginx config for st2web to support load balancing to st2api, st2auth and st2stream
-( cd /etc/nginx/conf.d && ln -sf st2-1ppc.conf st2.conf )
+( cd /etc/nginx/conf.d && ln -sf st2-1ppc.cnf st2.conf )
 
 case "$ST2_SERVICE" in
   "nop" )
