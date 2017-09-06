@@ -76,7 +76,7 @@ However, if you find need to modify the stackstorm image, you will need to build
 
   ```
   REPO=stable
-  docker build --build-arg ST2_REPO=${REPO} stackstorm/stackstorm:${REPO}
+  docker build --build-arg ST2_REPO=${REPO} -t stackstorm/stackstorm:${REPO} images/stackstorm
   ```
 
 where REPO is one of 'stable', 'unstable', 'staging-stable', 'staging-unstable'.  Otherwise,
