@@ -6,7 +6,6 @@ language: python
 branches:
   only:
     - master
-    - wvw/add-travis
 
 services:
   - docker
