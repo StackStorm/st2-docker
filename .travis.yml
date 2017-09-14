@@ -16,6 +16,8 @@ before_install:
 
 install: true
 
+script: true
+
 notifications:
   email:
     recipients:
