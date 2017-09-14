@@ -1,6 +1,8 @@
 dist: trusty
 sudo: required
 
+language: python
+
 branches:
   only:
     - master
