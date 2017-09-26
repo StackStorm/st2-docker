@@ -14,8 +14,12 @@ crudini --set ${ROOT_CONF} credentials password ${ST2_PASSWORD}
 
 ST2_CONF=/etc/st2/st2.conf
 
-crudini --set ${ST2_CONF} mistral api_url http://127.0.0.1:9101
-crudini --set ${ST2_CONF} mistral v2_base_url http://127.0.0.1:8989/v2
+ST2_API_URL=http://127.0.0.1:9101
+MISTRAL_BASE_URL=http://127.0.0.1:8989/v2
+
+crudini --set ${ST2_CONF} auth api_url ${ST2_API_URL}
+crudini --set ${ST2_CONF} mistral api_url ${ST2_API_URL}
+crudini --set ${ST2_CONF} mistral v2_base_url ${MISTRAL_BASE_URL}
 crudini --set ${ST2_CONF} messaging url \
   amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 crudini --set ${ST2_CONF} coordination url \
@@ -51,7 +55,7 @@ crudini --set ${MISTRAL_CONF} database connection \
   postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
 
 # Run custom init scripts
-for f in /entrypoint.d/*; do
+for f in /st2-docker/entrypoint.d/*; do
   case "$f" in
     *.sh) echo "$0: running $f"; . "$f" ;;
     *)    echo "$0: ignoring $f" ;;
@@ -61,7 +65,7 @@ done
 
 # 1ppc: launch entrypoint-1ppc.sh via dumb-init if $ST2_SERVICE is set
 if [ ! -z ${ST2_SERVICE} ]; then
-  exec /dumb-init -- /entrypoint-1ppc.sh
+  exec /dumb-init -- /st2-docker/bin/entrypoint-1ppc.sh
 fi
 
 # Ensure the base st2 nginx config is used

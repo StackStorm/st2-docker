@@ -18,6 +18,9 @@ services:
     volumes:
       - stackstorm-log-volume:/var/log
       - ./packs.dev:/opt/stackstorm/packs.dev
+      - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
+      - ./runtime/st2.d:/st2-docker/st2.d
+      - ./conf/stackstorm.env:/st2-docker/stackstorm.env
 
 ### External Services
 

@@ -129,7 +129,8 @@ EXPOSE 22 443
 # NOTE: This is intended to be used for pack development.
 VOLUME ["/opt/stackstorm/packs.dev"]
 
-COPY bin/entrypoint.sh /entrypoint.sh
+COPY bin/entrypoint.sh /st2-docker/bin/entrypoint.sh
+COPY bin/st2.sh /st2-docker/bin/st2.sh
 COPY config/local.conf /etc/init/local.conf
 
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
@@ -140,5 +141,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 # 1ppc
 RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
     && chmod +x /dumb-init
-COPY bin/entrypoint-1ppc.sh /entrypoint-1ppc.sh
+COPY bin/entrypoint-1ppc.sh /st2-docker/bin/entrypoint-1ppc.sh
 COPY config/st2-1ppc.conf /etc/nginx/conf.d/st2-1ppc.cnf
