@@ -90,10 +90,19 @@ To stop the docker environment, run:
 
 ## Running custom shell scripts on boot
 
-This container supports running arbitrary shell scripts on container boot. Any `*.sh` file located under `/st2-docker/entrypoint.d` directory
-will be executed inside the container just before starting stackstorm services.
+The `stackstorm` container supports running arbitrary shell scripts when the container launches:
 
-For example, if you want to modify `/etc/st2/st2.conf` to set `system_packs_base_path` parameter, create `modify-st2-config.sh` with the follwing content:
+* Scripts located in `/st2-docker/entrypoint.d` are executed before the init process starts any
+stackstorm services.
+* Scripts located in `/st2-docker/st2.d` are executed after stackstorm services are running.
+
+NOTE: Only scripts with a suffix of `.sh` will be executed, and in alphabetical order of the file
+name.
+
+### /st2-docker/entrypoint.d
+
+For example, if you want to modify `/etc/st2/st2.conf` to set `system_packs_base_path` parameter,
+create `modify-st2-config.sh` with the follwing content:
 
   ```
   #/bin/bash
@@ -121,11 +130,18 @@ Then bind mount it to `/entrypoint.d/modify-st2-config.sh`
         - /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh
   ```
 
-The above example shows just modifying st2 config but basically there is no limitation so you can do almost anything.
+The above example shows just modifying st2 config but basically there is no limitation so you can
+do almost anything.
 
-You can also bind mount a specific directory to `/entrypoint.d` then place scripts as much as you want. All of them will be executed as long as the file name ends with `*.sh`.
+You can also bind mount a specific directory to `/entrypoint.d` then place scripts as much as you
+want.
 
-Note: scripts will be executed in alphabetical order of the file name.
+### /st2-docker/st2.d
+
+Scripts in this directory can be used to register packs, reload or restart services, etc.
+You can bind mount these scripts as mentioned in the previous section.
+
+NOTE: These scripts are currently not available when running in 1ppc mode.
 
 ## To enable/disable chatops
 
