@@ -53,3 +53,7 @@ if [ ! -f ${CONF_DIR}/stackstorm.env ]; then
   echo "ST2_USER=${ST2_USER:-st2admin}" > ${CONF_DIR}/stackstorm.env
   echo "ST2_PASSWORD=${ST2_PASSWORD:-$(randpwd 6)}" >> ${CONF_DIR}/stackstorm.env
 fi
+if [ ! -f ${CONF_DIR}/etcd.env ]; then
+  echo "ST2_USER=${ST2_USER:-st2admin}" > ${CONF_DIR}/stackstorm.env
+  echo "ST2_PASSWORD=${ST2_PASSWORD:-$(randpwd 6)}" >> ${CONF_DIR}/stackstorm.env
+fi
