@@ -31,6 +31,10 @@ to create the environment files used by docker-compose. You may want to change t
 variables as necessary, but the defaults should be okay if you are not using any off-cluster
 services (e.g. mongo, redis, postgres, rabbitmq).
 
+As an example, if you want to change the username and password used by StackStorm, change the
+`ST2_USER` and `ST2_PASSWORD` variables in `conf/stackstorm.env` prior to bringing up your docker
+environment.
+
 Below is the complete list of available options that can be used to customize your container.
 
 | Parameter | Description |
