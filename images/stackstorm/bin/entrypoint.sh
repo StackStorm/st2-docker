@@ -48,7 +48,7 @@ MISTRAL_CONF=/etc/mistral/mistral.conf
 crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
   rabbit://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 crudini --set ${MISTRAL_CONF} database connection \
-  postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+  postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
 
 # Run custom init scripts
 for f in /entrypoint.d/*; do
