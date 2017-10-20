@@ -1,8 +1,8 @@
 Changelog
 =========
 
-in development
---------------
+master
+------
 
 Changed
 ~~~~~~~
