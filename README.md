@@ -109,13 +109,13 @@ create `modify-st2-config.sh` with the follwing content:
   crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/custom_packs
   ```
 
-Then bind mount it to `/entrypoint.d/modify-st2-config.sh`
+Then bind mount it to `/st2-docker/entrypoint.d/modify-st2-config.sh`
 
 - via `docker run`
 
   ```
   docker run -it -d --privileged \
-    -v /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh \
+    -v /path/to/modify-st2-config.sh:/st2-docker/entrypoint.d/modify-st2-config.sh \
     stackstorm/stackstorm:latest
   ```
 
@@ -127,14 +127,14 @@ Then bind mount it to `/entrypoint.d/modify-st2-config.sh`
       image: stackstorm/stackstorm:${TAG:-latest}
        : (snip)
       volumes:
-        - /path/to/modify-st2-config.sh:/entrypoint.d/modify-st2-config.sh
+        - /path/to/modify-st2-config.sh:/st2-docker/entrypoint.d/modify-st2-config.sh
   ```
 
 The above example shows just modifying st2 config but basically there is no limitation so you can
 do almost anything.
 
-You can also bind mount a specific directory to `/entrypoint.d` then place scripts as much as you
-want.
+You can also bind mount a specific directory to `/st2-docker/entrypoint.d` then place scripts as
+much as you want.
 
 ### /st2-docker/st2.d
 
@@ -148,7 +148,7 @@ NOTE: These scripts are currently not available when running in 1ppc mode.
 Chatops is installed in the `stackstorm` image, but not started by default.
 
 To enable chatops, delete the file `/etc/init/st2chatops.override` using a script in
-`/entrypoint.d`.
+`/st2-docker/entrypoint.d`.
 
   ```
   #!/bin/bash
@@ -156,7 +156,7 @@ To enable chatops, delete the file `/etc/init/st2chatops.override` using a scrip
   sudo rm /etc/init/st2chatops.override
   ```
 
-If you need to disable chatops, run the following using a script in `/entrypoint.d`:
+If you need to disable chatops, run the following using a script in `/st2-docker/entrypoint.d`:
 
   ```
   #!/bin/bash

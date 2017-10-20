@@ -136,7 +136,7 @@ COPY config/local.conf /etc/init/local.conf
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
 # environment variables to `docker run` after the name of the image:
 #   docker run -e ST2_USER... image
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/st2-docker/bin/entrypoint.sh"]
 
 # 1ppc
 RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
