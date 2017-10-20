@@ -125,10 +125,6 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
 
 EXPOSE 22 443
 
-# Share /opt/stackstorm/packs.dev with the host
-# NOTE: This is intended to be used for pack development.
-VOLUME ["/opt/stackstorm/packs.dev"]
-
 COPY bin/entrypoint.sh /st2-docker/bin/entrypoint.sh
 COPY bin/st2.sh /st2-docker/bin/st2.sh
 COPY config/local.conf /etc/init/local.conf

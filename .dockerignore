@@ -1,0 +1,12 @@
+*.md
+*.yml
+.DS_Store
+.circleci
+.git
+.gitignore
+.travis.yml
+packs.dev
+CHANGELOG.rst
+LICENSE
+Makefile
+conf
