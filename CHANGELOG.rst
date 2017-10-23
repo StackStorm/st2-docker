@@ -1,10 +1,10 @@
 Changelog
 =========
 
-master
-------
+2017-10-23
+----------
 
 Changed
 ~~~~~~~
 
-* The ``/entrypoint.d`` directory has been moved to ``/st2-docker/entrypoint.d``.
+* Rename ``/entrypoint.d/`` to ``/st2-docker/entrypoint.d/``.
