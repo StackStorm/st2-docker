@@ -16,11 +16,12 @@ on persistent storage. Additionally, the stackstorm container persists
 the contents of `/var/log`. If you do not wish to persist this data,
 then remove the appropriate entries from `docker-compose.yml`.
 
-## Warning
+## Note
 
-If you pulled `st2-docker` prior to October 23, 2017 (`e99d209`), you will need to execute
-`git pull` in your workspace to pick up the latest changes. In particular, `docker-compose.yml` and
-`runtime/st2.d` scripts such as `reload.sh`.
+If you ever notice `st2` errors (e.g. `No matching items found`) when running a new
+`stackstorm/stackstorm` container, be sure to run `git pull` in your `st2-docker` workspace before
+asking for help. Check the `CHANGELOG.rst` file for any potential changes that may require
+restarting containers. This may just solve your issue.
 
 ## Usage
 
