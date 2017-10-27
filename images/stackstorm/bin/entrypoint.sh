@@ -14,8 +14,8 @@ crudini --set ${ROOT_CONF} credentials password ${ST2_PASSWORD}
 
 ST2_CONF=/etc/st2/st2.conf
 
-ST2_API_URL=http://127.0.0.1:9101
-MISTRAL_BASE_URL=http://127.0.0.1:8989/v2
+ST2_API_URL=${ST2_API_URL:-http://127.0.0.1:9101}
+MISTRAL_BASE_URL=${MISTRAL_BASE_URL:-http://127.0.0.1:8989/v2}
 
 crudini --set ${ST2_CONF} auth api_url ${ST2_API_URL}
 crudini --set ${ST2_CONF} mistral api_url ${ST2_API_URL}
