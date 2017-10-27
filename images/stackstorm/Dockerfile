@@ -94,8 +94,7 @@ RUN mkdir -p /etc/st2/keys \
     && usermod -a -G st2 st2 && chgrp st2 /etc/st2/keys && chmod o-r /etc/st2/keys \
     && chgrp st2 /etc/st2/keys/datastore_key.json && chmod o-r /etc/st2/keys/datastore_key.json \
     && crudini --set /etc/st2/st2.conf keyvalue encryption_key_path /etc/st2/keys/datastore_key.json \
-    && crudini --set /etc/st2/st2.conf auth enable True \
-    && crudini --set /etc/st2/st2.conf content packs_base_paths /opt/stackstorm/packs.dev
+    && crudini --set /etc/st2/st2.conf auth enable True
 
 # Install redis client library for coordination backend
 # see: https://docs.stackstorm.com/latest/reference/policies.html
