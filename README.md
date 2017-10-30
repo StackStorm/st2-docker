@@ -373,7 +373,7 @@ Then, add the action script at `./packs.dev/examples/actions/my_echo_action.py`.
 ```python
 import sys
 
-from st2actions.runners.pythonrunner import Action
+from st2common.runners.base_action import Action
 
 class MyEchoAction(Action):
   def run(self, message):
