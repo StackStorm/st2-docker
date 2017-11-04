@@ -15,6 +15,7 @@ services:
     restart: on-failure
     environment:
       - ST2_SERVICE=nop
+    dns_search: .
   st2api:
     <<: *base
     environment:
@@ -79,12 +80,14 @@ services:
     networks:
       - public
       - private
+
   st2web-dns:
     image: janeczku/go-dnsmasq:latest
     environment:
       - DNSMASQ_ENABLE_SEARCH=1
     networks:
       - private
+    dns_search: .
 
 ### External Services
 
@@ -96,6 +99,7 @@ services:
       - private
     volumes:
       - mongo-volume:/data/db
+    dns_search: .
   rabbitmq:
     image: rabbitmq:management
     env_file:
@@ -104,6 +108,7 @@ services:
       - private
     volumes:
       - rabbitmq-volume:/var/lib/rabbitmq
+    dns_search: .
   postgres:
     image: postgres:latest
     env_file:
@@ -112,6 +117,7 @@ services:
       - private
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+    dns_search: .
   redis:
     image: redis:latest
     env_file:
@@ -120,6 +126,7 @@ services:
       - private
     volumes:
       - redis-volume:/data
+    dns_search: .
 
 volumes:
   mongo-volume:
