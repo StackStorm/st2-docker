@@ -16,6 +16,13 @@ on persistent storage. Additionally, the stackstorm container persists
 the contents of `/var/log`. If you do not wish to persist this data,
 then remove the appropriate entries from `docker-compose.yml`.
 
+## READ FIRST!!
+
+- **Check the [CHANGELOG.rst](https://github.com/StackStorm/st2-docker/blob/master/CHANGELOG.rst)** file for any potential
+  changes that may require restarting containers.
+- Be sure to use the latest `docker-compose.yml`. Run `git pull` in your `st2-docker` workspace!
+- Run `st2ctl reload --register-all` to reload all services.
+
 ## Usage
 
 We use Version 3 of the compose file format, so if you want to run docker-compose, you'll need to
