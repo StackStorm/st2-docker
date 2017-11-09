@@ -20,6 +20,7 @@ then remove the appropriate entries from `docker-compose.yml`.
 
 - **Check the CHANGELOG.rst** file for any potential changes that may require restarting containers.
 - Be sure to use the latest `docker-compose.yml`. Run `git pull` in your `st2-docker` workspace!
+- Run `st2ctl reload --register-all` to reload all services.
 
 ## Usage
 
