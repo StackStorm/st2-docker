@@ -11,8 +11,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          reusable: true
-          exclusive: true
+          docker_layer_caching: true
       - run:
           name: Install bash
           command: apk add --no-cache bash
@@ -24,8 +23,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          reusable: true
-          exclusive: true
+          docker_layer_caching: true
       - run:
           name: Install bash
           command: apk add --no-cache bash
