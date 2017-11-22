@@ -2,7 +2,7 @@ version: '3'
 
 services:
   stackstorm:
-    image: stackstorm/stackstorm:${TAG:-latest}
+    image: umccr/stackstorm:latest
     container_name: stackstorm
     env_file:
       - conf/stackstorm.env
@@ -24,7 +24,15 @@ services:
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
       - ./runtime/st2.d:/st2-docker/st2.d
       - ./conf/stackstorm.env:/st2-docker/env
+      # Add custom mount points to persist configs
+      # NOTE: this location has to be provided!
+      - ./persist/configs:/opt/stackstorm/configs
+      - ./persist/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
+      - ./persist/st2.conf:/etc/st2/st2.conf
+      # - ./persist/st2.crt:/etc/ssl/st2/st2.crt
+      # - ./persist/st2.key:/etc/ssl/st2/st2.key
     dns_search: .
+    dns: 8.8.8.8
 
 ### External Services
 
@@ -38,6 +46,7 @@ services:
     volumes:
       - mongo-volume:/data/db
     dns_search: .
+    dns: 8.8.8.8
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -48,6 +57,7 @@ services:
     volumes:
       - rabbitmq-volume:/var/lib/rabbitmq
     dns_search: .
+    dns: 8.8.8.8
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -58,6 +68,7 @@ services:
     volumes:
       - postgres-volume:/var/lib/postgresql/data
     dns_search: .
+    dns: 8.8.8.8
   redis:
     image: redis:latest
     container_name: redis
@@ -68,6 +79,7 @@ services:
     volumes:
       - redis-volume:/data
     dns_search: .
+    dns: 8.8.8.8
 
 volumes:
   mongo-volume:
@@ -78,6 +90,7 @@ volumes:
   stackstorm-virtualenvs-volume:
   stackstorm-configs-volume:
   stackstorm-log-volume:
+  umccr-pack-volume:
 
 networks:
   public:

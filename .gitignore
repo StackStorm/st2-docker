@@ -2,3 +2,4 @@ packs
 packs.dev
 *.pyc
 conf
+persist
