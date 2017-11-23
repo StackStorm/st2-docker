@@ -18,6 +18,20 @@ The default container configuration is as follows:
 - Be sure to use the latest `docker-compose.yml`. Run `git pull` in your `st2-docker` workspace!
 - Run `st2ctl reload --register-all` to reload all services.
 
+
+## TL;DR
+
+```
+make env
+docker-compose up -d
+docker-compose exec stackstorm bash
+```
+
+Open `https://localhost` in your browser. StackStorm Username/Password can be found in: `cat conf/stackstorm.env`
+
+Running on Kubernetes? See [runtime/kubernetes-1ppc](./runtime/kubernetes-1ppc)
+
+
 ## Usage
 
 We use Version 3 of the compose file format, so if you want to run docker-compose, you'll need to
