@@ -127,6 +127,13 @@ services:
     volumes:
       - redis-volume:/data
     dns_search: .
+    command: [
+      "bash", "-c",
+      '
+       docker-entrypoint.sh
+       --requirepass "$$REDIS_PASSWORD"
+      '
+    ]
 
 volumes:
   mongo-volume:
