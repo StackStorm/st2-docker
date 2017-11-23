@@ -11,11 +11,6 @@ The default container configuration is as follows:
  - postgres
  - redis
 
-The mongo, rabbitmq, postgres and redis containers store their data
-on persistent storage. Additionally, the stackstorm container persists
-the contents of `/var/log`. If you do not wish to persist this data,
-then remove the appropriate entries from `docker-compose.yml`.
-
 ## READ FIRST!!
 
 - **Check the [CHANGELOG.rst](https://github.com/StackStorm/st2-docker/blob/master/CHANGELOG.rst)** file for any potential
@@ -100,6 +95,19 @@ To stop the docker environment, run:
   ```
   docker-compose down
   ```
+
+
+## Data persistence
+
+It's designed to suffice the ordinary use case by default. If you need to customize it, check below and modify `docker-compose.yml`
+
+- The mongo, rabbitmq, postgres and redis containers store their data on persistent storage
+- The stackstorm container persists the contents in following directories
+    - `/var/log`
+    - `/opt/stackstorm/packs`
+    - `/opt/stackstorm/virtualenvs`
+    - `/opt/stackstorm/configs`
+
 
 ## Running custom shell scripts on boot
 
