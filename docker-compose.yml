@@ -16,6 +16,9 @@ services:
       - public
       - private
     volumes:
+      - stackstorm-packs-volume:/opt/stackstorm/packs
+      - stackstorm-virtualenvs-volume:/opt/stackstorm/virtualenvs
+      - stackstorm-configs-volume:/opt/stackstorm/configs
       - stackstorm-log-volume:/var/log
       - ./packs.dev:/opt/stackstorm/packs.dev
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
@@ -71,6 +74,9 @@ volumes:
   postgres-volume:
   rabbitmq-volume:
   redis-volume:
+  stackstorm-packs-volume:
+  stackstorm-virtualenvs-volume:
+  stackstorm-configs-volume:
   stackstorm-log-volume:
 
 networks:
