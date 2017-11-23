@@ -64,19 +64,10 @@ As an example, if you want to change the username and password used by StackStor
 `ST2_USER` and `ST2_PASSWORD` variables in `conf/stackstorm.env` prior to bringing up your docker
 environment.
 
-Second, start the docker environment.
-
-If you would like to run all stackstorm services in one container, and the databases in their own
-container, use:
+Second, start the docker environment. execute
 
   ```
   docker-compose up -d
-  ```
-
-On the other hand, if you want to run one process per container, use:
-
-  ```
-  docker-compose -f runtime/compose-1ppc/docker-compose.yml run -d
   ```
 
 This will pull the required images from docker hub, and then start them.
@@ -214,3 +205,7 @@ If you need to disable chatops, run the following using a script in `/st2-docker
 
   echo manual | sudo tee /etc/init/st2chatops.override
   ```
+
+## Advanced: using 1ppc image
+
+Official image now supports running in 1ppc mode: stands for *One Process Per Container*. Interested? Check [runtime/compose-1ppc](./runtime/compose-1ppc)
