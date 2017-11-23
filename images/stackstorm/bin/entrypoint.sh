@@ -23,7 +23,7 @@ crudini --set ${ST2_CONF} mistral v2_base_url ${MISTRAL_BASE_URL}
 crudini --set ${ST2_CONF} messaging url \
   amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 crudini --set ${ST2_CONF} coordination url \
-  redis://${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
+  redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
 crudini --set ${ST2_CONF} database host ${MONGO_HOST}
 crudini --set ${ST2_CONF} database port ${MONGO_PORT}
 if [ ! -z ${MONGO_DB} ]; then
