@@ -3,13 +3,6 @@
 [![Circle CI Build Status](https://circleci.com/gh/StackStorm/st2-docker/tree/master.svg?style=shield)](https://circleci.com/gh/StackStorm/st2-docker)
 [![Go to Docker Hub](https://img.shields.io/badge/Docker%20Hub-%E2%86%92-blue.svg)](https://hub.docker.com/r/stackstorm/stackstorm/)
 
-The default container configuration is as follows:
-
- - stackstorm (st2 + st2web + st2mistral)
- - mongo
- - rabbitmq
- - postgres
- - redis
 
 ## READ FIRST!!
 
@@ -34,6 +27,24 @@ Running on Kubernetes? See [runtime/kubernetes-1ppc](./runtime/kubernetes-1ppc)
 
 ## Usage
 
+### Prerequisites
+
+- Docker Engine 1.13.0+
+
+
+### Container configuration
+
+The default container configuration is as follows:
+
+ - stackstorm (st2 + st2web + st2mistral)
+ - mongo
+ - rabbitmq
+ - postgres
+ - redis
+
+
+### Step by step instruction
+
 We use Version 3 of the compose file format, so if you want to run docker-compose, you'll need to
 ensure you're running Docker Engine release 1.13.0+.
 
@@ -52,30 +63,6 @@ NOTE: `make env` only needs to be run once.
 As an example, if you want to change the username and password used by StackStorm, change the
 `ST2_USER` and `ST2_PASSWORD` variables in `conf/stackstorm.env` prior to bringing up your docker
 environment.
-
-Below is the complete list of available options that can be used to customize your container.
-
-| Parameter | Description |
-|-----------|-------------|
-| `ST2_USER`     | StackStorm account username |
-| `ST2_PASSWORD` | StackStorm account password |
-| `MONGO_HOST` | MongoDB server hostname |
-| `MONGO_PORT` | MongoDB server port (typically `27017`) |
-| `MONGO_DB`   | *(Optional)* MongoDB dbname (will use `st2` if not specified) |
-| `MONGO_USER` | *(Optional)* MongoDB username (will connect without credentials if this and `MONGO_PASS` are not specified) |
-| `MONGO_PASS` | *(Optional)* MongoDB password |
-| `RABBITMQ_HOST`         | RabbitMQ server hostname |
-| `RABBITMQ_PORT`         | RabbitMQ server port (typically `5672`) |
-| `RABBITMQ_DEFAULT_USER` | RabbitMQ username |
-| `RABBITMQ_DEFAULT_PASS` | RabbitMQ password |
-| `POSTGRES_HOST`     | PostgreSQL server hostname |
-| `POSTGRES_PORT`     | PostgreSQL server port (typically `5432`) |
-| `POSTGRES_DB`       | PostgreSQL database |
-| `POSTGRES_USER`     | PostgreSQL username |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `REDIS_HOST`     | Redis server hostname |
-| `REDIS_PORT`     | Redis server port |
-| `REDIS_PASSWORD` | *(Optional)* Redis password |
 
 Second, start the docker environment.
 
@@ -123,6 +110,33 @@ It's designed to suffice the ordinary use case by default. If you need to custom
     - `/opt/stackstorm/packs`
     - `/opt/stackstorm/virtualenvs`
     - `/opt/stackstorm/configs`
+
+
+## Environment variables
+
+Below is the complete list of available options that can be used to customize your container.
+
+| Parameter | Description |
+|-----------|-------------|
+| `ST2_USER`     | StackStorm account username |
+| `ST2_PASSWORD` | StackStorm account password |
+| `MONGO_HOST` | MongoDB server hostname |
+| `MONGO_PORT` | MongoDB server port (typically `27017`) |
+| `MONGO_DB`   | *(Optional)* MongoDB dbname (will use `st2` if not specified) |
+| `MONGO_USER` | *(Optional)* MongoDB username (will connect without credentials if this and `MONGO_PASS` are not specified) |
+| `MONGO_PASS` | *(Optional)* MongoDB password |
+| `RABBITMQ_HOST`         | RabbitMQ server hostname |
+| `RABBITMQ_PORT`         | RabbitMQ server port (typically `5672`) |
+| `RABBITMQ_DEFAULT_USER` | RabbitMQ username |
+| `RABBITMQ_DEFAULT_PASS` | RabbitMQ password |
+| `POSTGRES_HOST`     | PostgreSQL server hostname |
+| `POSTGRES_PORT`     | PostgreSQL server port (typically `5432`) |
+| `POSTGRES_DB`       | PostgreSQL database |
+| `POSTGRES_USER`     | PostgreSQL username |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `REDIS_HOST`     | Redis server hostname |
+| `REDIS_PORT`     | Redis server port |
+| `REDIS_PASSWORD` | *(Optional)* Redis password |
 
 
 ## Running custom shell scripts on boot
