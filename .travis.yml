@@ -1,12 +1,13 @@
 language: python
 sudo: required
 services:
-- docker
+  - docker
 before_script:
-- docker-compose up -d
+  - make env
+  - docker-compose up -d
 script:
-- ls -lah
-- docker-compose exec stackstorm st2-run-pack-tests -p /opt/stackstorm/packs/arteria
+  - ls -lah
+  - docker-compose exec stackstorm st2-run-pack-tests -p /opt/stackstorm/packs/arteria
 notifications:
   email: false
   slack:
