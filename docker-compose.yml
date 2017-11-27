@@ -4,17 +4,18 @@ services:
   stackstorm:
     image: umccr/stackstorm:latest
     container_name: stackstorm
-    env_file:
-      - conf/stackstorm.env
-      - conf/mongo.env
-      - conf/rabbitmq.env
-      - conf/postgres.env
-      - conf/redis.env
     ports:
       - "443:443"
     networks:
       - public
       - private
+    #CONFIG_BLOCK_START#
+    env_file:
+      - /mnt/arteria-data/conf/stackstorm.env
+      - /mnt/arteria-data/conf/mongo.env
+      - /mnt/arteria-data/conf/rabbitmq.env
+      - /mnt/arteria-data/conf/postgres.env
+      - /mnt/arteria-data/conf/redis.env
     volumes:
       - stackstorm-packs-volume:/opt/stackstorm/packs
       - stackstorm-virtualenvs-volume:/opt/stackstorm/virtualenvs
@@ -23,15 +24,13 @@ services:
       - ./packs.dev:/opt/stackstorm/packs.dev
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
       - ./runtime/st2.d:/st2-docker/st2.d
-      #TRAVIS_ENV - ./conf/stackstorm.env:/st2-docker/env
-      # Add custom mount points to persist configs
-      # NOTE: these will have to exist in the production location
       - /mnt/arteria-data/stackstorm.env:/st2-docker/env
       - /mnt/arteria-data/configs:/opt/stackstorm/configs
       - /mnt/arteria-data/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
       - /mnt/arteria-data/st2.conf:/etc/st2/st2.conf
       # - /mnt/arteria-data/st2.crt:/etc/ssl/st2/st2.crt
       # - /mnt/arteria-data/st2.key:/etc/ssl/st2/st2.key
+    #CONFIG_BLOCK_END#
     dns_search: .
     dns: 8.8.8.8
 
