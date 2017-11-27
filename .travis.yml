@@ -5,6 +5,7 @@ services:
 before_script:
 - make env
 - sed -i '/arteria-data/d' docker-compose.yml
+- sed -i 's/#TRAVIS_ENV //' docker-compose.yml
 - docker-compose up -d
 script:
 - ls -lah
@@ -17,25 +18,24 @@ deploy:
 - provider: s3
   region: ap-southeast-2
   access_key_id: AKIAI5WXMX7WZC5AXKMQ
-  secret_access_key:
+  secret_access_key: &1
       secure: la935dfE5BiUakzNRTOly9MtenOkbNVY/eqmBGceMmE2Q/KT4kcZVr5ZQ2wRRv9ECuI8N7tD1IzXuUmY6nVnxGOU6Z1aQwpYZ5MY5wPZXKqmkxtJ7R3QLFLiffBVY4F5yJWJ0ERidODz6nZOgCrGhNIgLO3j25OdWLVEzTnArR0cHeJ8cMuN91Sqj13kQHxCDIlRuSCuAszQQAaIH+3syl38aSx75Qm/DfQHHkvfnDOnT+8pUmGGdugyLOnMFIC4QxbnEiRPjf4aOUbIjqwwQSAZn+AqUVgLEAepYIPCPa8o2sNPD1Zc62nAOGTMZXo3QRTszNzZpi/HRpzLEWwbSIukI+BUOo7xzrBOm8umMasUF3Q35jdL8pmmN3xreIe0XZ51knCei9SZVl5EFrQZ552Tgk//kjYTJc3iF0GT+iBnusT3irfszD6X3/dL3ZxVMc9gn+DrNlX8wf2/ciW94DuyLXdZ9Fc33cRd+eOLHvzWUrYSVD5YTeFh37zgLUeRH96x8k+4OU6gFlzHxzQnxTtwGwygxS3sQ9bFLSB3iobpUOSBr0fvZyExUvvzdFc9A+moDPkbRZCrGje2J3FM+Of0gMRGHborLYOwnmPIklTyZaODQWUmtBAywaye0wfSfvYKIYN70az1gEe83CzZjhk9hprW39NOEWcxW99BNqg=
   local_dir: dpl_cd_upload
   skip_cleanup: true
-  on: &1
+  on: &2
     repo: umccr/st2-docker-umccr
   bucket: arteria
   upload_dir: latest
 - provider: codedeploy
   region: ap-southeast-2
   access_key_id: AKIAI5WXMX7WZC5AXKMQ
-  secret_access_key:
-      secure: la935dfE5BiUakzNRTOly9MtenOkbNVY/eqmBGceMmE2Q/KT4kcZVr5ZQ2wRRv9ECuI8N7tD1IzXuUmY6nVnxGOU6Z1aQwpYZ5MY5wPZXKqmkxtJ7R3QLFLiffBVY4F5yJWJ0ERidODz6nZOgCrGhNIgLO3j25OdWLVEzTnArR0cHeJ8cMuN91Sqj13kQHxCDIlRuSCuAszQQAaIH+3syl38aSx75Qm/DfQHHkvfnDOnT+8pUmGGdugyLOnMFIC4QxbnEiRPjf4aOUbIjqwwQSAZn+AqUVgLEAepYIPCPa8o2sNPD1Zc62nAOGTMZXo3QRTszNzZpi/HRpzLEWwbSIukI+BUOo7xzrBOm8umMasUF3Q35jdL8pmmN3xreIe0XZ51knCei9SZVl5EFrQZ552Tgk//kjYTJc3iF0GT+iBnusT3irfszD6X3/dL3ZxVMc9gn+DrNlX8wf2/ciW94DuyLXdZ9Fc33cRd+eOLHvzWUrYSVD5YTeFh37zgLUeRH96x8k+4OU6gFlzHxzQnxTtwGwygxS3sQ9bFLSB3iobpUOSBr0fvZyExUvvzdFc9A+moDPkbRZCrGje2J3FM+Of0gMRGHborLYOwnmPIklTyZaODQWUmtBAywaye0wfSfvYKIYN70az1gEe83CzZjhk9hprW39NOEWcxW99BNqg=
+  secret_access_key: *1
   bucket: arteria
   key: latest/master.zip
   bundle_type: zip
   application: arteria
   deployment_group: arteria
-  on: *1
+  on: *2
 before_deploy:
 - wget https://github.com/umccr/st2-docker-umccr/archive/master.zip
 - mkdir -p dpl_cd_upload

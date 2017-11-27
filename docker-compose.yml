@@ -23,9 +23,10 @@ services:
       - ./packs.dev:/opt/stackstorm/packs.dev
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
       - ./runtime/st2.d:/st2-docker/st2.d
-      - ./conf/stackstorm.env:/st2-docker/env
+      #TRAVIS_ENV - ./conf/stackstorm.env:/st2-docker/env
       # Add custom mount points to persist configs
       # NOTE: these will have to exist in the production location
+      - /mnt/arteria-data/stackstorm.env:/st2-docker/env
       - /mnt/arteria-data/configs:/opt/stackstorm/configs
       - /mnt/arteria-data/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
       - /mnt/arteria-data/st2.conf:/etc/st2/st2.conf
