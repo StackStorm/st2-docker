@@ -4,7 +4,7 @@ services:
 - docker
 before_script:
 - make env
-- sed -i -ne '/#CONFIG_BLOCK_START#/ {p; r local_conf.yml' -e ':a; n; /#CONFIG_BLOCK_END#/ {p; b}; ba}; p' docker-compose.yml
+- mv docker-compose.yml.local docker-compose.yml
 - docker-compose up -d
 script:
 - ls -lah

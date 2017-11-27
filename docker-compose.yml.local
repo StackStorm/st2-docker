@@ -10,25 +10,17 @@ services:
       - public
       - private
     env_file:
-      - /mnt/arteria-data/conf/stackstorm.env
-      - /mnt/arteria-data/conf/mongo.env
-      - /mnt/arteria-data/conf/rabbitmq.env
-      - /mnt/arteria-data/conf/postgres.env
-      - /mnt/arteria-data/conf/redis.env
+      - conf/stackstorm.env
+      - conf/mongo.env
+      - conf/rabbitmq.env
+      - conf/postgres.env
+      - conf/redis.env
     volumes:
-      - stackstorm-packs-volume:/opt/stackstorm/packs
-      - stackstorm-virtualenvs-volume:/opt/stackstorm/virtualenvs
-      - stackstorm-configs-volume:/opt/stackstorm/configs
       - stackstorm-log-volume:/var/log
       - ./packs.dev:/opt/stackstorm/packs.dev
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
       - ./runtime/st2.d:/st2-docker/st2.d
-      - /mnt/arteria-data/conf/stackstorm.env:/st2-docker/env
-      - /mnt/arteria-data/configs:/opt/stackstorm/configs
-      - /mnt/arteria-data/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
-      - /mnt/arteria-data/st2.conf:/etc/st2/st2.conf
-      # - /mnt/arteria-data/st2.crt:/etc/ssl/st2/st2.crt
-      # - /mnt/arteria-data/st2.key:/etc/ssl/st2/st2.key
+      - ./conf/stackstorm.env:/st2-docker/env
     dns_search: .
     dns: 8.8.8.8
 
@@ -38,7 +30,7 @@ services:
     image: mongo:3.4
     container_name: mongo
     env_file:
-      - /mnt/arteria-data/conf/mongo.env
+      - conf/mongo.env
     networks:
       - private
     volumes:
@@ -49,7 +41,7 @@ services:
     image: rabbitmq:management
     container_name: rabbitmq
     env_file:
-      - /mnt/arteria-data/conf/rabbitmq.env
+      - conf/rabbitmq.env
     networks:
       - private
     volumes:
@@ -60,7 +52,7 @@ services:
     image: postgres:latest
     container_name: postgres
     env_file:
-      - /mnt/arteria-data/conf/postgres.env
+      - conf/postgres.env
     networks:
       - private
     volumes:
@@ -71,7 +63,7 @@ services:
     image: redis:latest
     container_name: redis
     env_file:
-      - /mnt/arteria-data/conf/redis.env
+      - conf/redis.env
     networks:
       - private
     volumes:
@@ -84,9 +76,6 @@ volumes:
   postgres-volume:
   rabbitmq-volume:
   redis-volume:
-  stackstorm-packs-volume:
-  stackstorm-virtualenvs-volume:
-  stackstorm-configs-volume:
   stackstorm-log-volume:
   umccr-pack-volume:
 
