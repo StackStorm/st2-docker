@@ -1,43 +1,48 @@
 language: python
 sudo: required
 services:
-  - docker
+- docker
 before_script:
-  - make env
-  - sed -i '/arteria-data/d' docker-compose.yml
-  - docker-compose up -d
+- make env
+- sed -i '/arteria-data/d' docker-compose.yml
+- docker-compose up -d
 script:
-  - ls -lah
-  - docker-compose exec stackstorm st2-run-pack-tests -p /opt/stackstorm/packs/arteria
+- ls -lah
+- docker-compose exec stackstorm st2-run-pack-tests -p /opt/stackstorm/packs/arteria
 notifications:
   email: false
   slack:
-    secure: ZCjuMOo5zu+7kpncDq3ZT1KIPnSZg64N6sGyzTnIPEvzxdXKI+bTcpcA8e8jn20jERqZDcQS5Siw5gZ5tBgVXTV6Xtrm0RLDN8yu7VJD/PesP1L88/oJQ2a8wggA3iSfK/QghnXOUV747G/Ql6RQSqTrLhKulmPjLKIVXqkl6I8E95hX47Qr3KW1GGxVQwbh2kHIMxDIUm1vJjiL7gn43OYvsyRTvOFfp3AW+bk9gBFEId0fvSy7WSFsFrY02PNHCg2YD5n3bpXp1K+q2PcGJZUaDmHt/TDjR9ZH8Q371qUplYt8TRnSHyENz02Nxab2GYd7a3BdklQRGiRVyomE/lqKG/vSUr+ZdSHt9pQVonI8knoP5S6DimD5G/ifE5EqIK5SNqwGgd9R25ETxowhluAirvAIS3GbRa3bnafGBl5oYmnH1UU/LYqZrvNkpZ0DWo/SGW/3MhrHDDtGluclF+VmI11lgkbmzZzElXuuqMtdjj/8jVwoKNbolfJ/anLhgzPmUsvHO0AzcLqks50LDko2liPaPUvsJgQ2LgKMy76lvhkbMcrGgJH0iHD8C58jui6l5EwvHKISKMQzsoVly7W6C1D1AZPoyrXKYURDr9n3AXsL//xfNycjAt7JJskKMFGlTBFXfRWXUHf4nFIipJZaLMqCYnXfGyZzEWbYC5c=
+    secure: h7wA57Qn3NU+qbUJbE9b89O89ypFBowLkVSCTEgSdjTxDDeVbWI/VN3H3lSw12PNwE7ymUOEnL4A/FdRpWOPWl/TRRxRCEf0GK5MX9hnSh/ViI1x0CZyEfGd7UAS+0yKkabuMwhS45uPpJg7ImApiqy/cj3/nnall4zm5aQQpTAK3WM8TwL+v/7EbrkMe9iQ8oN35k4pB/yCNUHiCAs30JAzZ+Q7WsEAkos5lSG9nh6zH4NvAsaY6PbmwaGGwqGS0HvYR5WKxQNgnUN8vBfE/A/BHup8uYYOmggWOMOWLmHcVJVsp0tYSopB8RSg0Ou/ekiWCM2bXillQYqbv2vCM/vt10twXPD/6FBp9VGM73+OnPnbLOEfpPdn+BDQ8meJ3nCyshrAp8A37a4vvUX41DiRxRUKgCGZ+vrOqnItBjFohTg7szLMHD6a7s6awvRV/ppb7rbLE6FTdTW+lO14joLGrFps3bvu1Do9D1XIu6t+asX2knxJFu7o413UhE/Xum1beb+P7r6wqQwbxXWFI3A7UOjDea85v5hjbsjTJ0LXyfJr45qrDSa5dAyGyDX2OuA8xiZXSJpgyvR33dqhYzEhkzjiVkPYffz9zVLnUHx5eqtLaWGBqnt7Z+WWSQD7gIRdcY1/9kFXh7NCHt7oHHmlBhxPbpmxc8xFZFVJtEE=
 deploy:
-- provider: s3
-  region: ap-southeast-2
-  access_key_id: AKIAJMC57KOG7GXCHRQQ
-  secret_access_key: &1
-    secure: ubc/rvRCZ07NKIGZHohigGzKQxTQCLhumanb3L4zbNl6H0VLXkr2Gpy0/NhAdDkdsh15e0oqwUnnyWCik4e0CV++NkwILaloGgJ+dP3SYH9EBmFldULswh4IoUp+mzQIGzmWRCftDhQHuo6xlQFdGCEK45jfOelYDgEy9MHV3CfV3Q08WYvedt3QWNB7k4psTR0jWTdSyZ1qIbjlhddXCxDjOiaFMRJDxVIFfXvGBW4UsA6/ITJFvUFiMRceB5yZAhqpG2A2ZBttvr+G58tve29OizaMsyi0ij+rhQgto6st+eFhxNFvBW1Rk71KsIrawKfMKaKvF7rPsUG+zg7ETxEe3xBxEG1d8/rKsHWd/LpXxzafbTLM1n8s6tY4YYc/ieKxo0HZ8PqPB3qH03MHM6ux7c8BmoQFHxKOmasHxmpAAAgbvJsGFBfwNLZuqT6wcW85s+mdPLFVyyv1kFMba0VN3LE9+3SkUAy1dIJD9wB5MJzNukkEBFLNW63jiLVZRNf4QRgnRSHGi5TmSzC7+mJ2gfOgkJWeqftSIUCSUfUSWWup/yQrwXSTPt/boSHQdXdlEKXSWicQ43uPSJKpHEp95RPzhCiXap8REIb5GiscqSmJYOrn2FSoe0pYiUDv5KQXmw76KYr5OZTTpzuRboEcbUPKTGaEuiLae5CBSbk=
-  local_dir: dpl_cd_upload
-  skip_cleanup: true
-  on: &2
-    repo: umccr/st2-docker-umccr
-  bucket: arteria
-  upload_dir: latest
-- provider: codedeploy
-  region: ap-southeast-2
-  access_key_id: AKIAJMC57KOG7GXCHRQQ
-  secret_access_key: *1
-  bucket: arteria
-  key: latest/master.zip
-  bundle_type: zip
-  application: arteria
-  deployment_group: arteria
-  on: *2
+  matrix:
+  - provider: s3
+    region: ap-southeast-2
+    access_key_id: AKIAI5WXMX7WZC5AXKMQ
+    secret_access_key: 
+        secure: la935dfE5BiUakzNRTOly9MtenOkbNVY/eqmBGceMmE2Q/KT4kcZVr5ZQ2wRRv9ECuI8N7tD1IzXuUmY6nVnxGOU6Z1aQwpYZ5MY5wPZXKqmkxtJ7R3QLFLiffBVY4F5yJWJ0ERidODz6nZOgCrGhNIgLO3j25OdWLVEzTnArR0cHeJ8cMuN91Sqj13kQHxCDIlRuSCuAszQQAaIH+3syl38aSx75Qm/DfQHHkvfnDOnT+8pUmGGdugyLOnMFIC4QxbnEiRPjf4aOUbIjqwwQSAZn+AqUVgLEAepYIPCPa8o2sNPD1Zc62nAOGTMZXo3QRTszNzZpi/HRpzLEWwbSIukI+BUOo7xzrBOm8umMasUF3Q35jdL8pmmN3xreIe0XZ51knCei9SZVl5EFrQZ552Tgk//kjYTJc3iF0GT+iBnusT3irfszD6X3/dL3ZxVMc9gn+DrNlX8wf2/ciW94DuyLXdZ9Fc33cRd+eOLHvzWUrYSVD5YTeFh37zgLUeRH96x8k+4OU6gFlzHxzQnxTtwGwygxS3sQ9bFLSB3iobpUOSBr0fvZyExUvvzdFc9A+moDPkbRZCrGje2J3FM+Of0gMRGHborLYOwnmPIklTyZaODQWUmtBAywaye0wfSfvYKIYN70az1gEe83CzZjhk9hprW39NOEWcxW99BNqg=
+    local_dir: dpl_cd_upload
+    skip_cleanup: true
+    on: &1
+      repo: umccr/st2-docker-umccr
+    bucket: arteria
+    upload_dir: latest
+  - provider: codedeploy
+    region: ap-southeast-2
+    access_key_id: AKIAI5WXMX7WZC5AXKMQ
+    secret_access_key: 
+        secure: la935dfE5BiUakzNRTOly9MtenOkbNVY/eqmBGceMmE2Q/KT4kcZVr5ZQ2wRRv9ECuI8N7tD1IzXuUmY6nVnxGOU6Z1aQwpYZ5MY5wPZXKqmkxtJ7R3QLFLiffBVY4F5yJWJ0ERidODz6nZOgCrGhNIgLO3j25OdWLVEzTnArR0cHeJ8cMuN91Sqj13kQHxCDIlRuSCuAszQQAaIH+3syl38aSx75Qm/DfQHHkvfnDOnT+8pUmGGdugyLOnMFIC4QxbnEiRPjf4aOUbIjqwwQSAZn+AqUVgLEAepYIPCPa8o2sNPD1Zc62nAOGTMZXo3QRTszNzZpi/HRpzLEWwbSIukI+BUOo7xzrBOm8umMasUF3Q35jdL8pmmN3xreIe0XZ51knCei9SZVl5EFrQZ552Tgk//kjYTJc3iF0GT+iBnusT3irfszD6X3/dL3ZxVMc9gn+DrNlX8wf2/ciW94DuyLXdZ9Fc33cRd+eOLHvzWUrYSVD5YTeFh37zgLUeRH96x8k+4OU6gFlzHxzQnxTtwGwygxS3sQ9bFLSB3iobpUOSBr0fvZyExUvvzdFc9A+moDPkbRZCrGje2J3FM+Of0gMRGHborLYOwnmPIklTyZaODQWUmtBAywaye0wfSfvYKIYN70az1gEe83CzZjhk9hprW39NOEWcxW99BNqg=
+    bucket: arteria
+    key: latest/master.zip
+    bundle_type: zip
+    application: arteria
+    deployment_group: arteria
+    on: *1
 before_deploy:
 - wget https://github.com/umccr/st2-docker-umccr/archive/master.zip
 - mkdir -p dpl_cd_upload
 - ls -alh .
 - zip master.zip appspec.yml
 - mv master.zip dpl_cd_upload/master.zip
+env:
+  global:
+    secure: bDw07slm02oyNU6CCvigqqnc54EK5j7nJCsF4c2mHi7W7fHg12VZvFA/FqaUgezKyarg4vWCAaXCI6T8lQStjqczrgcCXgd2yvXWEn+jYlZjuz/zSZreaZfvUkAeKWJ1dvjmTN9ECcwYfR2tjHDpSVVCIU135BbzF2vDkB0/h/aZ2H06QWcTlKBX5zCUHq20ggYJSZ+HvIwo5LVAiTe0JLxqfuVGUogLRK9aY9G9i9cf0cTqZoB4kwIHHua3Pg7oV59DHLbqciZaJPXCbufuTxTPeBFmDgbXUsmTtYCNrpWVFQ8GYqPTzpF9Om5neifv5WBvPBHbMuuqHXN4Am/qaWju9fuHoZZuubIO9GmkfBJEG8jrc5OsxNprxMUWKQSMvFNnh/a6uVhdsDfEQ+5BD6sBnHm1IoSCrO3wX4Lxc2s/MB1oLlt9XP3hAoUGOFME5rZuXFo9TE+7nxEnz+os2TPokG+s9MaV/Welk/gk8gTPl6DYtqINAu3iWQCXAefJ6auNvCmoIm8Bj0+9U4ruqc3uIM1g/WE/J9EGbvP3uOmOakNkUxguNzDrYCHauCk1W1sh41rIKqj4Cs30aSbAziDNoI2DkmGrl61yhef+4Ta3Zta8u6dGQwszQMiYd8mlrXVplJnyDU2GgQZvIDC65PHvsqUMFkQdsjkrWKFbkXQ=
