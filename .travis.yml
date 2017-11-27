@@ -4,6 +4,7 @@ services:
   - docker
 before_script:
   - make env
+  - sed -i '/arteria-data/d' docker-compose.yml
   - docker-compose up -d
 script:
   - ls -lah
@@ -21,7 +22,7 @@ notifications:
 #   local_dir: dpl_cd_upload
 #   skip_cleanup: true
 #   on: &2
-#     repo: umccr/st2-arteria-docker
+#     repo: umccr/st2-docker-umccr
 #   bucket: arteria
 #   upload_dir: latest
 # - provider: codedeploy
@@ -35,7 +36,7 @@ notifications:
 #   deployment_group: arteria
 #   on: *2
 # before_deploy:
-# - wget https://github.com/umccr/st2-arteria-docker/archive/master.zip
+# - wget https://github.com/umccr/st2-docker-umccr/archive/master.zip
 # - mkdir -p dpl_cd_upload
 # - ls -alh .
 # - zip master.zip appspec.yml

@@ -25,12 +25,12 @@ services:
       - ./runtime/st2.d:/st2-docker/st2.d
       - ./conf/stackstorm.env:/st2-docker/env
       # Add custom mount points to persist configs
-      # NOTE: this location has to be provided!
-      - ./persist/configs:/opt/stackstorm/configs
-      - ./persist/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
-      - ./persist/st2.conf:/etc/st2/st2.conf
-      # - ./persist/st2.crt:/etc/ssl/st2/st2.crt
-      # - ./persist/st2.key:/etc/ssl/st2/st2.key
+      # NOTE: these will have to exist in the production location
+      - /mnt/arteria-data/configs:/opt/stackstorm/configs
+      - /mnt/arteria-data/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
+      - /mnt/arteria-data/st2.conf:/etc/st2/st2.conf
+      # - /mnt/arteria-data/st2.crt:/etc/ssl/st2/st2.crt
+      # - /mnt/arteria-data/st2.key:/etc/ssl/st2/st2.key
     dns_search: .
     dns: 8.8.8.8
 
