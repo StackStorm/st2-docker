@@ -4,6 +4,11 @@ services:
   stackstorm:
     image: umccr/stackstorm:latest
     container_name: stackstorm
+    depends_on:
+      - mongo
+      - redis
+      - postgres
+      - rabbitmq
     ports:
       - "443:443"
     networks:
