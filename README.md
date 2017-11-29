@@ -209,6 +209,12 @@ If you need to disable chatops, run the following using a script in `/st2-docker
   echo manual | sudo tee /etc/init/st2chatops.override
   ```
 
+## packs.dev directory
+
+By default, `./packs.dev` directory is bind-mounted to `/opt/stackstorm/packs.dev` in `stackstorm` container and registered as a secondary pack location. This is done by the startup script at [./runtime/entrypoint.d/add-packs-dev.sh](./runtime/entrypoint.d/add-packs-dev.sh)
+
+This feature exists just for convenience, for testing and developing packs, and for [tutorial](./docs/tutorial.md). You can use it for arbitrary purpose, or ignore, or even disable it completely by removing corresponding entries and files.
+
 ## Advanced: using 1ppc image
 
 Official image now supports running in 1ppc mode: stands for *One Process Per Container*. Interested? Check [runtime/compose-1ppc](./runtime/compose-1ppc)
