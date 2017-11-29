@@ -188,7 +188,7 @@ You can bind mount these scripts as mentioned in the previous section.
 
 NOTE: These scripts are currently not available when running in 1ppc mode.
 
-## To enable/disable chatops
+## To enable chatops
 
 Chatops is installed in the `stackstorm` image, but not started by default.
 
@@ -201,19 +201,16 @@ To enable chatops, delete the file `/etc/init/st2chatops.override` using a scrip
   sudo rm /etc/init/st2chatops.override
   ```
 
-If you need to disable chatops, run the following using a script in `/st2-docker/entrypoint.d`:
-
-  ```
-  #!/bin/bash
-
-  echo manual | sudo tee /etc/init/st2chatops.override
-  ```
+You also need to configure it either
 
 ## packs.dev directory
+- by passing all required parameters for st2chatops to the stackstorm container via environment variables
+- by replacing `/opt/stackstorm/chatops/st2chatops.env` with the one that is properly configured. The easiest way is to use bind-mount.
 
 By default, `./packs.dev` directory is bind-mounted to `/opt/stackstorm/packs.dev` in `stackstorm` container and registered as a secondary pack location. This is done by the startup script at [./runtime/entrypoint.d/add-packs-dev.sh](./runtime/entrypoint.d/add-packs-dev.sh)
 
 This feature exists just for convenience, for testing and developing packs, and for [tutorial](./docs/tutorial.md). You can use it for arbitrary purpose, or ignore, or even disable it completely by removing corresponding entries and files.
+Refer to the official StackStorm document for the list of available configuration parameters for `st2chatops`.
 
 ## Advanced: using 1ppc image
 
