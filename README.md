@@ -82,13 +82,16 @@ However, if you find need to modify the stackstorm image, you will need to build
 where REPO is one of 'stable', 'unstable', 'staging-stable', 'staging-unstable'.  Otherwise,
 the following `docker-compose` command will download the specified image from docker hub.
 
-After you spin up the environment, you can play around with following [this tutorial guide](./docs/tutorial.md).
-
 To stop the docker environment, run:
 
   ```
   docker-compose down
   ```
+
+
+### Getting started: Simple Tutorial Tour
+
+After you spin up the environment, you can play around with st2 *in container-ized environment* by following [this tutorial guide](./docs/tutorial.md).
 
 
 ## Data persistence
