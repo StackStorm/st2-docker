@@ -43,7 +43,7 @@ The default container configuration is as follows:
  - redis
 
 
-### Step by step instruction
+### Step by step instructions
 
 We use Version 3 of the compose file format, so if you want to run docker-compose, you'll need to
 ensure you're running Docker Engine release 1.13.0+.
