@@ -5,6 +5,7 @@ services:
 before_script:
 - make env
 - mv docker-compose.yml.local docker-compose.yml
+- docker pull umccr/stackstorm:latest
 - docker-compose up -d
 script:
 - ls -lah
