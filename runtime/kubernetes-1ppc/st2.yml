@@ -376,34 +376,7 @@ spec:
         - configMapRef: { name: postgres }
         ports:
         - containerPort: 443
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: st2web
-spec:
-  selector:
-    app: st2web
-  type: NodePort
-  ports:
-  - protocol: TCP
-    port: 443
-
----
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: st2web-dns
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: st2web-dns
-    spec:
-      containers:
-      - name: st2web-dns
+      - name: dns-resolver
         image: janeczku/go-dnsmasq:latest
         imagePullPolicy: IfNotPresent
         env:
@@ -417,13 +390,14 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: st2web-dns
+  name: st2web
 spec:
   selector:
-    app: st2web-dns
+    app: st2web
+  type: NodePort
   ports:
-  - protocol: UDP
-    port: 53
+  - protocol: TCP
+    port: 443
 
 ---
 kind: PersistentVolumeClaim

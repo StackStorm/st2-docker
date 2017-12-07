@@ -75,6 +75,7 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=st2web
+      - ST2WEB_DNS_RESOLVER=st2web-dns
     ports:
       - "443:443"
     networks:
