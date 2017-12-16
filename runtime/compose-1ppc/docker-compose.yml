@@ -99,6 +99,7 @@ services:
       - private
     volumes:
       - mongo-volume:/data/db
+      - mongo-configdb-volume:/data/configdb
     dns_search: .
   rabbitmq:
     image: rabbitmq:management
@@ -130,6 +131,7 @@ services:
 
 volumes:
   mongo-volume:
+  mongo-configdb-volume:
   postgres-volume:
   rabbitmq-volume:
   redis-volume:
