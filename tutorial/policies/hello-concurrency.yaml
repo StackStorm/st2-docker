@@ -1,7 +1,7 @@
 name: hello-concurrency
 description: Limits the concurrent executions for hello.
 enabled: true
-resource_ref: examples.hello-concurrency
+resource_ref: tutorial.hello-concurrency
 policy_type: action.concurrency
 parameters:
   action: delay
