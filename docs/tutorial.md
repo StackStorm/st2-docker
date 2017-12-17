@@ -223,13 +223,13 @@ When you rename, or create a new action, you must run `st2ctl reload` inside the
 container. Next, to initialize the virtualenv, run:
 
 ```
-  st2 run packs.setup_virtualenv packs=tutorial
+st2 run packs.setup_virtualenv packs=tutorial
 ```
 
 Then you can run your action using the following:
 
 ```
-  st2 run tutorial.echo_action message=working
+st2 run tutorial.echo_action message=working
 ```
 
 You should see output similar to:
