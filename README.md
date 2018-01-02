@@ -198,11 +198,7 @@ To enable chatops, delete the file `/etc/init/st2chatops.override` using a scrip
 ```
 #!/bin/bash
 
-# enable st2chatops service
-cat << 'EOF' > /etc/init/st2chatops.override
-start on runlevel [2345]
-stop on runlevel [!2345]
-EOF
+sudo rm /etc/init/st2chatops.override
 ```
 
 You also need to configure it either
