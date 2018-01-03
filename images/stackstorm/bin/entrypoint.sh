@@ -48,6 +48,10 @@ fi
 #crudini --set ${ST2_CONF} database ssl_match_hostname True
 
 MISTRAL_CONF=/etc/mistral/mistral.conf
+# Copy Key
+cp /local/keys/id_rsa /home/stanley/.ssh/
+chmod 600 /home/stanley/.ssh/id_rsa 
+chmod stanley:stanley /home/stanley/.ssh/id_rsa
 
 crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
   rabbit://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
