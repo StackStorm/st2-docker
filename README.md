@@ -195,11 +195,11 @@ Chatops is installed in the `stackstorm` image, but not started by default.
 To enable chatops, delete the file `/etc/init/st2chatops.override` using a script in
 `/st2-docker/entrypoint.d`.
 
-```
-#!/bin/bash
+  ```
+  #!/bin/bash
 
-sudo rm /etc/init/st2chatops.override
-```
+  sudo rm /etc/init/st2chatops.override
+  ```
 
 You also need to configure it either
 
