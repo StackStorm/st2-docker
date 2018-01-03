@@ -203,9 +203,10 @@ To enable chatops, delete the file `/etc/init/st2chatops.override` using a scrip
 
 You also need to configure it either
 
-## packs.dev directory
 - by passing all required parameters for st2chatops to the stackstorm container via environment variables
 - by replacing `/opt/stackstorm/chatops/st2chatops.env` with the one that is properly configured. The easiest way is to use bind-mount.
+
+## packs.dev directory
 
 By default, `./packs.dev` directory is bind-mounted to `/opt/stackstorm/packs.dev` in `stackstorm` container and registered as a secondary pack location. This is done by the startup script at [./runtime/entrypoint.d/add-packs-dev.sh](./runtime/entrypoint.d/add-packs-dev.sh)
 
