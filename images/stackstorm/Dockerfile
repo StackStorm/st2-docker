@@ -137,4 +137,5 @@ ENTRYPOINT ["/st2-docker/bin/entrypoint.sh"]
 RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
     && chmod +x /dumb-init
 COPY bin/entrypoint-1ppc.sh /st2-docker/bin/entrypoint-1ppc.sh
-COPY config/st2-1ppc.conf /etc/nginx/conf.d/st2-1ppc.cnf
+COPY bin/inject_env.py /st2-docker/bin/inject_env.py
+COPY config/nginx.st2-1ppc.conf.tpl /etc/nginx/conf.d/st2-1ppc.conf.tpl

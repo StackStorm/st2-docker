@@ -77,6 +77,12 @@ docker-compose exec st2client st2 run examples.mistral_examples
 docker-compose up --scale st2actionrunner=3 -d
 ```
 
+## Additional environment variables in 1ppc
+
+| Parameter | Description |
+|-----------|-------------|
+| `ST2WEB_DNS_RESOLVER` | *(Optional)* Hostname or address of the DNS resolver that nginx running in st2web container will use. Default is `127.0.0.1` which is suitable for sidecar pattern in Kubernetes. |
+
 ### Sharing Content
 
 See [official document](https://docs.stackstorm.com/reference/ha.html#sharing-content) for details.
@@ -91,9 +97,5 @@ See [official document](https://docs.stackstorm.com/reference/ha.html#sharing-co
 
 ### Notes
 
-- In `/etc/nginx/conf.d/st2.conf` some hostnames are hardcoded and cannot set via environment
-  variables. This means those services must be accessible by those hardcoded hostnames.
-    - `proxy_pass` directive for `st2auth`, `st2api` and `st2stream`
-    - `resolver` directive
 - Currently all inter-service connections are done via plain http, which might be a problem in
   production setup.

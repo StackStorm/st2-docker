@@ -43,7 +43,7 @@ server {
   add_header              Front-End-Https on;
   add_header              X-Content-Type-Options nosniff;
 
-  resolver st2web-dns valid=10s ipv6=off;
+  resolver {{ env['ST2WEB_DNS_RESOLVER'] | default('127.0.0.1') }} valid=10s ipv6=off;
 
   location @apiError {
     add_header Content-Type application/json always;
@@ -53,7 +53,7 @@ server {
   location /api/ {
     error_page 502 = @apiError;
 
-    set $st2_api_url http://st2api:9101;
+    set $st2_api_url {{ env['ST2_API_URL'] | striptrailingslash }};
 
     rewrite ^/api/(.*)  /$1 break;
 
@@ -89,7 +89,7 @@ server {
   location /stream/ {
     error_page 502 = @streamError;
 
-    set $st2_stream_url http://st2stream:9102;
+    set $st2_stream_url {{ env['ST2_STREAM_URL'] | striptrailingslash }};
 
     rewrite ^/stream/(.*)  /$1 break;
 
@@ -119,7 +119,7 @@ server {
   location /auth/ {
     error_page 502 = @authError;
 
-    set $st2_auth_url http://st2auth:9100;
+    set $st2_auth_url {{ env['ST2_AUTH_URL'] | striptrailingslash }};
 
     rewrite ^/auth/(.*)  /$1 break;
 
