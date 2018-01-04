@@ -21,6 +21,9 @@ echo latest=${latest}
 if [[ ${CIRCLE_TAG:-} =~ ^v(.+)$ ]]; then
   # A tag was pushed, so we'll build an image using this specific release.
   tag=${BASH_REMATCH[1]}
+  if [[ ${CIRCLE_TAG:-} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    short_tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+  fi
 else
   # Build and tag an image using the latest StackStorm release
   if [[ ${latest} =~ ^v(.+)$ ]]; then
@@ -40,15 +43,24 @@ echo tag=${tag}
 for name in stackstorm; do
   if [ -z ${BUILD_DEV:-} ]; then
     # This is not a dev build
-    if [[ ! -z ${CIRCLE_TAG:-} ]]; then
-    docker build --build-arg ST2_TAG=${tag} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1:-} \
+    ST2_TAG=${tag}
+
+    if [ -z ${CIRCLE_TAG:-} ]; then
+      # A tag was not pushed, so we only need to build 'latest'
+      tag='latest'
+    fi
+
+    docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1:-} \
       --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
       --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
       --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
       -t stackstorm/${name}:${tag} images/${name}
-    fi
 
     if [ "v${tag}" == "${latest}" ]; then
+      docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
+      docker tag stackstorm/${name}:${tag} stackstorm/${name}:${short_tag:-}
+    elif [ "${tag}" ==  "latest" ]; then
+      echo "${tag} == latest"
       docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
     else
       echo "v${tag} != ${latest}"
@@ -61,8 +73,8 @@ for name in stackstorm; do
     #       release (e.g. "2.4dev")
 
     docker build --build-arg ST2_REPO=unstable --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} \
-      --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME} \
-      --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME} \
+      --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
+      --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
       --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
       -t stackstorm/${name}:dev images/${name}
   fi

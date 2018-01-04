@@ -22,6 +22,20 @@ echo latest=${latest}
 if [[ ${CIRCLE_TAG:-} =~ ^v(.+)$ ]]; then
   # A tag was pushed, so we'll build an image using this specific release.
   tag=${BASH_REMATCH[1]}
+  if [[ ${CIRCLE_TAG:-} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    short_tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+  fi
+else
+  if [[ ${latest} =~ ^v(.+)$ ]]; then
+    tag=${BASH_REMATCH[1]}
+  else
+    echo "ERROR: Could not find a git tag in the st2-docker repo with format vX.Y.Z"
+    echo "To resolve, run:"
+    echo "  $ git co master"
+    echo "  $ git tag -a 'vX.Y.Z' -m 'Stamping X.Y.Z' HEAD"
+    echo "  $ git push --tags"
+    exit 1
+  fi
 fi
 
 tag=${tag:-}
@@ -38,11 +52,15 @@ for name in stackstorm; do
       if [ "${CIRCLE_TAG}" == "${latest}" ]; then
         # Update latest if and only if the tag is the most recent tag.
         # ASSUMPTION: Tags are applied in monotonically increasing order.
-        docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
+        if [ ! -z "${short_tag:-}" ]; then
+          docker push stackstorm/${name}:${short_tag}
+        fi
         docker push stackstorm/${name}:latest
       else
         echo "Not deploying image. ${CIRCLE_TAG} != ${latest}"
       fi
+    else
+      docker push stackstorm/${name}:latest
     fi
   else
     # Build unstable, and tag as "dev".
