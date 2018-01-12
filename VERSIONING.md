@@ -9,5 +9,6 @@ See https://github.com/StackStorm/st2-docker/issues/78 for more information.
 | stackstorm:2.5 | 2.5.1 | Mutable. This tag is updated when there is a new 2.5.x release. |
 | stackstorm:2.5.1 | 2.5.1 | Immutable, even if changes merged to `st2-docker:master` |
 | stackstorm:2.5.0 | 2.5.0 | Immutable, even if changes merged to `st2-docker:master` |
+| stackstorm:2.4 | 2.4.1 | Mutable. This tag is updated when there is a new 2.4.x release. |
 | stackstorm:2.4.1 | 2.4.1 | Immutable, even if changes merged to `st2-docker:master` |
 | stackstorm:2.4.0 | 2.4.0 | Immutable, even if changes merged to `st2-docker:master` |
