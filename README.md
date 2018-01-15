@@ -10,6 +10,11 @@
   changes that may require restarting containers.
 - Be sure to use the latest `docker-compose.yml`. Run `git pull` in your `st2-docker` workspace!
 - Run `st2ctl reload --register-all` to reload all services.
+- **For information on how the stackstorm docker image is versioned, see [VERSIONING.md](https://github.com/StackStorm/st2-docker/blob/master/VERSIONING.md)**
+- If a specific image is required, it is always best to be explicit and specify the Image ID. For example:
+  ```
+  stackstorm/stackstorm:2.5.0@{7f33f32b1495}
+  ```
 
 
 ## TL;DR

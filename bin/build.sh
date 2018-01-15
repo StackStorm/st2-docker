@@ -1,29 +1,6 @@
 #!/bin/bash
 #
 # This script runs within the CircleCI environment to build stackstorm images.
-#
-# Generally speaking, we only maintain the image containing the latest release
-# of StackStorm tagged in the st2-docker repo. To build an image with a
-# specific release of StackStorm, push an annotated tag of the format "vX.Y.Z",
-# where "v" is literal, and "X.Y.Z" is the release number. The tag will be made
-# available within CircleCI using the $CIRCLE_TAG environment variable.
-#
-# If $CIRCLE_TAG has zero length, then no tag was pushed. The following image
-# will be built:
-#
-#   stackstorm/stackstorm:X.Y.Z   (where X.Y.Z is the latest StackStorm release)
-#
-# If this image was already built, then it will be built again (using a
-# potentially different Dockerfile). The image is only guaranteed to contain
-# the specified StackStorm release.
-#
-# If X.Y.Z is the latest release, the following target image is set to refer
-# to the above image:
-#
-#   stackstorm/stackstorm:latest
-#
-# If BUILD_DEV environment variable is defined, this triggers an image build based
-# on unstable.
 
 set -euo pipefail
 IDS=$'\n\t'
@@ -44,6 +21,9 @@ echo latest=${latest}
 if [[ ${CIRCLE_TAG:-} =~ ^v(.+)$ ]]; then
   # A tag was pushed, so we'll build an image using this specific release.
   tag=${BASH_REMATCH[1]}
+  if [[ ${CIRCLE_TAG:-} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    short_tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+  fi
 else
   # Build and tag an image using the latest StackStorm release
   if [[ ${latest} =~ ^v(.+)$ ]]; then
@@ -63,13 +43,24 @@ echo tag=${tag}
 for name in stackstorm; do
   if [ -z ${BUILD_DEV:-} ]; then
     # This is not a dev build
-    docker build --build-arg ST2_TAG=${tag} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1:-} \
+    ST2_TAG=${tag}
+
+    if [ -z ${CIRCLE_TAG:-} ]; then
+      # A tag was not pushed, so we only need to build 'latest'
+      tag='latest'
+    fi
+
+    docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1:-} \
       --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
       --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
       --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
       -t stackstorm/${name}:${tag} images/${name}
 
     if [ "v${tag}" == "${latest}" ]; then
+      docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
+      docker tag stackstorm/${name}:${tag} stackstorm/${name}:${short_tag:-}
+    elif [ "${tag}" ==  "latest" ]; then
+      echo "${tag} == latest"
       docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
     else
       echo "v${tag} != ${latest}"
@@ -82,8 +73,8 @@ for name in stackstorm; do
     #       release (e.g. "2.4dev")
 
     docker build --build-arg ST2_REPO=unstable --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} \
-      --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME} \
-      --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME} \
+      --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
+      --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
       --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
       -t stackstorm/${name}:dev images/${name}
   fi
