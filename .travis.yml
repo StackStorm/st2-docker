@@ -1,27 +1,44 @@
-dist: trusty
-sudo: required
-
 language: python
-
-branches:
-  only:
-    - master
-
+sudo: required
 services:
-  - docker
-
-before_install:
-  - docker build --build-arg ST2_REPO=unstable --build-arg CIRCLE_SHA1=${TRAVIS_COMMIT} --build-arg CIRCLE_PROJECT_USERNAME=stackstorm --build-arg CIRCLE_PROJECT_REPONAME=st2-docker -t stackstorm/stackstorm:dev images/stackstorm
-  - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-  - docker push stackstorm/stackstorm:dev
-
-install: true
-
-script: true
-
+- docker
+before_script:
+- make env
+- mv docker-compose.yml.local docker-compose.yml
+- docker pull umccr/stackstorm:latest
+- docker-compose up -d
+script:
+- ls -lah
+- docker-compose exec stackstorm st2-run-pack-tests -p /opt/stackstorm/packs/arteria
 notifications:
-  email:
-    recipients:
-      - warren.van.winckel@gmail.com
-    on_success: never
-    on_failure: always
+  email: false
+  slack:
+    secure: h7wA57Qn3NU+qbUJbE9b89O89ypFBowLkVSCTEgSdjTxDDeVbWI/VN3H3lSw12PNwE7ymUOEnL4A/FdRpWOPWl/TRRxRCEf0GK5MX9hnSh/ViI1x0CZyEfGd7UAS+0yKkabuMwhS45uPpJg7ImApiqy/cj3/nnall4zm5aQQpTAK3WM8TwL+v/7EbrkMe9iQ8oN35k4pB/yCNUHiCAs30JAzZ+Q7WsEAkos5lSG9nh6zH4NvAsaY6PbmwaGGwqGS0HvYR5WKxQNgnUN8vBfE/A/BHup8uYYOmggWOMOWLmHcVJVsp0tYSopB8RSg0Ou/ekiWCM2bXillQYqbv2vCM/vt10twXPD/6FBp9VGM73+OnPnbLOEfpPdn+BDQ8meJ3nCyshrAp8A37a4vvUX41DiRxRUKgCGZ+vrOqnItBjFohTg7szLMHD6a7s6awvRV/ppb7rbLE6FTdTW+lO14joLGrFps3bvu1Do9D1XIu6t+asX2knxJFu7o413UhE/Xum1beb+P7r6wqQwbxXWFI3A7UOjDea85v5hjbsjTJ0LXyfJr45qrDSa5dAyGyDX2OuA8xiZXSJpgyvR33dqhYzEhkzjiVkPYffz9zVLnUHx5eqtLaWGBqnt7Z+WWSQD7gIRdcY1/9kFXh7NCHt7oHHmlBhxPbpmxc8xFZFVJtEE=
+deploy:
+- provider: s3
+  region: ap-southeast-2
+  access_key_id: AKIAI5WXMX7WZC5AXKMQ
+  secret_access_key: &1
+      secure: la935dfE5BiUakzNRTOly9MtenOkbNVY/eqmBGceMmE2Q/KT4kcZVr5ZQ2wRRv9ECuI8N7tD1IzXuUmY6nVnxGOU6Z1aQwpYZ5MY5wPZXKqmkxtJ7R3QLFLiffBVY4F5yJWJ0ERidODz6nZOgCrGhNIgLO3j25OdWLVEzTnArR0cHeJ8cMuN91Sqj13kQHxCDIlRuSCuAszQQAaIH+3syl38aSx75Qm/DfQHHkvfnDOnT+8pUmGGdugyLOnMFIC4QxbnEiRPjf4aOUbIjqwwQSAZn+AqUVgLEAepYIPCPa8o2sNPD1Zc62nAOGTMZXo3QRTszNzZpi/HRpzLEWwbSIukI+BUOo7xzrBOm8umMasUF3Q35jdL8pmmN3xreIe0XZ51knCei9SZVl5EFrQZ552Tgk//kjYTJc3iF0GT+iBnusT3irfszD6X3/dL3ZxVMc9gn+DrNlX8wf2/ciW94DuyLXdZ9Fc33cRd+eOLHvzWUrYSVD5YTeFh37zgLUeRH96x8k+4OU6gFlzHxzQnxTtwGwygxS3sQ9bFLSB3iobpUOSBr0fvZyExUvvzdFc9A+moDPkbRZCrGje2J3FM+Of0gMRGHborLYOwnmPIklTyZaODQWUmtBAywaye0wfSfvYKIYN70az1gEe83CzZjhk9hprW39NOEWcxW99BNqg=
+  local_dir: dpl_cd_upload
+  skip_cleanup: true
+  on: &2
+    repo: umccr/st2-docker-umccr
+  bucket: arteria
+  upload_dir: latest
+- provider: codedeploy
+  region: ap-southeast-2
+  access_key_id: AKIAI5WXMX7WZC5AXKMQ
+  secret_access_key: *1
+  bucket: arteria
+  key: latest/master.zip
+  bundle_type: zip
+  application: arteria
+  deployment_group: arteria
+  on: *2
+before_deploy:
+- wget https://github.com/umccr/st2-docker-umccr/archive/master.zip
+- mkdir -p dpl_cd_upload
+- ls -alh .
+- zip master.zip appspec.yml
+- mv master.zip dpl_cd_upload/master.zip

@@ -1,0 +1,91 @@
+version: '3'
+
+services:
+  stackstorm:
+    image: umccr/stackstorm:latest
+    container_name: stackstorm
+    depends_on:
+      - mongo
+      - redis
+      - postgres
+      - rabbitmq
+    ports:
+      - "443:443"
+    networks:
+      - public
+      - private
+    env_file:
+      - conf/stackstorm.env
+      - conf/mongo.env
+      - conf/rabbitmq.env
+      - conf/postgres.env
+      - conf/redis.env
+    volumes:
+      - stackstorm-log-volume:/var/log
+      - ./packs.dev:/opt/stackstorm/packs.dev
+      - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
+      - ./runtime/st2.d:/st2-docker/st2.d
+      - ./conf/stackstorm.env:/st2-docker/env
+    dns_search: .
+    dns: 8.8.8.8
+
+### External Services
+
+  mongo:
+    image: mongo:3.4
+    container_name: mongo
+    env_file:
+      - conf/mongo.env
+    networks:
+      - private
+    volumes:
+      - mongo-volume:/data/db
+    dns_search: .
+    dns: 8.8.8.8
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    env_file:
+      - conf/rabbitmq.env
+    networks:
+      - private
+    volumes:
+      - rabbitmq-volume:/var/lib/rabbitmq
+    dns_search: .
+    dns: 8.8.8.8
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    env_file:
+      - conf/postgres.env
+    networks:
+      - private
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    dns_search: .
+    dns: 8.8.8.8
+  redis:
+    image: redis:latest
+    container_name: redis
+    env_file:
+      - conf/redis.env
+    networks:
+      - private
+    volumes:
+      - redis-volume:/data
+    dns_search: .
+    dns: 8.8.8.8
+
+volumes:
+  mongo-volume:
+  postgres-volume:
+  rabbitmq-volume:
+  redis-volume:
+  stackstorm-log-volume:
+  umccr-pack-volume:
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge

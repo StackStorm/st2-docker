@@ -2,19 +2,24 @@ version: '3'
 
 services:
   stackstorm:
-    image: stackstorm/stackstorm:${TAG:-latest}
+    image: umccr/stackstorm:latest
     container_name: stackstorm
-    env_file:
-      - conf/stackstorm.env
-      - conf/mongo.env
-      - conf/rabbitmq.env
-      - conf/postgres.env
-      - conf/redis.env
+    depends_on:
+      - mongo
+      - redis
+      - postgres
+      - rabbitmq
     ports:
       - "443:443"
     networks:
       - public
       - private
+    env_file:
+      - /mnt/arteria-data/conf/stackstorm.env
+      - /mnt/arteria-data/conf/mongo.env
+      - /mnt/arteria-data/conf/rabbitmq.env
+      - /mnt/arteria-data/conf/postgres.env
+      - /mnt/arteria-data/conf/redis.env
     volumes:
       - stackstorm-packs-volume:/opt/stackstorm/packs
       - stackstorm-virtualenvs-volume:/opt/stackstorm/virtualenvs
@@ -23,8 +28,18 @@ services:
       - ./packs.dev:/opt/stackstorm/packs.dev
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
       - ./runtime/st2.d:/st2-docker/st2.d
-      - ./conf/stackstorm.env:/st2-docker/env
+      - /mnt/arteria-data/conf/stackstorm.env:/st2-docker/env
+      - /mnt/arteria-data/configs:/opt/stackstorm/configs
+      - /mnt/arteria-data/chatops/st2chatops.env:/opt/stackstorm/chatops/st2chatops.env
+      - /mnt/arteria-data/st2.conf:/etc/st2/st2.conf
+      - /mnt/arteria-data/letsencrypt:/etc/letsencrypt
+      - /mnt/arteria-data/st2.d/z_activate_components.sh:/st2-docker/st2.d/z_activate_components.sh
+      - /mnt/arteria-data/ssh/stanley_rsa:/home/stanley/.ssh/stanley_rsa
+      - /mnt/arteria-data/ssh/stanley_rsa.pub:/home/stanley/.ssh/stanley_rsa.pub
+      # - /mnt/arteria-data/st2.crt:/etc/ssl/st2/st2.crt
+      # - /mnt/arteria-data/st2.key:/etc/ssl/st2/st2.key
     dns_search: .
+    dns: 8.8.8.8
 
 ### External Services
 
@@ -32,43 +47,47 @@ services:
     image: mongo:3.4
     container_name: mongo
     env_file:
-      - conf/mongo.env
+      - /mnt/arteria-data/conf/mongo.env
     networks:
       - private
     volumes:
       - mongo-volume:/data/db
       - mongo-configdb-volume:/data/configdb
     dns_search: .
+    dns: 8.8.8.8
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
     env_file:
-      - conf/rabbitmq.env
+      - /mnt/arteria-data/conf/rabbitmq.env
     networks:
       - private
     volumes:
       - rabbitmq-volume:/var/lib/rabbitmq
     dns_search: .
+    dns: 8.8.8.8
   postgres:
     image: postgres:latest
     container_name: postgres
     env_file:
-      - conf/postgres.env
+      - /mnt/arteria-data/conf/postgres.env
     networks:
       - private
     volumes:
       - postgres-volume:/var/lib/postgresql/data
     dns_search: .
+    dns: 8.8.8.8
   redis:
     image: redis:latest
     container_name: redis
     env_file:
-      - conf/redis.env
+      - /mnt/arteria-data/conf/redis.env
     networks:
       - private
     volumes:
       - redis-volume:/data
     dns_search: .
+    dns: 8.8.8.8
     command: [
       "bash", "-c",
       '
@@ -87,6 +106,7 @@ volumes:
   stackstorm-virtualenvs-volume:
   stackstorm-configs-volume:
   stackstorm-log-volume:
+  umccr-pack-volume:
 
 networks:
   public:
