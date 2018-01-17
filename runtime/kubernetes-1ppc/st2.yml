@@ -376,7 +376,6 @@ spec:
         - configMapRef: { name: postgres }
         ports:
         - containerPort: 443
-<<<<<<< HEAD
 
 ---
 kind: Service
