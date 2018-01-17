@@ -75,6 +75,7 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=st2web
+      - ST2WEB_DNS_RESOLVER=st2web-dns
     ports:
       - "443:443"
     networks:
@@ -99,6 +100,7 @@ services:
       - private
     volumes:
       - mongo-volume:/data/db
+      - mongo-configdb-volume:/data/configdb
     dns_search: .
   rabbitmq:
     image: rabbitmq:management
@@ -127,9 +129,17 @@ services:
     volumes:
       - redis-volume:/data
     dns_search: .
+    command: [
+      "bash", "-c",
+      '
+       docker-entrypoint.sh
+       --requirepass "$$REDIS_PASSWORD"
+      '
+    ]
 
 volumes:
   mongo-volume:
+  mongo-configdb-volume:
   postgres-volume:
   rabbitmq-volume:
   redis-volume:

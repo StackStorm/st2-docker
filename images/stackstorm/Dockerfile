@@ -75,6 +75,10 @@ COPY bin/install.sh /install.sh
 # It is not possible to dynamically set ARG's, so we do the needful in bin/install.sh
 RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} --st2mistral=${ST2MISTRAL_VERSION} --user=${CIRCLE_PROJECT_USERNAME} --repo=${CIRCLE_PROJECT_REPONAME} --buildurl=${CIRCLE_BUILD_URL} --sha=${CIRCLE_SHA1}
 
+# Install chatops and disable unless entrypoint.d file is present
+# Install st2-chatops with Node.js v6 requirement
+RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override
+
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts
 RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel \[2345\]/' /etc/init/st2*.conf \
@@ -83,10 +87,6 @@ RUN sed -i 's/start on filesystem and net-device-up IFACE!=lo/start on runlevel 
     && sed -i 's/stop on starting rc RUNLEVEL=\[016\]/stop on runlevel \[!2345\]/' /etc/init/mistral.conf \
     && sed -i '/start mistral-api/i\  /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head\n\
   /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate\n' /etc/init/mistral.conf
-
-# Install chatops and disable unless entrypoint.d file is present
-# Install st2-chatops with Node.js v6 requirement
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override
 
 # Setup symmetric crypto key for datastore
 RUN mkdir -p /etc/st2/keys \
@@ -137,4 +137,5 @@ ENTRYPOINT ["/st2-docker/bin/entrypoint.sh"]
 RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
     && chmod +x /dumb-init
 COPY bin/entrypoint-1ppc.sh /st2-docker/bin/entrypoint-1ppc.sh
-COPY config/st2-1ppc.conf /etc/nginx/conf.d/st2-1ppc.cnf
+COPY bin/inject_env.py /st2-docker/bin/inject_env.py
+COPY config/nginx.st2-1ppc.conf.tpl /etc/nginx/conf.d/st2-1ppc.conf.tpl

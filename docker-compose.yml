@@ -52,6 +52,7 @@ services:
       - private
     volumes:
       - mongo-volume:/data/db
+      - mongo-configdb-volume:/data/configdb
     dns_search: .
     dns: 8.8.8.8
   rabbitmq:
@@ -87,9 +88,17 @@ services:
       - redis-volume:/data
     dns_search: .
     dns: 8.8.8.8
+    command: [
+      "bash", "-c",
+      '
+       docker-entrypoint.sh
+       --requirepass "$$REDIS_PASSWORD"
+      '
+    ]
 
 volumes:
   mongo-volume:
+  mongo-configdb-volume:
   postgres-volume:
   rabbitmq-volume:
   redis-volume:
