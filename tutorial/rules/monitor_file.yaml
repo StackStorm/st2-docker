@@ -1,6 +1,6 @@
 ---
 name: monitor_file
-pack: "examples"
+pack: "tutorial"
 description: "Monitor file for change"
 enabled: true
 

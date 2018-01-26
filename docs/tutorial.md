@@ -6,8 +6,8 @@ We will add a simple action that runs a local shell command.
 Run the following from your docker host.
 
 ```
-mkdir -p packs.dev/examples/actions
-cp examples/actions/hello.yaml packs.dev/examples/actions
+mkdir -p packs.dev/tutorial/actions
+cp tutorial/actions/hello.yaml packs.dev/tutorial/actions
 ```
 
 Get a bash shell in the `stackstorm` container:
@@ -29,7 +29,7 @@ to run `st2ctl reload`. Within the container, run the following:
 Now, let's run the action:
 
   ```
-  root@aff39eda0bdd:/# st2 run examples.hello
+  root@aff39eda0bdd:/# st2 run tutorial.hello
   .
   id: 58f67dbf33a99300bdc4d618
   status: succeeded
@@ -47,7 +47,7 @@ defaults to 'human' if `name` is not specified. If we specify a value for
 `name`, then as expected, the value is found in `result.stdout`.
 
   ```
-  root@aff39eda0bdd:/# st2 run examples.hello name=Stanley
+  root@aff39eda0bdd:/# st2 run tutorial.hello name=Stanley
   .
   id: 58f67dc533a99300bdc4d61b
   status: succeeded
@@ -69,9 +69,9 @@ If you want to take advantage of concurrency, use a slight variation on the abov
 On the host, run:
 
 ```
-mkdir -p packs.dev/examples/policies
-cp examples/actions/hello-concurrency.yaml packs.dev/examples/actions
-cp examples/policies/hello-concurrency.yaml packs.dev/examples/policies
+mkdir -p packs.dev/tutorial/policies
+cp tutorial/actions/hello-concurrency.yaml packs.dev/tutorial/actions
+cp tutorial/policies/hello-concurrency.yaml packs.dev/tutorial/policies
 ```
 
 Inside the `stackstorm` container, run:
@@ -83,13 +83,13 @@ st2ctl reload --register-all
 Open two terminals to the `stackstorm` container. In the first, type (but don't execute):
 
 ```
-st2 run examples.hello-concurrency name=1
+st2 run tutorial.hello-concurrency name=1
 ```
 
 In the second, type:
 
 ```
-st2 run examples.hello-concurrency name=2
+st2 run tutorial.hello-concurrency name=2
 ```
 
 Now, execute the command in the first terminal, wait 5 seconds and then execute the command in the
@@ -110,13 +110,17 @@ be "delayed".  Between 10 and 20 seconds, the status of the second action should
 20 seconds, the status of the second action should be "succeeded".
 
 ```
+root@ffc8bc7909c6:/# st2 execution list
 +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
 | id                       | action.ref                 | context.user | status                  | start_timestamp               | end_timestamp                 |
 +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
-| 590cec068964ad01567f61dd | examples.hello-concurrency | st2admin     | succeeded (10s elapsed) | Fri, 05 May 2017 21:17:58 UTC | Fri, 05 May 2017 21:18:08 UTC |
-| 590cec1f8964ad01567f61e0 | examples.hello-concurrency | st2admin     | succeeded (10s elapsed) | Fri, 05 May 2017 21:18:23 UTC | Fri, 05 May 2017 21:18:33 UTC |
-| 590cec228964ad01567f61e3 | examples.hello-concurrency | st2admin     | succeeded (17s elapsed) | Fri, 05 May 2017 21:18:26 UTC | Fri, 05 May 2017 21:18:43 UTC |
+ :
+(snip)
+ :
+| 5a366f07a1d7aa00ecfd3cef | tutorial.hello-concurrency | st2admin     | succeeded (11s elapsed) | Sun, 17 Dec 2017 13:20:07 UTC | Sun, 17 Dec 2017 13:20:18 UTC |
+| 5a366f0aa1d7aa00ecfd3cf2 | tutorial.hello-concurrency | st2admin     | succeeded (18s elapsed) | Sun, 17 Dec 2017 13:20:10 UTC | Sun, 17 Dec 2017 13:20:28 UTC |
 +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
+
 ```
 
 ## Adding a rule
@@ -125,8 +129,8 @@ To perform a very basic end-to-end test of StackStorm, let's create a simple rul
 Run the following from your docker host.
 
   ```
-  mkdir packs.dev/examples/rules
-  cp examples/rules/monitor_file.yaml packs.dev/examples/rules
+  mkdir packs.dev/tutorial/rules
+  cp tutorial/rules/monitor_file.yaml packs.dev/tutorial/rules
   ```
 
 Take a look at `monitor_file.yaml`. The `core.local` action is triggered when the
@@ -154,24 +158,25 @@ echo "hello" >> /tmp/watcher.log
 You should see that the action was fired:
 
   ```
-  st2 execution list
-  root@4ff11fdda3a9:/opt/stackstorm/packs.dev/examples/rules# st2 execution list
-  +--------------------------+----------------+--------------+-------------------------+-------------------------------+-------------------------------+
-  | id                       | action.ref     | context.user | status                  | start_timestamp               | end_timestamp                 |
-  +--------------------------+----------------+--------------+-------------------------+-------------------------------+-------------------------------+
-  ...
-  | 590cec068964ad01567f61dd | core.local     | st2admin     | succeeded (10s elapsed) | Wed, 19 May 2017 21:17:58 UTC | Fri, 05 May 2017 21:18:08 UTC |
-  +--------------------------+----------------+--------------+-------------------------+-------------------------------+-------------------------------+
-  root@4ff11fdda3a9:/opt/stackstorm/packs.dev/examples/rules# st2 execution get 590cec068964ad01567f61dd
-  id: 590cec068964ad01567f61dd
+  root@ffc8bc7909c6:/# st2 execution list
+  +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
+  | id                       | action.ref                 | context.user | status                  | start_timestamp               | end_timestamp                 |
+  +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
+   :
+  (snip)
+   :
+  | 5a36702fa1d7aa00373b785c | core.local                 | stanley      | succeeded (0s elapsed)  | Sun, 17 Dec 2017 13:25:03 UTC | Sun, 17 Dec 2017 13:25:03 UTC |
+  +--------------------------+----------------------------+--------------+-------------------------+-------------------------------+-------------------------------+
+  root@ffc8bc7909c6:/# st2 execution get 5a36702fa1d7aa00373b785c
+  id: 5a36702fa1d7aa00373b785c
   status: succeeded (0s elapsed)
   parameters:
-    cmd: 'echo "{''file_name'': u''watcher.log'', ''line'': u''hello'', ''file_path'': u''/tmp/watcher.log''}"'
+    cmd: 'echo "{''file_name'': ''watcher.log'', ''line'': u''hello'', ''file_path'': ''/tmp/watcher.log''}"'
   result:
     failed: false
     return_code: 0
     stderr: ''
-    stdout: '{''file_name'': u''watcher.log'', ''line'': u''hello'', ''file_path'': u''/tmp/watcher.log''}'
+    stdout: '{''file_name'': ''watcher.log'', ''line'': u''hello'', ''file_path'': ''/tmp/watcher.log''}'
     succeeded: true
   ```
 
@@ -181,7 +186,7 @@ Congratulations, you have created your first rule!
 
 As an example of how to create a new action, let's add a new action called `echo_action`.
 
-First, on the host, we create the metadata file `./packs.dev/examples/actions/my_echo_action.yaml`:
+First, on the host, we create the metadata file `./packs.dev/tutorial/actions/my_echo_action.yaml`:
 
 ```yaml
 ---
@@ -198,7 +203,7 @@ parameters:
     position: 0
 ```
 
-Then, add the action script at `./packs.dev/examples/actions/my_echo_action.py`.
+Then, add the action script at `./packs.dev/tutorial/actions/my_echo_action.py`.
 
 ```python
 import sys
@@ -218,13 +223,13 @@ When you rename, or create a new action, you must run `st2ctl reload` inside the
 container. Next, to initialize the virtualenv, run:
 
 ```
-  st2 run packs.setup_virtualenv packs=examples
+st2 run packs.setup_virtualenv packs=tutorial
 ```
 
 Then you can run your action using the following:
 
 ```
-  st2 run examples.echo_action message=working
+st2 run tutorial.echo_action message=working
 ```
 
 You should see output similar to:
@@ -251,9 +256,9 @@ Congratulations! You have successfully added your first action!
 To add a simple mistral workflow, run the following from your docker host.
 
   ```
-  mkdir -p packs.dev/examples/actions/workflows
-  cp -R examples/actions/mistral-basic.yaml packs.dev/examples/actions/mistral-basic.yaml
-  cp -R examples/actions/workflows/mistral-basic.yaml packs.dev/examples/actions/workflows/mistral-basic.yaml
+  mkdir -p packs.dev/tutorial/actions/workflows
+  cp -R tutorial/actions/mistral-basic.yaml packs.dev/tutorial/actions/mistral-basic.yaml
+  cp -R tutorial/actions/workflows/mistral-basic.yaml packs.dev/tutorial/actions/workflows/mistral-basic.yaml
   ```
 
 Use `docker exec` to connect to the `stackstorm` container:
@@ -265,7 +270,7 @@ Use `docker exec` to connect to the `stackstorm` container:
 Within the container, run the following:
 
   ```
-  st2 action create /opt/stackstorm/packs.dev/examples/actions/mistral-basic.yaml
+  st2 action create /opt/stackstorm/packs.dev/tutorial/actions/mistral-basic.yaml
   st2 run examples.mistral-basic cmd=date -a
   ```
 
