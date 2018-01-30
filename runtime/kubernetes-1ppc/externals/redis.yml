@@ -11,7 +11,7 @@ spec:
         app: redis
     spec:
       containers:
-      - name: nginx
+      - name: redis
         image: redis:latest
         ports:
         - containerPort: 6379
