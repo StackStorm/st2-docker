@@ -71,6 +71,12 @@ case "$ST2_SERVICE" in
   "st2web" )
     exec /usr/sbin/nginx -g 'daemon off;'
     ;;
+  "st2chatops" )
+    set -e
+    export ST2_API=${ST2_API_URL}
+    cd /opt/stackstorm/chatops
+    exec bin/hubot $DAEMON_ARGS
+    ;;
   "st2-register-content" )
     set -ex
     PACKS=${PACKS:-"chatops core default linux packs"}
