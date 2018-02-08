@@ -35,7 +35,35 @@ jobs:
 
 workflows:
   version: 2
-  build_deploy:
+  nightly-workflow:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          environment:
+            BUILD_DEV: "dev build"
+          filters:
+            tags:
+              only:
+                - /.*/
+      - deploy:
+          environment:
+            BUILD_DEV: "dev build"
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+            tags:
+              only:
+                - /^v.*/
+  commit-workflow:
     jobs:
       - build:
           filters:
