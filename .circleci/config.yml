@@ -6,6 +6,36 @@ defaults: &defaults
 
 version: 2
 jobs:
+  nightly-build:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Install bash
+          command: apk add --no-cache bash
+      - run:
+          name: Build image
+          command: bin/build.sh
+          environment:
+            BUILD_DEV: true
+  nightly-deploy:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Install bash
+          command: apk add --no-cache bash
+      - run:
+          name: Deploy image to Docker Hub
+          command: |
+            docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+            bin/deploy.sh
+          environment:
+            BUILD_DEV: true
   build:
     <<: *defaults
     steps:
@@ -44,16 +74,12 @@ workflows:
               only:
                 - master
     jobs:
-      - build:
-          environment:
-            BUILD_DEV: "dev build"
+      - nightly-build:
           filters:
             tags:
               only:
                 - /.*/
-      - deploy:
-          environment:
-            BUILD_DEV: "dev build"
+      - nightly-deploy:
           requires:
             - build
           filters:
