@@ -81,7 +81,7 @@ workflows:
                 - /.*/
       - nightly-deploy:
           requires:
-            - build
+            - nightly-build
           filters:
             branches:
               only:
