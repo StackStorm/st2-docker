@@ -110,6 +110,19 @@ It's designed to suffice the ordinary use case by default. If you need to custom
     - `/opt/stackstorm/virtualenvs`
     - `/opt/stackstorm/configs`
 
+Since data directories may persist between invocations of `docker-compose`, you may see the following error:
+
+```
+2018-02-21 16:36:21.453 UTC [1] FATAL:  database files are incompatible with server
+2018-02-21 16:36:21.453 UTC [1] DETAIL:  The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 10.2 (Debian 10.2-1.pgdg90+1).
+```
+
+In `docker-compose.yml`, pin the postgres version to `9.6` and you will not see the error again.
+
+```
+-    image: postgres:latest
++    image: postgres:9.6
+```
 
 ## Environment variables
 
