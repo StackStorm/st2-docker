@@ -40,7 +40,7 @@ services:
       - mongo-configdb-volume:/data/configdb
     dns_search: .
   rabbitmq:
-    image: rabbitmq:3.6-management
+    image: rabbitmq:management
     container_name: rabbitmq
     env_file:
       - conf/rabbitmq.env
@@ -50,7 +50,7 @@ services:
       - rabbitmq-volume:/var/lib/rabbitmq
     dns_search: .
   postgres:
-    image: postgres:9.6
+    image: postgres:latest
     container_name: postgres
     env_file:
       - conf/postgres.env
@@ -60,7 +60,7 @@ services:
       - postgres-volume:/var/lib/postgresql/data
     dns_search: .
   redis:
-    image: redis:4.0
+    image: redis:latest
     container_name: redis
     env_file:
       - conf/redis.env
