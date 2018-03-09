@@ -42,10 +42,10 @@ Running on Kubernetes? See [runtime/kubernetes-1ppc](./runtime/kubernetes-1ppc)
 The default container configuration is as follows:
 
  - stackstorm (st2 + st2web + st2mistral)
- - mongo
- - rabbitmq
- - postgres
- - redis
+ - st2mongo
+ - st2rabbitmq
+ - st2postgres
+ - st2redis
 
 
 ### Step by step instructions
@@ -59,7 +59,7 @@ First, execute
   make env
   ```
 
-to create the environment files used by docker-compose. You may want to change the values of the
+to create the environment files used by `docker-compose`. You may want to change the values of the
 variables as necessary, but the defaults should be okay if you are not using any off-cluster
 services (e.g. mongo, redis, postgres, rabbitmq).
 
