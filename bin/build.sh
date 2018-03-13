@@ -38,8 +38,9 @@ for name in stackstorm; do
     fi
 
     if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:${CIRCLE_BRANCH}
+      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:master
     fi
+
     if [ ! -z ${tag} ]; then
       ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}
     fi
