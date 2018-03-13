@@ -25,16 +25,9 @@ for name in stackstorm; do
       else
         echo "Not deploying image. ${CIRCLE_TAG} != ${latest}"
       fi
+    else
+      ${dry_run} docker push stackstorm/${name}:latest
     fi
-
-    # Tag with 'master' if current branch is master
-    if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-      ${dry_run} docker push stackstorm/${name}:master
-    fi
-
-    # 'latest' simply means "the last build/tag that ran without a specific tag/version specified".
-    # https://medium.com/@mccode/the-misunderstood-docker-tag-latest-af3babfd6375
-    ${dry_run} docker push stackstorm/${name}
   else
     # Build unstable, and tag as "dev".
 

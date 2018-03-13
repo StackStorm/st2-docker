@@ -7,8 +7,6 @@ IDS=$'\n\t'
 
 source bin/common.sh
 
-# NOTE: dry_run=echo if the -n option is specified when executing this script
-
 for name in stackstorm; do
   if [ -z ${BUILD_DEV} ]; then
     # This is not a dev build
@@ -16,13 +14,10 @@ for name in stackstorm; do
 
     if [ -z ${CIRCLE_TAG} ]; then
       # A tag was not pushed, so we only need to build 'latest' (not tagged)
-      tag=''
-      colon=''
-    else
-      colon=':'
+      tag='latest'
     fi
 
-    name_tag="${name}${colon}${tag}"
+    name_tag="${name}:${tag}"
 
     # Build the image, tag using CIRCLE_TAG
     ${dry_run} docker build --build-arg ST2_TAG=${st2_tag} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} \
@@ -37,12 +32,8 @@ for name in stackstorm; do
       echo "INFO: Short tag is unchanged since this is not a tagged build."
     fi
 
-    if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:master
-    fi
-
-    if [ ! -z ${tag} ]; then
-      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}
+    if [ "$tag" != 'latest' ]; then
+      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:latest
     fi
   else
     # Triggered to run nightly via ops-infra

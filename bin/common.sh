@@ -12,9 +12,6 @@ echo CIRCLE_TAG=${CIRCLE_TAG}
 BUILD_DEV=${BUILD_DEV:-}
 echo BUILD_DEV=${BUILD_DEV}
 
-CIRCLE_BRANCH=${CIRCLE_BRANCH:-}
-echo CIRCLE_BRANCH=${CIRCLE_BRANCH}
-
 if [ -z ${CIRCLE_SHA1} ]; then
   echo "ERROR: CIRCLE_SHA1 is not defined."
   echo "To resolve, run:"
