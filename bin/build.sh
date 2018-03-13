@@ -5,7 +5,16 @@
 set -euo pipefail
 IDS=$'\n\t'
 
-if [ -z ${CIRCLE_SHA1:-} ]; then
+CIRCLE_SHA1=${CIRCLE_SHA1:-}
+echo CIRCLE_SHA1=${CIRCLE_SHA1}
+
+CIRCLE_TAG=${CIRCLE_TAG:-}
+echo CIRCLE_TAG=${CIRCLE_TAG}
+
+BUILD_DEV=${BUILD_DEV:-}
+echo BUILD_DEV=${BUILD_DEV}
+
+if [ -z ${CIRCLE_SHA1} ]; then
   echo "ERROR: CIRCLE_SHA1 is not defined."
   echo "To resolve, run:"
   echo "  $ export CIRCLE_SHA1=<commit_sha>"
@@ -13,15 +22,21 @@ if [ -z ${CIRCLE_SHA1:-} ]; then
   exit 1
 fi
 
-echo CIRCLE_TAG=${CIRCLE_TAG:-}
-echo BUILD_DEV=${BUILD_DEV:-}
-latest=`git tag -l | sort -r | head -1`
+# Get the latest tag beginning with 'v'
+latest=`git tag -l "v*" | sort -r | head -1`
 echo latest=${latest}
 
-if [[ ${CIRCLE_TAG:-} =~ ^v(.+)$ ]]; then
+if [ ! -z ${CIRCLE_TAG} ]; then
+  if [[ ! ${CIRCLE_TAG} =~ ^v(.+)$ ]]; then
+    echo "ERROR: CIRCLE_TAG must begin with 'v'"
+    exit 1
+  fi
+fi
+
+if [[ ${CIRCLE_TAG} =~ ^v(.+)$ ]]; then
   # A tag was pushed, so we'll build an image using this specific release.
   tag=${BASH_REMATCH[1]}
-  if [[ ${CIRCLE_TAG:-} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+  if [[ ${CIRCLE_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
     short_tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
   fi
 else
@@ -41,29 +56,31 @@ fi
 echo tag=${tag}
 
 for name in stackstorm; do
-  if [ -z ${BUILD_DEV:-} ]; then
+  if [ -z ${BUILD_DEV} ]; then
     # This is not a dev build
-    ST2_TAG=${tag}
+    st2_tag=${tag}
 
-    if [ -z ${CIRCLE_TAG:-} ]; then
+    if [ -z ${CIRCLE_TAG} ]; then
       # A tag was not pushed, so we only need to build 'latest'
-      tag='latest'
+      tag=''
+      colon=''
+    else
+      tag="${tag}"
+      colon=':'
     fi
 
-    docker build --build-arg ST2_TAG=${ST2_TAG} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1:-} \
+    name_tag="${name}${colon}${tag}"
+
+    docker build --build-arg ST2_TAG=${st2_tag} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} \
       --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
       --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
       --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
-      -t stackstorm/${name}:${tag} images/${name}
+      -t stackstorm/${name_tag} images/${name}
 
     if [ "v${tag}" == "${latest}" ]; then
-      docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
-      docker tag stackstorm/${name}:${tag} stackstorm/${name}:${short_tag:-}
-    elif [ "${tag}" ==  "latest" ]; then
-      echo "${tag} == latest"
-      docker tag stackstorm/${name}:${tag} stackstorm/${name}:latest
+      docker tag stackstorm/${name_tag} stackstorm/${name}:${short_tag:-}
     else
-      echo "v${tag} != ${latest}"
+      echo "No need to tag build with two digit tag (v${tag} != ${latest})"
     fi
   else
     # Triggered to run nightly via ops-infra

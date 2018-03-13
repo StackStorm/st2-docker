@@ -55,12 +55,12 @@ for name in stackstorm; do
         if [ ! -z "${short_tag:-}" ]; then
           docker push stackstorm/${name}:${short_tag}
         fi
-        docker push stackstorm/${name}:latest
+        docker push stackstorm/${name}
       else
         echo "Not deploying image. ${CIRCLE_TAG} != ${latest}"
       fi
     else
-      docker push stackstorm/${name}:latest
+      docker push stackstorm/${name}
     fi
   else
     # Build unstable, and tag as "dev".
