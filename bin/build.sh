@@ -21,7 +21,8 @@ for name in stackstorm; do
     continue
   fi
 
-  # This is not a dev build
+  # From this point on, not a dev build...
+
   st2_tag=${tag}
 
   if [ -z ${CIRCLE_TAG} ]; then

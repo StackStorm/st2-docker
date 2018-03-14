@@ -18,9 +18,7 @@ for name in stackstorm; do
     continue
   fi
 
-  echo "not a dev build"
-
-  # This is not a dev build!
+  # From this point on, not a dev build...
 
   # Push the tag to docker hub if and only if this is a tagged build.
   # ASSUMPTION: Builds are never "re-tagged".
