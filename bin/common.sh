@@ -1,7 +1,7 @@
 # The following code snippet is used by build.sh and deploy.sh
 
 # Set debug to 'echo' to test
-dry_run='echo'
+dry_run=''
 
 CIRCLE_SHA1=${CIRCLE_SHA1:-}
 echo CIRCLE_SHA1=${CIRCLE_SHA1}
