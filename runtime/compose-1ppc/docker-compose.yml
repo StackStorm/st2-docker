@@ -92,7 +92,7 @@ services:
 
 ### External Services
 
-  st2mongo:
+  mongo:
     image: mongo:3.4
     env_file:
       - conf/mongo.env
@@ -102,7 +102,7 @@ services:
       - mongo-volume:/data/db
       - mongo-configdb-volume:/data/configdb
     dns_search: .
-  st2rabbitmq:
+  rabbitmq:
     image: rabbitmq:management
     env_file:
       - conf/rabbitmq.env
@@ -111,7 +111,7 @@ services:
     volumes:
       - rabbitmq-volume:/var/lib/rabbitmq
     dns_search: .
-  st2postgres:
+  postgres:
     image: postgres:latest
     env_file:
       - conf/postgres.env
@@ -120,7 +120,7 @@ services:
     volumes:
       - postgres-volume:/var/lib/postgresql/data
     dns_search: .
-  st2redis:
+  redis:
     image: redis:latest
     env_file:
       - conf/redis.env

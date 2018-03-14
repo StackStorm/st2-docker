@@ -42,10 +42,10 @@ Running on Kubernetes? See [runtime/kubernetes-1ppc](./runtime/kubernetes-1ppc)
 The default container configuration is as follows:
 
  - stackstorm (st2 + st2web + st2mistral)
- - st2mongo
- - st2rabbitmq
- - st2postgres
- - st2redis
+ - mongo
+ - rabbitmq
+ - postgres
+ - redis
 
 
 ### Step by step instructions
