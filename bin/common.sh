@@ -2,6 +2,11 @@
 
 # Set debug to 'echo' to test
 dry_run=''
+if [ ${DRY_RUN:-} ]; then
+  dry_run='echo'
+  echo "Dry run mode enabled..."
+  sleep 2
+fi
 
 CIRCLE_SHA1=${CIRCLE_SHA1:-}
 echo CIRCLE_SHA1=${CIRCLE_SHA1}
