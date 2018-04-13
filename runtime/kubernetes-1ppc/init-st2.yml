@@ -22,7 +22,8 @@ spec:
         - >-
           mkdir /tmp/st2 &&
           mount -o bind /opt/stackstorm /tmp/st2 &&
-          rsync -avi /tmp/st2/packs/ /opt/stackstorm/packs/
+          rsync -avi /tmp/st2/packs/ /opt/stackstorm/packs/ &&
+          rsync -avi /tmp/st2/configs/ /opt/stackstorm/configs/
         envFrom:
         - configMapRef: { name: st2 }
         - configMapRef: { name: rabbitmq }
@@ -32,6 +33,8 @@ spec:
           mountPath: /opt/stackstorm/packs
         - name: st2-virtualenvs
           mountPath: /opt/stackstorm/virtualenvs
+        - name: st2-pack-configs
+          mountPath: /opt/stackstorm/configs
       volumes:
       - name: st2-packs
         persistentVolumeClaim:
@@ -39,6 +42,9 @@ spec:
       - name: st2-virtualenvs
         persistentVolumeClaim:
           claimName: st2-virtualenvs
+      - name: st2-pack-configs
+        persistentVolumeClaim:
+          claimName: st2-pack-configs
       restartPolicy: Never
 
 ---
@@ -67,6 +73,8 @@ spec:
           mountPath: /opt/stackstorm/packs
         - name: st2-virtualenvs
           mountPath: /opt/stackstorm/virtualenvs
+        - name: st2-pack-configs
+          mountPath: /opt/stackstorm/configs
       volumes:
       - name: st2-packs
         persistentVolumeClaim:
@@ -74,5 +82,8 @@ spec:
       - name: st2-virtualenvs
         persistentVolumeClaim:
           claimName: st2-virtualenvs
+      - name: st2-pack-configs
+        persistentVolumeClaim:
+          claimName: st2-pack-configs
       restartPolicy: Never
 

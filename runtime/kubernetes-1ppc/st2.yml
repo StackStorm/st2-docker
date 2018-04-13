@@ -147,6 +147,8 @@ spec:
           mountPath: /opt/stackstorm/packs
         - name: st2-virtualenvs
           mountPath: /opt/stackstorm/virtualenvs
+        - name: st2-pack-configs
+          mountPath: /opt/stackstorm/configs
       volumes:
       - name: st2-packs
         persistentVolumeClaim:
@@ -154,6 +156,9 @@ spec:
       - name: st2-virtualenvs
         persistentVolumeClaim:
           claimName: st2-virtualenvs
+      - name: st2-pack-configs
+        persistentVolumeClaim:
+          claimName: st2-pack-configs
 
 ---
 apiVersion: apps/v1beta1
@@ -209,6 +214,8 @@ spec:
           mountPath: /opt/stackstorm/packs
         - name: st2-virtualenvs
           mountPath: /opt/stackstorm/virtualenvs
+        - name: st2-pack-configs
+          mountPath: /opt/stackstorm/configs
       volumes:
       - name: st2-packs
         persistentVolumeClaim:
@@ -216,6 +223,9 @@ spec:
       - name: st2-virtualenvs
         persistentVolumeClaim:
           claimName: st2-virtualenvs
+      - name: st2-pack-configs
+        persistentVolumeClaim:
+          claimName: st2-pack-configs
 
 ---
 apiVersion: apps/v1beta1
@@ -416,6 +426,18 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: st2-virtualenvs
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: st2-pack-configs
 spec:
   accessModes:
   - ReadWriteMany
