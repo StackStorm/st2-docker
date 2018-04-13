@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2018-02-27
+----------
+
+Changed
+~~~~~~~
+
+* Pin DB's to specific, tested versions.
+
 2017-10-23
 ----------
 
