@@ -40,7 +40,7 @@ for name in stackstorm; do
     -t stackstorm/${name_tag} images/${name}
 
   if [ "v${tag}" == "${latest}" ]; then
-    ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:${short_tag:-}
+    ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:${short_tag}
   else
     echo "INFO: Short tag is unchanged since this is not a tagged build."
   fi
