@@ -20,15 +20,29 @@ jobs:
           command: bin/build.sh
           environment:
             BUILD_DEV: true
+      - run:
+          name: Save image
+          command: bin/save.sh
+          environment:
+            BUILD_DEV: true
+      - persist_to_workspace:
+          root: tar
+          paths:
+            - .
   nightly-deploy:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: tar
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
           name: Install bash
           command: apk add --no-cache bash
+      - run:
+          name: Load image
+          command: bin/load.sh
       - run:
           name: Deploy image to Docker Hub
           command: |
@@ -48,15 +62,27 @@ jobs:
       - run:
           name: Build image
           command: bin/build.sh
+      - run:
+          name: Save image
+          command: bin/save.sh
+      - persist_to_workspace:
+          root: tar
+          paths:
+            - .
   deploy:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: tar
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
           name: Install bash
           command: apk add --no-cache bash
+      - run:
+          name: Load image from workspace
+          command: bin/load.sh
       - run:
           name: Deploy image to Docker Hub
           command: |

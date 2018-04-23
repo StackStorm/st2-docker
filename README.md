@@ -20,6 +20,8 @@
 ## TL;DR
 
 ```
+git clone git@github.com:stackstorm/st2-docker
+cd st2-docker
 make env
 docker-compose up -d
 docker-compose exec stackstorm bash
