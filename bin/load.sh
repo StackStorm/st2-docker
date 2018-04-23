@@ -9,5 +9,5 @@ source bin/common.sh
 
 for name in stackstorm; do
   # Load the tarball (tags are automatically loaded)
-  ${dry_run} docker load -i tar/${name}.tar
+  ${dry_run} docker load -i /workspace/tar/${name}.tar
 done
