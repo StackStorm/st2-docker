@@ -38,5 +38,6 @@ for name in stackstorm; do
     tags+=" stackstorm/${name}:latest"
   fi
 
-  ${dry_run} docker save -o tar/${name}.tar ${tags}
+  mkdir -p /workspace/tar
+  ${dry_run} docker save -o /workspace/tar/${name}.tar ${tags}
 done
