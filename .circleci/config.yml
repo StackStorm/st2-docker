@@ -26,15 +26,15 @@ jobs:
           environment:
             BUILD_DEV: true
       - persist_to_workspace:
-          root: tar
+          root: /build
           paths:
-            - .
+            - tar
   nightly-deploy:
     <<: *defaults
     steps:
-      - attach_workspace:
-          at: tar
       - checkout
+      - attach_workspace:
+          at: /build
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -66,14 +66,14 @@ jobs:
           name: Save image
           command: bin/save.sh
       - persist_to_workspace:
-          root: tar
+          root: /build
           paths:
-            - .
+            - tar
   deploy:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: tar
+          at: /build
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
