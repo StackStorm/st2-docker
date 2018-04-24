@@ -129,6 +129,7 @@ workflows:
             branches:
               only:
                 - master
+                - /^fix.*/
             tags:
               only:
                 - /^v.*/
