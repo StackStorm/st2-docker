@@ -13,7 +13,7 @@ cp tutorial/actions/hello.yaml packs.dev/tutorial/actions
 Get a bash shell in the `stackstorm` container:
 
   ```
-  docker exec -it stackstorm /bin/bash
+  docker-compose exec stackstorm /bin/bash
   ```
 
 Load the new action into StackStorm. Whenever you change the yaml file, you need
@@ -136,10 +136,10 @@ Run the following from your docker host.
 Take a look at `monitor_file.yaml`. The `core.local` action is triggered when the
 contents of `/tmp/watcher.log` change.
 
-Use `docker exec` to connect to the `stackstorm` container:
+Use `docker-compose exec` to connect to the `stackstorm` container:
 
   ```
-  docker exec -it stackstorm /bin/bash
+  docker-compose exec stackstorm /bin/bash
   ```
 
 Run the following:
@@ -261,10 +261,10 @@ To add a simple mistral workflow, run the following from your docker host.
   cp -R tutorial/actions/workflows/mistral-basic.yaml packs.dev/tutorial/actions/workflows/mistral-basic.yaml
   ```
 
-Use `docker exec` to connect to the `stackstorm` container:
+Use `docker-compose exec` to connect to the `stackstorm` container:
 
   ```
-  docker exec -it stackstorm /bin/bash
+  docker-compose exec stackstorm /bin/bash
   ```
 
 Within the container, run the following:
