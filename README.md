@@ -61,7 +61,7 @@ First, execute
   make env
   ```
 
-to create the environment files used by docker-compose. You may want to change the values of the
+to create the environment files used by `docker-compose`. You may want to change the values of the
 variables as necessary, but the defaults should be okay if you are not using any off-cluster
 services (e.g. mongo, redis, postgres, rabbitmq).
 
