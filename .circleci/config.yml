@@ -129,7 +129,7 @@ workflows:
             branches:
               only:
                 - master
-                - /^fix.*/
+                - feature/circleci
             tags:
               only:
                 - /^v.*/
