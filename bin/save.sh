@@ -7,11 +7,11 @@ IDS=$'\n\t'
 
 source bin/common.sh
 
-${dry_run} mkdir -p tar
+${dry_run} mkdir -p ${WORKSPACE}
 
 for name in stackstorm; do
   if [ ! -z ${BUILD_DEV} ]; then
-    ${dry_run} docker save -o tar/${name}.tar stackstorm/${name}:dev
+    ${dry_run} docker save -o ${WORKSPACE}/${name}.tar stackstorm/${name}:dev
 
     continue
   fi
@@ -38,6 +38,5 @@ for name in stackstorm; do
     tags+=" stackstorm/${name}:latest"
   fi
 
-  mkdir -p /workspace/tar
-  ${dry_run} docker save -o /workspace/tar/${name}.tar ${tags}
+  ${dry_run} docker save -o ${WORKSPACE}/${name}.tar ${tags}
 done
