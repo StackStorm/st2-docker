@@ -3,7 +3,6 @@ version: '3'
 services:
   stackstorm:
     image: stackstorm/stackstorm:${TAG:-latest}
-    container_name: stackstorm
     env_file:
       - conf/stackstorm.env
       - conf/mongo.env
@@ -30,7 +29,6 @@ services:
 
   mongo:
     image: mongo:3.4
-    container_name: st2mongo
     env_file:
       - conf/mongo.env
     networks:
@@ -41,7 +39,6 @@ services:
     dns_search: .
   rabbitmq:
     image: rabbitmq:3.6-management
-    container_name: st2rabbitmq
     env_file:
       - conf/rabbitmq.env
     networks:
@@ -51,7 +48,6 @@ services:
     dns_search: .
   postgres:
     image: postgres:9.6
-    container_name: st2postgres
     env_file:
       - conf/postgres.env
     networks:
@@ -61,7 +57,6 @@ services:
     dns_search: .
   redis:
     image: redis:4.0
-    container_name: st2redis
     env_file:
       - conf/redis.env
     networks:
