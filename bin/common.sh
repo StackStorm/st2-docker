@@ -8,6 +8,9 @@ if [ ${DRY_RUN:-} ]; then
   sleep 2
 fi
 
+WORKSPACE=/workspace/tar
+echo WORKSPACE=${WORKSPACE}
+
 CIRCLE_SHA1=${CIRCLE_SHA1:-}
 echo CIRCLE_SHA1=${CIRCLE_SHA1}
 

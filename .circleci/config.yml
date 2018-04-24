@@ -129,6 +129,7 @@ workflows:
             branches:
               only:
                 - master
+                - feature/circleci
             tags:
               only:
                 - /^v.*/
