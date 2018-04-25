@@ -95,6 +95,24 @@ See [official document](https://docs.stackstorm.com/reference/ha.html#sharing-co
     - st2actionrunner
     - st2sensorcontainer
 
+
+### Running st2chatops
+
+Add following service entry to `docker-compose.yml`
+
+```
+  st2chatops:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2chatops
+      - HUBOT_ADAPTER=slack
+      - HUBOT_SLACK_TOKEN=xoxb-CHANGE-ME-PLEASE
+      - ST2_API_KEY=CHANGE-ME-PLEASE
+```
+
+See official docs and `/opt/stackstorm/chatops/st2chatops.env` for chatops configuration details.
+
+
 ### Notes
 
 - Currently all inter-service connections are done via plain http, which might be a problem in
