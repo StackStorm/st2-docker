@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "..fullname" . }}-mistral-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/st2-configmap.yaml") . | sha256sum }}
+      labels:
+        app: mistral-api
+    spec:
+      containers:
+      - name: mistral-api
+        image: {{ .Values.stackstorm.image.repository }}:{{ .Values.stackstorm.image.tag }}
+        imagePullPolicy: Always
+        env:
+        - name: ST2_SERVICE
+          value: mistral-api
+        envFrom:
+        - configMapRef: { name: {{ template "..fullname" . }}-st2 }
+        ports:
+        - containerPort: 8989

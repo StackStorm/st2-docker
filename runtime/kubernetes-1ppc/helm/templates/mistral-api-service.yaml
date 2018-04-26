@@ -1,0 +1,11 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "..fullname" . }}-mistral-api
+spec:
+  selector:
+    app: mistral-api
+  ports:
+  - protocol: TCP
+    port: 8989

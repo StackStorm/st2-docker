@@ -1,0 +1,11 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "..fullname" . }}-st2auth
+spec:
+  selector:
+    app: st2auth
+  ports:
+  - protocol: TCP
+    port: 9100

@@ -1,0 +1,25 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "..fullname" . }}-st2-register-content-job
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": "post-install,post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  template:
+    metadata:
+      name: {{ template "..fullname" . }}-st2-register-content-job
+    spec:
+      containers:
+      - name: register-content-job
+        image: {{ .Values.stackstorm.image.repository }}:{{ .Values.stackstorm.image.tag }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef: { name: {{ template "..fullname" . }}-st2 }
+        env:
+        - name: ST2_SERVICE
+          value: st2-register-content
+      restartPolicy: Never

@@ -1,0 +1,53 @@
+stackstorm:
+  image:
+    repository: "stackstorm/stackstorm"
+    tag: "latest"
+  user: "stackstorm"
+  password: "stanley"
+
+  # Create a Load Balancer for accessing the st2web service
+  createLoadBalancer: false
+  # Make the Load Balancer internal?  If set to false, StackStorm will be avaiable from anywhere.
+  internalLoadBalancer: true
+  #externalDNSHostname: "stackstorm.custom-domain-managed-by-external-dns.com."
+
+  # Use this to mount volumes into the st2 containers.  This should mainly be used for mounting
+  # secrets into containers that do things.  I.E. st2actionrunner needs ssh keys or disk-based credentials
+  # for accessing something protected.
+  #
+  # Also, volumeMounts + volumes generally travel together, so I figured I'd do this for "simplicity"
+  volumeDef: {}
+  # volumeDef:
+  #   volumeMounts: []
+  #   volumes: []
+
+
+## MongoDB (Bitnami container)
+mongodb:
+  image:
+    tag: 3.6.4
+  mongodbUsername: "st2"
+  mongodbPassword: "stanley"
+  mongodbDatabase: "st2"
+
+##
+## RabbitMQ subchart overrides
+## https://github.com/kubernetes/charts/tree/master/stable/rabbitmq#configuration
+## All configuration for the RabbitMQ subchart is namespaced under rabbitmq per Helm's
+## subchart configuration strategy.
+##
+rabbitmq:
+  rabbitmq:
+    username: "st2"
+    password: "stanley"
+    erlangCookie: "rabbitmq"
+  rbacEnabled: true
+
+redis:
+  password: "stanley"
+
+postgresql:
+  imageTag: "9.6.2"
+  postgresDatabase: "mistral"
+  postgresUser: "mistral"
+  postgresPassword: "stanley"
