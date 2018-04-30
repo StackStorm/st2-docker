@@ -79,7 +79,22 @@ Second, start the docker environment. execute
 
 This will pull the required images from docker hub, and then start them.
 
-However, if you find need to modify the stackstorm image, you will need to build it. Run:
+To stop the docker environment, run:
+
+  ```
+  docker-compose down
+  ```
+
+## Building the stackstorm image
+
+The pre-built `stackstorm/stackstorm` image may not meet your requirements. You may need to install
+additional libraries, packages or files into the image. For example, if you want to install the
+Ansible pack, you must first install the `libkrb5-dev` package. While the package could be installed
+using a script in `/st2-docker/entrypoint.d`, this will increase the startup time of the container
+and may result in containers that execute different code than others.
+
+Make any necessary changes to `images/stackstorm/Dockerfile`. For example, append `libkrb5-dev` to
+the first `apt-get install` command. Next, run:
 
   ```
   REPO=stable
@@ -88,12 +103,6 @@ However, if you find need to modify the stackstorm image, you will need to build
 
 where REPO is one of 'stable', 'unstable', 'staging-stable', 'staging-unstable'.  Otherwise,
 the following `docker-compose` command will download the specified image from docker hub.
-
-To stop the docker environment, run:
-
-  ```
-  docker-compose down
-  ```
 
 
 ### Getting started: Simple Tutorial Tour
@@ -207,6 +216,7 @@ Scripts in this directory can be used to register packs, reload or restart servi
 You can bind mount these scripts as mentioned in the previous section.
 
 NOTE: These scripts are currently not available when running in 1ppc mode.
+
 
 ## To enable chatops
 

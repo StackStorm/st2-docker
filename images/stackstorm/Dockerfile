@@ -20,7 +20,10 @@ RUN DEBIAN_FRONTEND=noninteractive \
       crudini \
       uuid-runtime \
       apache2-utils \
-      bash-completion
+      bash-completion \
+      libkrb5-dev
+
+#software-properties-common \
 
 # enable bash-completion
 RUN dpkg-divert /etc/bash.bashrc && \
