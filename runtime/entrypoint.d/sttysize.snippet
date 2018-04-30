@@ -1,3 +1,6 @@
+# Ensure the entire terminal is used. This particular code comes from
+#  https://gist.github.com/scentoni/f4bda3a07cf7711125de3928f95809af
+
 res() {
 
   old=$(stty -g)
@@ -8,8 +11,6 @@ res() {
 
   stty "$old"
 
-  # echo "cols:$cols"
-  # echo "rows:$rows"
   stty cols "$cols" rows "$rows"
 }
 
