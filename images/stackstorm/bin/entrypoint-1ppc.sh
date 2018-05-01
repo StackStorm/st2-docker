@@ -66,7 +66,7 @@ case "$ST2_SERVICE" in
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate
     SERVER_ARGS="--config-file /etc/mistral/mistral.conf --log-file /var/log/mistral/mistral-server.log"
-    exec /opt/stackstorm/mistral/bin/mistral-server --server engine,executor ${SERVER_ARGS}
+    exec /opt/stackstorm/mistral/bin/mistral-server --server engine,executor,notifier ${SERVER_ARGS}
     ;;
   "st2web" )
     exec /usr/sbin/nginx -g 'daemon off;'
