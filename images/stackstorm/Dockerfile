@@ -28,7 +28,11 @@ RUN dpkg-divert /etc/bash.bashrc && \
 
 RUN echo -e "#!/bin/sh\nexit 101\n" > /usr/sbin/policy-rc.d \
     && rm /sbin/initctl; dpkg-divert --rename --remove /sbin/initctl \
-    && locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
+    && locale-gen en_US.UTF-8
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # remove some pointless services
 RUN /usr/sbin/update-rc.d -f ondemand remove; \
