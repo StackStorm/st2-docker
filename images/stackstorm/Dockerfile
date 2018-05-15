@@ -132,6 +132,13 @@ COPY bin/entrypoint.sh /st2-docker/bin/entrypoint.sh
 COPY bin/st2.sh /st2-docker/bin/st2.sh
 COPY config/local.conf /etc/init/local.conf
 
+# Install inspec
+RUN curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+
+COPY ./test /st2-docker/test
+COPY bin/test.sh /st2-docker/bin
+RUN /st2-docker/bin/test.sh
+
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
 # environment variables to `docker run` after the name of the image:
 #   docker run -e ST2_USER... image
