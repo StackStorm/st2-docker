@@ -132,21 +132,22 @@ COPY bin/entrypoint.sh /st2-docker/bin/entrypoint.sh
 COPY bin/st2.sh /st2-docker/bin/st2.sh
 COPY config/local.conf /etc/init/local.conf
 
-# Install inspec
-RUN curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
-
-COPY ./test /st2-docker/test
-COPY bin/test.sh /st2-docker/bin
-RUN /st2-docker/bin/test.sh
-
-# Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
-# environment variables to `docker run` after the name of the image:
-#   docker run -e ST2_USER... image
-ENTRYPOINT ["/st2-docker/bin/entrypoint.sh"]
-
 # 1ppc
 RUN wget -O /dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
     && chmod +x /dumb-init
 COPY bin/entrypoint-1ppc.sh /st2-docker/bin/entrypoint-1ppc.sh
 COPY bin/inject_env.py /st2-docker/bin/inject_env.py
 COPY config/nginx.st2-1ppc.conf.tpl /etc/nginx/conf.d/st2-1ppc.conf.tpl
+
+# Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
+# environment variables to `docker run` after the name of the image:
+#   docker run -e ST2_USER... image
+ENTRYPOINT ["/st2-docker/bin/entrypoint.sh"]
+
+# Install inspec
+RUN curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+
+COPY ./test /st2-docker/test
+COPY bin/test.sh /st2-docker/bin
+
+RUN /st2-docker/bin/test.sh
