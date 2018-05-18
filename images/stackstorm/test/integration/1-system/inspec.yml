@@ -1,0 +1,13 @@
+name: system
+title: Integration Tests for base OS and its configuration
+summary: >
+    Tests for base OS, eg Ubuntu 14.04 LTS to verify that modifications and adjustments made
+    like user, packages, services and other Linux-related changes are applied and work as expected.
+maintainer: StackStorm
+copyright: StackStorm
+copyright_email: info@stackstorm.com
+license: Apache-2.0
+version: 0.1.0
+supports:
+    - os-name: ubuntu
+      release: 14.04
