@@ -15,9 +15,3 @@ A clear and concise description of what the problem is.
 
 **To Reproduce**
 If necessary, please specify steps to reproduce the behavior.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Additional context**
-Add any other context about the problem here.
