@@ -14,11 +14,7 @@ A clear and concise description of what the problem is.
  - stackstorm/stackstorm image: [e.g. v2.7.1]
 
 **To Reproduce**
-If necessary, please specify steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+If necessary, please specify steps to reproduce the behavior.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
