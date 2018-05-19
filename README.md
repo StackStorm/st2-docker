@@ -6,15 +6,14 @@
 
 ## READ FIRST!!
 
-- **Check the [CHANGELOG.rst](https://github.com/StackStorm/st2-docker/blob/master/CHANGELOG.rst)** file for any potential
-  changes that may require restarting containers.
+- **Check the [CHANGELOG.rst](https://github.com/StackStorm/st2-docker/blob/master/CHANGELOG.rst)**
+  file for any potential changes that may require restarting containers.
 - Be sure to use the latest `docker-compose.yml`. Run `git pull` in your `st2-docker` workspace!
 - Run `st2ctl reload --register-all` to reload all services.
-- **For information on how the stackstorm docker image is versioned, see [VERSIONING.md](https://github.com/StackStorm/st2-docker/blob/master/VERSIONING.md)**
-- If a specific image is required, it is always best to be explicit and specify the Image ID. For example:
-  ```
-  stackstorm/stackstorm:2.5.0@{7f33f32b1495}
-  ```
+- **For information on how the stackstorm docker image is versioned, see
+  [VERSIONING.md](https://github.com/StackStorm/st2-docker/blob/master/VERSIONING.md)**.
+- If a specific image version is required, it is always best to be explicit and specify the image
+  digest. See the example of setting `ST2_IMAGE_TAG` environment variable [below](#EnvVars).
 
 
 ## TL;DR
@@ -135,7 +134,7 @@ In `docker-compose.yml`, pin the postgres version to `9.6` and you will not see 
 +    image: postgres:9.6
 ```
 
-## Environment variables
+## Environment variables <a name="EnvVars"></a>
 
 Below is the complete list of available options that can be used to customize your container.
 
@@ -161,6 +160,13 @@ Below is the complete list of available options that can be used to customize yo
 | `REDIS_PORT`     | Redis server port |
 | `REDIS_PASSWORD` | *(Optional)* Redis password |
 
+Also, you can export an additional variable to control which StackStorm version to run by specifying
+the exact Docker image tag:
+
+  ```
+  export ST2_IMAGE_TAG="2.7.1@sha256:4920fd479c907149d9a062c939f158291f0f641fcd1730d9dd2df2696cad2dae"
+  docker-compose up -d
+  ```
 
 ## Running custom shell scripts on boot
 
@@ -198,7 +204,7 @@ Then bind mount it to `/st2-docker/entrypoint.d/modify-st2-config.sh`
   ```
   services:
     stackstorm:
-      image: stackstorm/stackstorm:${TAG:-latest}
+      image: stackstorm/stackstorm:${ST2_IMAGE_TAG:-latest}
        : (snip)
       volumes:
         - /path/to/modify-st2-config.sh:/st2-docker/entrypoint.d/modify-st2-config.sh
