@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+IDS=$'\n\t'
+
+tag=$1
+
+if [ ${tag} == 'latest' ]; then
+  echo 'allow'
+  exit 0
+fi
+
+wget -q https://registry.hub.docker.com/v1/repositories/stackstorm/${name}/tags -O - \
+  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}' | grep ${tag} \
+ || echo 'allow'
