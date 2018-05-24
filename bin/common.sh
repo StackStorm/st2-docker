@@ -3,6 +3,7 @@
 #  latest       - the highest version tagged in the repo (beginning with "v")
 #  st2_tag      - the MAJOR.MINOR.PATCH version of st2 installed in the image
 #  short_tag    - MAJOR.MINOR from ${st2_tag}
+#  latest_short - contains the highest version beginning with ${short_tag}
 #  tagged_build - true if build was tagged, else false
 #  tag          - tag image with this value (if tagged_build st2_tag else latest)
 
