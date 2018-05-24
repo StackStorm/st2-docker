@@ -22,10 +22,8 @@ for name in stackstorm; do
   name_tag="${name}:${tag}"
 
   if [ ${tagged_build} ]; then
-    # gatekeeper returns 'allow' if the images can be pushed
-    gatekeeper=`bin/gatekeeper.sh ${tag}`
-
-    if [ ${gatekeeper} != 'allow' ]; then
+    # gatekeeper.sh returns 'allow' on STDOUT if the images can be pushed
+    if [ `bin/gatekeeper.sh ${tag}` != 'allow' ]; then
       echo "${name_tag} already exists on docker hub.. not pushing again!"
       exit 1
     fi
