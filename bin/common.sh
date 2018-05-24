@@ -44,7 +44,7 @@ if [ ! -z ${CIRCLE_TAG} ]; then
     CIRCLE_TAG_MINOR=${BASH_REMATCH[2]}
     CIRCLE_TAG_PATCH=${BASH_REMATCH[3]}
   else
-    echo "ERROR: CIRCLE_TAG must have format 'vMAJOR.MINOR.PATCH'"
+    echo "ERROR: CIRCLE_TAG must begin with format 'vMAJOR.MINOR.PATCH'"
     exit 1
   fi
 fi
