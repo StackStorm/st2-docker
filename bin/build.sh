@@ -23,29 +23,12 @@ for name in stackstorm; do
 
   # From this point on, not a dev build...
 
-  st2_tag=${tag}
-
-  if [ -z ${CIRCLE_TAG} ]; then
-    # A tag was not pushed, so we only need to build 'latest' (not tagged)
-    tag='latest'
-  fi
-
   name_tag="${name}:${tag}"
 
-  # Build the image, tag using CIRCLE_TAG
+  # Build the ${name_tag} image using Dockerfile in images/${name}
   ${dry_run} docker build --build-arg ST2_TAG=${st2_tag} --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} \
     --build-arg CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME:-} \
     --build-arg CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME:-} \
     --build-arg CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL:-} \
     -t stackstorm/${name_tag} images/${name}
-
-  if [ "v${tag}" == "${latest}" ]; then
-    ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:${short_tag}
-  else
-    echo "INFO: Short tag is unchanged since this is not a tagged build."
-  fi
-
-  if [ "$tag" != 'latest' ]; then
-    ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:latest
-  fi
 done
