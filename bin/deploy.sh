@@ -19,21 +19,27 @@ for name in stackstorm; do
   fi
 
   # From this point on, not a dev build...
+  name_tag="${name}:${tag}"
 
-  # Push the tag to docker hub if and only if this is a tagged build.
-  # ASSUMPTION: Builds are never "re-tagged".
-  if [ ! -z ${CIRCLE_TAG} ]; then
-    if [ "${CIRCLE_TAG}" == "${latest}" ]; then
-      # Update latest if and only if the tag is the most recent tag.
-      # ASSUMPTION: Tags are applied in monotonically increasing order.
-      ${dry_run} docker push stackstorm/${name}:${tag}
-      if [ ! -z "${short_tag}" ]; then
-        ${dry_run} docker push stackstorm/${name}:${short_tag}
-      fi
-    else
-      echo "Not deploying image. ${CIRCLE_TAG} != ${latest}"
+  if ${tagged_build}; then
+    # gatekeeper.sh returns 'allow' on STDOUT if the images can be pushed
+    if [ `bin/gatekeeper.sh ${name} ${tag}` != 'allow' ]; then
+      echo "${name_tag} already exists on docker hub.. not pushing again!"
+      exit 1
     fi
-  else
-    ${dry_run} docker push stackstorm/${name}:latest
+  fi
+
+  ${dry_run} docker push stackstorm/${name}:${tag}
+
+  if ${tagged_build}; then
+    if [ "${st2_tag}" == "${latest_short}" ]; then
+      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:${short_tag}
+      ${dry_run} docker push stackstorm/${name}:${short_tag}
+    fi
+
+    if [ "${st2_tag}" == "${latest}" ]; then
+      ${dry_run} docker tag stackstorm/${name_tag} stackstorm/${name}:latest
+      ${dry_run} docker push stackstorm/${name}:latest
+    fi
   fi
 done
