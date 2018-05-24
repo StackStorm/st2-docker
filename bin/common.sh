@@ -20,12 +20,6 @@ echo WORKSPACE=${WORKSPACE}
 CIRCLE_SHA1=${CIRCLE_SHA1:-}
 echo CIRCLE_SHA1=${CIRCLE_SHA1}
 
-CIRCLE_TAG=${CIRCLE_TAG:-}
-echo CIRCLE_TAG=${CIRCLE_TAG}
-
-BUILD_DEV=${BUILD_DEV:-}
-echo BUILD_DEV=${BUILD_DEV}
-
 if [ -z ${CIRCLE_SHA1} ]; then
   echo "ERROR: CIRCLE_SHA1 is not defined."
   echo "To resolve, run:"
@@ -33,6 +27,12 @@ if [ -z ${CIRCLE_SHA1} ]; then
   echo "  $ $0"
   exit 1
 fi
+
+CIRCLE_TAG=${CIRCLE_TAG:-}
+echo CIRCLE_TAG=${CIRCLE_TAG}
+
+BUILD_DEV=${BUILD_DEV:-}
+echo BUILD_DEV=${BUILD_DEV}
 
 # Get the greatest tag prefixed with 'v'
 # NOTE: We remove the 'v' prefix before returning
