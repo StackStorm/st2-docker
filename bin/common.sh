@@ -34,12 +34,12 @@ echo CIRCLE_TAG=${CIRCLE_TAG}
 BUILD_DEV=${BUILD_DEV:-}
 echo BUILD_DEV=${BUILD_DEV}
 
-# Get the greatest tag prefixed with 'v'
+# Get the highest tag prefixed with 'v'
 # NOTE: We remove the 'v' prefix before returning
 latest=`git tag -l "v*" | sort -r | head -1 | cut -c 2-`
 
 if [ ! -z ${CIRCLE_TAG} ]; then
-  if [[ ${CIRCLE_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+  if [[ ${CIRCLE_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+).*$ ]]; then
     CIRCLE_TAG_MAJOR=${BASH_REMATCH[1]}
     CIRCLE_TAG_MINOR=${BASH_REMATCH[2]}
     CIRCLE_TAG_PATCH=${BASH_REMATCH[3]}
@@ -53,7 +53,7 @@ short_tag=''
 
 if [[ ${CIRCLE_TAG} =~ ^v(.+)$ ]]; then
   # A tag was pushed, so we'll build an image using this specific release.
-  tagged_build=1
+  tagged_build=true
   st2_tag=${BASH_REMATCH[1]}
   tag=${st2_tag}
   short_tag="${CIRCLE_TAG_MAJOR}.${CIRCLE_TAG_MINOR}"
@@ -61,20 +61,10 @@ if [[ ${CIRCLE_TAG} =~ ^v(.+)$ ]]; then
   echo latest_short=${latest_short}
 else
   # NOTE: A valid version tag was not pushed
-  # Build and tag an image using the latest StackStorm release
-  tagged_build=0
+  # Build and tag an image using the highest StackStorm release
+  tagged_build=false
   tag='latest'
-
-  if [[ ${latest} =~ ^v(.+)$ ]]; then
-    st2_tag=${BASH_REMATCH[1]}
-  else
-    echo "ERROR: Could not find a git tag in the st2-docker repo with format vX.Y.Z"
-    echo "To resolve, run:"
-    echo "  $ git co master"
-    echo "  $ git tag -a 'vX.Y.Z' -m 'Stamping X.Y.Z' HEAD"
-    echo "  $ git push --tags"
-    exit 1
-  fi
+  st2_tag=${latest}
 fi
 
 # These variables are available in calling scripts

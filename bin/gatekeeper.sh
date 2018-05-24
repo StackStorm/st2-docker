@@ -3,7 +3,13 @@
 set -euo pipefail
 IDS=$'\n\t'
 
-tag=$1
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 <name> <tag>"
+  exit 1
+fi
+
+name=$1
+tag=$2
 
 if [ ${tag} == 'latest' ]; then
   echo 'allow'
