@@ -106,8 +106,6 @@ RUN bash -c 'source /opt/stackstorm/st2/bin/activate && pip install redis'
 
 # Setup SSH and SUDO access for stanley user
 RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh \
-    && ssh-keygen -f /home/stanley/.ssh/stanley_rsa -P "" \
-    && cat /home/stanley/.ssh/stanley_rsa.pub >> /home/stanley/.ssh/authorized_keys \
     && chown -R stanley:stanley /home/stanley/.ssh \
     && echo "stanley    ALL=(ALL)       NOPASSWD: SETENV: ALL" >> /etc/sudoers.d/st2 \
     && chmod 0440 /etc/sudoers.d/st2 \
@@ -123,8 +121,7 @@ RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
     && cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/st2-base.cnf \
     && ( cd /etc/nginx/conf.d && ln -s st2-base.cnf st2.conf ) \
     && mkdir -p /etc/ssl/st2 \
-    && mkdir /var/run/sshd \
-    && openssl req -x509 -newkey rsa:2048 -keyout /etc/ssl/st2/st2.key -out /etc/ssl/st2/st2.crt -days 3650 -nodes -subj '/O=st2 self signed/CN=localhost'
+    && mkdir /var/run/sshd
 
 EXPOSE 22 443
 
