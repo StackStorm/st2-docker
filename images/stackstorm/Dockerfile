@@ -114,10 +114,12 @@ RUN mkdir -p /home/stanley/.ssh && chmod 0700 /home/stanley/.ssh \
     && sed -i -r "s/^Defaults\s+\+?requiretty/# Defaults +requiretty/g" /etc/sudoers
 
 # Install and configure nginx
-RUN wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add - \
+# Use hkp://...:80 explicitly to grab the GPG key for nginx because port 11371
+# is sometimes blocked by firewalls. See:
+# https://github.com/StackStorm/st2-docker/issues/135#issuecomment-392186954
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ABF5BD827BD9BF62 \
     && echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
     && apt-get update \
     && apt-get install -y nginx \
     && cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/st2-base.cnf \
