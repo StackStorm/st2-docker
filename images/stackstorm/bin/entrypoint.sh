@@ -64,7 +64,7 @@ for f in /st2-docker/entrypoint.d/*; do
 done
 
 # 1ppc: launch entrypoint-1ppc.sh via dumb-init if $ST2_SERVICE is set
-if [ ! -z ${ST2_SERVICE} ]; then
+if [ ! -z ${ST2_SERVICE:-} ]; then
   exec /dumb-init -- /st2-docker/bin/entrypoint-1ppc.sh
 fi
 

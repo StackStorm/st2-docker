@@ -1,18 +1,22 @@
 #!/bin/bash
+
+set -euo pipefail
+
 SSH_DIR=/home/stanley/.ssh
 AUTHORIZED_KEYS=${SSH_DIR}/authorized_keys
 
 SSH_PRIV_KEY=${SSH_DIR}/stanley_rsa
 SSH_PUB_KEY=${SSH_PRIV_KEY}.pub
 
-ST2_KEY=/etc/ssl/st2/st2.key
-ST2_CRT=/etc/ssl/st2/st2.crt
+SSL_DIR=/etc/ssl/st2
+ST2_KEY=${SSL_DIR}/st2.key
+ST2_CRT=${SSL_DIR}/st2.crt
 
 if [ ! -f ${SSH_PRIV_KEY} ]; then
   ssh-keygen -f ${SSH_PRIV_KEY} -P ""
 fi
 
-if [ ! -f ${AUTHORIZED_KEYS} ]; then
+if ! grep -s -q -f ${SSH_PUB_KEY} ${AUTHORIZED_KEYS}; then
   cat ${SSH_PUB_KEY} >> ${AUTHORIZED_KEYS}
 fi
 
