@@ -23,9 +23,13 @@
 git clone git@github.com:stackstorm/st2-docker
 cd st2-docker
 make env
+make gen-ssh
+make gen-ssl
 docker-compose up -d
 docker-compose exec stackstorm bash
 ```
+
+Please see the section below regarding SSH key and SSL certificates.
 
 Open `https://localhost` in your browser. StackStorm Username/Password can be found in: `cat conf/stackstorm.env`
 
@@ -49,6 +53,12 @@ The default container configuration is as follows:
  - postgres
  - redis
 
+### SSH Keys and SSL Certificates
+
+If you do not already have ssh key and ssl certificates, you can generate them using `make gen-ssh`
+and `make gen-ssl`. By default, the secrets are found in the default `ssh` and `ssl` directories at the top
+of the `st2-docker` workspace. If you already have ssh keys and ssl certificates, define the `ST2_SSH_DIR` and
+`ST2_SSL_DIR` environment variables respectively. The secrets will be available in the stackstorm container.
 
 ### Step by step instructions
 
@@ -70,6 +80,22 @@ NOTE: `make env` only needs to be run once.
 As an example, if you want to change the username and password used by StackStorm, change the
 `ST2_USER` and `ST2_PASSWORD` variables in `conf/stackstorm.env` prior to bringing up your docker
 environment.
+
+  ```
+  make gen-ssh
+  ```
+
+NOTE: `make gen-ssh` only needs to be run once.
+
+This generates the ssh key and `authorized_keys` file available in the container at `~stanley/.ssh`.
+
+  ```
+  make gen-ssl
+  ```
+
+NOTE: `make gen-ssl` only needs to be run once.
+
+This generates the `st2.key` and `st2.crt` files required by nginx (st2web).
 
 Second, start the docker environment. execute
 

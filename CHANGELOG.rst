@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2018-06-26
+----------
+
+Changed
+~~~~~~~
+
+* The image no longer contains ssh and ssl secrets. You must now provide them at runtime.
+
 2018-02-27
 ----------
 
