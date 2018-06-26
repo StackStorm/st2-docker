@@ -136,6 +136,9 @@ COPY bin/entrypoint-1ppc.sh /st2-docker/bin/entrypoint-1ppc.sh
 COPY bin/inject_env.py /st2-docker/bin/inject_env.py
 COPY config/nginx.st2-1ppc.conf.tpl /etc/nginx/conf.d/st2-1ppc.conf.tpl
 
+VOLUME ["/home/stanley/.ssh"]
+VOLUME ["/etc/ssl/st2"]
+
 # Default username/password is used unless overridden by supplying ST2_USER and/or ST2_PASSWORD
 # environment variables to `docker run` after the name of the image:
 #   docker run -e ST2_USER... image

@@ -2,3 +2,5 @@ packs
 packs.dev
 *.pyc
 conf
+ssh
+ssl

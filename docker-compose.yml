@@ -23,6 +23,8 @@ services:
       - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
       - ./runtime/st2.d:/st2-docker/st2.d
       - ./conf/stackstorm.env:/st2-docker/env
+      - ${ST2_SSH_DIR:-./ssh}:/home/stanley/.ssh
+      - ${ST2_SSL_DIR:-./ssl}:/etc/ssl/st2
     dns_search: .
 
 ### External Services
