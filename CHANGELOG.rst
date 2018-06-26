@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2018-06-18
+----------
+
+Changed
+~~~~~~~
+
+* The TAG environment variable is replaced by ST2_IMAGE_TAG.
+
 2018-02-27
 ----------
 
