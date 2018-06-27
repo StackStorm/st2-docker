@@ -53,6 +53,10 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=st2resultstracker
+  st2workflowengine:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2workflowengine
   st2notifier:
     <<: *base
     environment:
