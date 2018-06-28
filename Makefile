@@ -3,6 +3,9 @@ SHA := $(shell git describe --match=NeVeRmAtCh --always --abbrev=40 --dirty=*)
 build:
 	docker build --build-arg CIRCLE_SHA1="$(SHA)" -t stackstorm/stackstorm:latest images/stackstorm
 
+dev-build:
+	docker build --build-arg ST2_REPO=unstable --build-arg CIRCLE_SHA1="$(SHA)" -t stackstorm/stackstorm:local-dev images/stackstorm
+
 env:
 	bin/write-env.sh conf
 
