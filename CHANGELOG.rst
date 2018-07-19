@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2018-06-28
+----------
+
+Changed
+~~~~~~~
+
+* Add ``st2workflowengine`` to ``entrypoint-1ppc.sh`` and ``compose-1ppc/docker-compose.yml``.
+
 2018-06-18
 ----------
 

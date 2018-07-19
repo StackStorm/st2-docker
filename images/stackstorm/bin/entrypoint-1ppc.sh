@@ -38,6 +38,10 @@ case "$ST2_SERVICE" in
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2rulesengine ${DAEMON_ARGS}
     ;;
+  "st2workflowengine" )
+    DAEMON_ARGS="--config-file /etc/st2/st2.conf"
+    exec /opt/stackstorm/st2/bin/st2workflowengine ${DAEMON_ARGS}
+    ;;
   "st2actionrunner" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2actionrunner ${DAEMON_ARGS}

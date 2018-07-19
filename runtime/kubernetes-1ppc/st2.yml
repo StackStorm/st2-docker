@@ -293,6 +293,30 @@ spec:
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
+  name: st2workflowengine
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: st2workflowengine
+    spec:
+      containers:
+      - name: st2workflowengine
+        image: stackstorm/stackstorm:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ST2_SERVICE
+          value: st2workflowengine
+        envFrom:
+        - configMapRef: { name: st2 }
+        - configMapRef: { name: rabbitmq }
+        - configMapRef: { name: postgres }
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
   name: mistral-api
 spec:
   replicas: 1
