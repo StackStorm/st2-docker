@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "..fullname" . }}-st2actionrunner
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/st2-configmap.yaml") . | sha256sum }}
+      labels:
+        app: st2actionrunner
+    spec:
+      containers:
+      - name: st2actionrunner
+        image: {{ .Values.stackstorm.image.repository }}:{{ .Values.stackstorm.image.tag }}
+        imagePullPolicy: Always
+        env:
+        - name: ST2_SERVICE
+          value: st2actionrunner
+        - name: ST2_ACTION_AUTH_URL
+          value: http://{{ template "..fullname" . }}-st2auth:9100/
+        envFrom:
+        - configMapRef: { name: {{ template "..fullname" . }}-st2 }
+        {{- if .Values.stackstorm.volumeDef.volumeMounts }}
+        volumeMounts:
+{{ .Values.stackstorm.volumeDef.volumeMounts | toYaml | indent 10 }}
+        {{ end }}
+      {{- if .Values.stackstorm.volumeDef.volumes }}
+      volumes: 
+{{ .Values.stackstorm.volumeDef.volumes | toYaml | indent 8 }}
+      {{ end }}

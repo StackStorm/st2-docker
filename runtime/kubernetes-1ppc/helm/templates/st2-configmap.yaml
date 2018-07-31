@@ -1,0 +1,28 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "..fullname" . }}-st2
+data:
+  ST2_USER: {{ .Values.stackstorm.user }}
+  ST2_PASSWORD: {{ .Values.stackstorm.password }}
+  ST2_AUTH_URL: http://{{ template "..fullname" . }}-st2auth:9100/
+  ST2_API_URL: http://{{ template "..fullname" . }}-st2api:9101/
+  ST2_STREAM_URL: http://{{ template "..fullname" . }}-st2stream:9102/
+  ST2_MISTRAL_API_URL: http://{{ template "..fullname" . }}-mistral-api:8989/v2
+  MONGO_USER: {{ .Values.mongodb.mongodbUsername }}
+  MONGO_PASS: {{ .Values.mongodb.mongodbPassword }}
+  MONGO_HOST: {{ template "..fullname" . }}-mongodb
+  MONGO_PORT: "27017"
+  RABBITMQ_DEFAULT_USER: {{ .Values.rabbitmq.rabbitmq.username }}
+  RABBITMQ_DEFAULT_PASS: {{ .Values.rabbitmq.rabbitmq.password }}
+  RABBITMQ_HOST: {{ template "..fullname" . }}-rabbitmq
+  RABBITMQ_PORT: "5672"
+  POSTGRES_DB: {{ .Values.postgresql.postgresDatabase }}
+  POSTGRES_USER: {{ .Values.postgresql.postgresUser }}
+  POSTGRES_PASSWORD: {{ .Values.postgresql.postgresPassword }}
+  POSTGRES_HOST: {{ template "..fullname" . }}-postgresql
+  POSTGRES_PORT: "5432"
+  REDIS_PASSWORD: {{ .Values.redis.password }}
+  REDIS_HOST: {{ template "..fullname" . }}-redis-master
+  REDIS_PORT: "6379"

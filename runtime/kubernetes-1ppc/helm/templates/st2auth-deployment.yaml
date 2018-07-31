@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "..fullname" . }}-st2auth
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/st2-configmap.yaml") . | sha256sum }}
+      labels:
+        app: st2auth
+    spec:
+      containers:
+      - name: st2auth
+        image: {{ .Values.stackstorm.image.repository }}:{{ .Values.stackstorm.image.tag }}
+        imagePullPolicy: Always
+        env:
+        - name: ST2_SERVICE
+          value: st2auth
+        envFrom:
+        - configMapRef: { name: {{ template "..fullname" . }}-st2 }
+        ports:
+        - containerPort: 9100

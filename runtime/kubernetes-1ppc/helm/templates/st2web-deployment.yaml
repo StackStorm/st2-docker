@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "..fullname" . }}-st2web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/st2-configmap.yaml") . | sha256sum }}
+      labels:
+        app: st2web
+    spec:
+      containers:
+      - name: st2web
+        image: {{ .Values.stackstorm.image.repository }}:{{ .Values.stackstorm.image.tag }}
+        imagePullPolicy: Always
+        env:
+        - name: ST2_SERVICE
+          value: st2web
+        envFrom:
+        - configMapRef: { name: {{ template "..fullname" . }}-st2 }
+        ports:
+        - containerPort: 443
+      - name: dns-resolver
+        image: janeczku/go-dnsmasq:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DNSMASQ_ENABLE_SEARCH
+          value: "1"
+        ports:
+        - containerPort: 53
+          protocol: UDP

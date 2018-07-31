@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "..fullname" . }}-st2rulesengine
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/st2-configmap.yaml") . | sha256sum }}
+      labels:
+        app: st2rulesengine
+    spec:
+      containers:
+      - name: st2rulesengine
+        image: {{ .Values.stackstorm.image.repository }}:{{ .Values.stackstorm.image.tag }}
+        imagePullPolicy: Always
+        env:
+        - name: ST2_SERVICE
+          value: st2rulesengine
+        envFrom:
+        - configMapRef: { name: {{ template "..fullname" . }}-st2 }

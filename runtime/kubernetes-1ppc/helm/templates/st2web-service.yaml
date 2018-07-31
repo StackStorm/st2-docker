@@ -1,0 +1,23 @@
+{{ if .Values.stackstorm.createPublicLoadBalancer }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "..fullname" . }}-st2web
+  annotations:
+      {{ if .Values.stackstorm.internalLoadBalancer }}
+      cloud.google.com/load-balancer-type: "Internal"
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+      service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+      {{ end }}
+      {{ if .Values.externalDNSHostname }}
+      external-dns.alpha.kubernetes.io/hostname: {{ .Values.externalDNSHostname }}
+      {{ end }}
+spec:
+  selector:
+    app: st2web
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 443
+{{ end }}
