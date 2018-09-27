@@ -65,6 +65,10 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=st2garbagecollector
+  st2timersengine:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2timersengine
   mistral-api:
     <<: *base
     environment:
