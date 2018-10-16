@@ -14,7 +14,7 @@
   [VERSIONING.md](https://github.com/StackStorm/st2-docker/blob/master/VERSIONING.md)**.
 - If a specific image version is required, it is always best to be explicit and specify the image
   digest. See the example of setting `ST2_IMAGE_TAG` environment variable [below](#EnvVars).
-- kubernetes-1ppc is deprecated and will be removed in st2 v3.1, in favor of the official
+- kubernetes-1ppc is deprecated and will be removed early next year, in favor of the official
   stackstorm-ha helm chart available at [helm.stackstorm.com](https://helm.stackstorm.com).
 
 
