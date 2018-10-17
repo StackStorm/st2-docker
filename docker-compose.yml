@@ -11,6 +11,11 @@ services:
       - conf/redis.env
     ports:
       - "443:443"
+    depends_on:
+      - mongo
+      - postgres
+      - rabbitmq
+      - redis
     networks:
       - public
       - private
