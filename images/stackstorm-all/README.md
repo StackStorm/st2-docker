@@ -3,7 +3,7 @@
 ## Intro:
 
 - This repo contains what's needed to build a Docker image for [stackstorm](https://stackstorm.com/). Has been tested with version  2.1.2.
-- This is an All-in-One type of image because all components and services required for StackStorm are included in the same image. This differs from a the classical microservices model of having one container per service. 
+- This is an All-in-One type of image because all components and services required for StackStorm are included in the same image. This differs from a the classical microservices model of having one container per service.
 - This is less intended for a producation usage (or for smalle environements only)  but rather more intended for testing / prototyping / CI jobs etc ...
 - All various modules are installed and available, with the exception of the ChatOps part (Roadmap).
 - Thanks to Baptiste Assmann who helped.
@@ -18,7 +18,7 @@ git clone https://github.com/StackStorm/st2-docker.git
 ### Build:
  - First change the ```ST2_PASSWORD``` variable in the Dockerfile. (You may skip this and stay with default password if you using this image for testing purposes only, for production usage though, you may need to change it).
  - Use the docker ```build``` command to create the docker image and give it a name (in this example we are naming the image stackstorm/stackstorm-all).
- 	- The simplest is to go to the directory that contains the Dockerfile and type in the following command (replace ```.``` by the path to Dockerfile if you are not in that directory): 
+ 	- The simplest is to go to the directory that contains the Dockerfile and type in the following command (replace ```.``` by the path to Dockerfile if you are not in that directory):
 ```
 docker build -t stackstorm/stackstorm-all .
 ```
@@ -30,7 +30,7 @@ docker images
 ### Run:
 
 - The Run is about instanciating the docker image we just built, in order to get a container.
-- Use the docker ```run``` command to create the docker image. 
+- Use the docker ```run``` command to create the docker image.
 	- Use ```-d``` to indicate detach mode. This will allow to process the build of the image in background, as soon as you type in this command, you'll get the container ID (even if the build will take roughly 10 mn to get done).
 	- You can add ```--rm=true``` which is helpful for de-provisionning, it will automatically remove the container when you kill it.
 
