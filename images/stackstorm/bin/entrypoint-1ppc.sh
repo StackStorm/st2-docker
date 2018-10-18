@@ -61,7 +61,7 @@ case "$ST2_SERVICE" in
   "st2timersengine" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2timersengine ${DAEMON_ARGS}
-    ;;   
+    ;;
   "mistral-api" )
     set -e
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head
