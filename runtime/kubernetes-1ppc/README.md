@@ -1,5 +1,10 @@
 # Running StackStorm on Kubernetes using 1ppc
 
+## Note
+
+`kubernetes-1ppc` is deprecated and will be removed early next year, in favor of the official
+stackstorm-ha helm chart available at [helm.stackstorm.com](https://helm.stackstorm.com).
+
 ## QuickStart
 
 Tested environment:
