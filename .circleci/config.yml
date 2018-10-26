@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Deploy image to Docker Hub
           command: |
-            docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+            docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
             bin/deploy.sh
           environment:
             BUILD_DEV: true
@@ -86,7 +86,7 @@ jobs:
       - run:
           name: Deploy image to Docker Hub
           command: |
-            docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+            docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
             bin/deploy.sh
 
 workflows:
