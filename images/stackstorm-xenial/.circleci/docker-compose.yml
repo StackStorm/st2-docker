@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  stackstorm:
+    image: stackstorm/stackstorm:xenial
+    restart: always
+    environment:
+      - ST2_ENABLE_SSHD=1
+    env_file:
+      - conf/stackstorm.env
+      - conf/mongo.env
+      - conf/rabbitmq.env
+      - conf/postgres.env
+      - conf/redis.env
+    volumes:
+      - ./packs.dev:/opt/stackstorm/packs.dev
+      - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
+      - ./runtime/st2.d:/st2-docker/st2.d
+      - ./conf/stackstorm.env:/st2-docker/env
+    ports:
+      - "443:443"
+    depends_on:
+      - mongo
+      - postgres
+      - rabbitmq
+      - redis
+    networks:
+      - public
+      - private
+    dns_search: .
+
+### External Services
+
+  mongo:
+    image: mongo:3.4
+    env_file:
+      - conf/mongo.env
+    networks:
+      - private
+    dns_search: .
+  rabbitmq:
+    image: rabbitmq:3.6-management
+    env_file:
+      - conf/rabbitmq.env
+    networks:
+      - private
+    dns_search: .
+  postgres:
+    image: postgres:9.6
+    env_file:
+      - conf/postgres.env
+    networks:
+      - private
+    dns_search: .
+  redis:
+    image: redis:4.0
+    env_file:
+      - conf/redis.env
+    networks:
+      - private
+    dns_search: .
+    command: [
+      "bash", "-c",
+      '
+       docker-entrypoint.sh
+       --requirepass "$$REDIS_PASSWORD"
+      '
+    ]
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge

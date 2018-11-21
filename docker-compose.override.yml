@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  stackstorm:
+    image: stackstorm/stackstorm:${ST2_IMAGE_TAG:-xenial}
+    environment:
+      - ST2_ENABLE_SSHD=1
