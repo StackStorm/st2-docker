@@ -9,6 +9,7 @@ while [[ "$#" > 1 ]]; do case $1 in
   --st2) ST2_VERSION="$2";;
   --st2web) ST2WEB_VERSION="$2";;
   --st2mistral) ST2MISTRAL_VERSION="$2";;
+  --st2chatops) ST2CHATOPS_VERSION="$2";;
   --repo) CIRCLE_PROJECT_REPONAME="$2";;
   --user) CIRCLE_PROJECT_USERNAME="$2";;
   --buildurl) CIRCLE_BUILD_URL="$2";;
@@ -42,10 +43,28 @@ if [ -z ${ST2MISTRAL_VERSION:-} ]; then
     ST2MISTRAL_VERSION="$(apt-cache madison st2mistral | cut -f 2 -d '|' | tr -d '[ \t]' | head -1)"
   fi
 fi
+if [ -z ${ST2CHATOPS_VERSION:-} ]; then
+  if [[ -n ${ST2_TAG:-} ]]; then
+    ST2CHATOPS_VERSION="$(apt-cache madison st2chatops | cut -f 2 -d '|' | tr -d '[ \t]' | grep ${ST2_TAG} | head -1)"
+  else
+    ST2CHATOPS_VERSION="$(apt-cache madison st2chatops | cut -f 2 -d '|' | tr -d '[ \t]' | head -1)"
+  fi
+fi
 
 # Install st2, st2web, and st2mistral
 sudo apt-get update
 sudo apt-get install -y st2=${ST2_VERSION} st2web=${ST2WEB_VERSION} st2mistral=${ST2MISTRAL_VERSION}
+
+# Install st2chatops, but disable unless entrypoint.d file is present
+# Using GNU sort's version comparison, this performs a descending sort on
+# a two element list containing "2.10" and "${ST2_VERSION}".
+# If the "2.10.0" element is the first element, then install node.js v10.
+# Else, install node.js v6.
+if [ $(printf "2.10.0\n${ST2_VERSION}\n" | sort -V | head -n 1) = "2.10.0" ]; then
+    (curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override);
+else
+    (curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override);
+fi
 
 MANIFEST="/st2-manifest.txt"
 
@@ -70,3 +89,4 @@ echo "Installed versions:" >> $MANIFEST
 echo "  - st2-${ST2_VERSION}" >> $MANIFEST
 echo "  - st2web-${ST2WEB_VERSION}" >> $MANIFEST
 echo "  - st2mistral-${ST2MISTRAL_VERSION}" >> $MANIFEST
+echo "  - st2chatops-${ST2CHATOPS_VERSION}" >> $MANIFEST

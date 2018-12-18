@@ -37,7 +37,7 @@ echo BUILD_DEV=${BUILD_DEV}
 
 # Get the highest tag prefixed with 'v'
 # NOTE: We remove the 'v' prefix before returning
-latest=`git tag -l "v*" | sort -r | head -1 | cut -c 2-`
+latest=`git tag -l "v*" | sort -rV | head -1 | cut -c 2-`
 
 if [ ! -z ${CIRCLE_TAG} ]; then
   if [[ ${CIRCLE_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+).*$ ]]; then
@@ -58,7 +58,7 @@ if [[ ${CIRCLE_TAG} =~ ^v(.+)$ ]]; then
   st2_tag=${BASH_REMATCH[1]}
   tag=${st2_tag}
   short_tag="${CIRCLE_TAG_MAJOR}.${CIRCLE_TAG_MINOR}"
-  latest_short=`git tag -l "v${short_tag}*" | sort -r | head -1 | cut -c 2-`
+  latest_short=`git tag -l "v${short_tag}*" | sort -rV | head -1 | cut -c 2-`
   echo latest_short=${latest_short}
 else
   # NOTE: A valid version tag was not pushed
