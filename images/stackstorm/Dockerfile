@@ -78,10 +78,7 @@ COPY bin/install.sh /install.sh
 
 # It is not possible to dynamically set ARG's, so we do the needful in bin/install.sh
 # Install st2, st2web, st2mistral and st2chatops
-RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} \
-    --st2mistral=${ST2MISTRAL_VERSION} --st2chatops=${ST2CHATOPS_VERSION} \
-    --user=${CIRCLE_PROJECT_USERNAME} --repo=${CIRCLE_PROJECT_REPONAME} \
-    --buildurl=${CIRCLE_BUILD_URL} --sha=${CIRCLE_SHA1}
+RUN /install.sh
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts
