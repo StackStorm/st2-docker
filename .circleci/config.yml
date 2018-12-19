@@ -2,7 +2,7 @@
 defaults: &defaults
   working_directory: /build
   docker:
-    - image: docker:17.06.0-ce-git
+    - image: docker:18.06.0-ce-git
 
 version: 2
 jobs:
@@ -14,7 +14,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Install bash
-          command: apk add --no-cache bash
+          command: apk add --no-cache bash coreutils
       - run:
           name: Build image
           command: bin/build.sh
@@ -39,7 +39,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Install bash
-          command: apk add --no-cache bash
+          command: apk add --no-cache bash coreutils
       - run:
           name: Load image
           command: bin/load.sh
@@ -58,7 +58,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Install bash
-          command: apk add --no-cache bash
+          command: apk add --no-cache bash coreutils
       - run:
           name: Build image
           command: bin/build.sh
@@ -79,7 +79,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Install bash
-          command: apk add --no-cache bash
+          command: apk add --no-cache bash coreutils
       - run:
           name: Load image from workspace
           command: bin/load.sh

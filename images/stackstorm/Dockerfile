@@ -77,23 +77,8 @@ ARG ST2MISTRAL_VERSION
 COPY bin/install.sh /install.sh
 
 # It is not possible to dynamically set ARG's, so we do the needful in bin/install.sh
-RUN /install.sh --tag=${ST2_TAG} --st2=${ST2_VERSION} --st2web=${ST2WEB_VERSION} --st2mistral=${ST2MISTRAL_VERSION} --user=${CIRCLE_PROJECT_USERNAME} --repo=${CIRCLE_PROJECT_REPONAME} --buildurl=${CIRCLE_BUILD_URL} --sha=${CIRCLE_SHA1}
-
-# Install chatops and disable unless entrypoint.d file is present
-# Install st2-chatops with Node.js v6/v10 requirement
-# This sorts (descending) a two-element list containing "2.10" and "${ST2_VERSION}",
-# using GNU sort's version comparison (-V).
-# If the "2.10" element is the first element, then $ST2_VERSION >= 2.10.
-# If ST2_VERSION is >= 2.10, then install Node.js v10. Otherwise, install Node.js v6.
-RUN if [ -n "${ST2_VERSION}" ]; then \
-        if [ $(printf "2.10\n${ST2_VERSION}\n" | sort -V | head -n 1) = "2.10" ]; then \
-            (curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override); \
-        else \
-            (curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override); \
-        fi; \
-    else \
-        (curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y st2chatops && echo manual | sudo tee /etc/init/st2chatops.override); \
-    fi
+# Install st2, st2web, st2mistral and st2chatops
+RUN /install.sh
 
 # Unless these lines are changed, the services are not started when runlevel -> 2
 # Call mistral-db-manage before mistral starts
