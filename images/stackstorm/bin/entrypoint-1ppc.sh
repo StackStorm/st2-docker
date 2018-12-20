@@ -38,6 +38,10 @@ case "$ST2_SERVICE" in
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2rulesengine ${DAEMON_ARGS}
     ;;
+  "st2timersengine" )
+    DAEMON_ARGS="--config-file /etc/st2/st2.conf"
+    exec /opt/stackstorm/st2/bin/st2timersengine ${DAEMON_ARGS}
+    ;;
   "st2workflowengine" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2workflowengine ${DAEMON_ARGS}
@@ -45,6 +49,10 @@ case "$ST2_SERVICE" in
   "st2actionrunner" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2actionrunner ${DAEMON_ARGS}
+    ;;
+  "st2scheduler" )
+    DAEMON_ARGS="--config-file /etc/st2/st2.conf"
+    exec /opt/stackstorm/st2/bin/st2scheduler ${DAEMON_ARGS}
     ;;
   "st2resultstracker" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
@@ -57,10 +65,6 @@ case "$ST2_SERVICE" in
   "st2garbagecollector" )
     DAEMON_ARGS="--config-file /etc/st2/st2.conf"
     exec /opt/stackstorm/st2/bin/st2garbagecollector ${DAEMON_ARGS}
-    ;;
-  "st2timersengine" )
-    DAEMON_ARGS="--config-file /etc/st2/st2.conf"
-    exec /opt/stackstorm/st2/bin/st2timersengine ${DAEMON_ARGS}
     ;;
   "mistral-api" )
     set -e

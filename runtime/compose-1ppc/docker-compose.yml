@@ -41,6 +41,14 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=st2rulesengine
+  st2timersengine:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2timersengine
+  st2workflowengine:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2workflowengine
   st2actionrunner:
     <<: *base
     environment:
@@ -49,14 +57,14 @@ services:
     volumes:
       - stackstorm-packs:/opt/stackstorm/packs
       - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs
+  st2scheduler:
+    <<: *base
+    environment:
+      - ST2_SERVICE=st2scheduler
   st2resultstracker:
     <<: *base
     environment:
       - ST2_SERVICE=st2resultstracker
-  st2workflowengine:
-    <<: *base
-    environment:
-      - ST2_SERVICE=st2workflowengine
   st2notifier:
     <<: *base
     environment:
@@ -65,10 +73,6 @@ services:
     <<: *base
     environment:
       - ST2_SERVICE=st2garbagecollector
-  st2timersengine:
-    <<: *base
-    environment:
-      - ST2_SERVICE=st2timersengine
   mistral-api:
     <<: *base
     environment:
