@@ -142,11 +142,3 @@ COPY config/nginx.st2-1ppc.conf.tpl /etc/nginx/conf.d/st2-1ppc.conf.tpl
 # environment variables to `docker run` after the name of the image:
 #   docker run -e ST2_USER... image
 ENTRYPOINT ["/st2-docker/bin/entrypoint.sh"]
-
-# Install inspec
-RUN curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
-
-COPY ./test /st2-docker/test
-COPY bin/test.sh /st2-docker/bin
-
-RUN /st2-docker/bin/test.sh
