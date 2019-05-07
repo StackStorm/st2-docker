@@ -239,10 +239,8 @@ To enable chatops, delete the file `/etc/init/st2chatops.override` using a scrip
   sudo rm /etc/init/st2chatops.override
   ```
 
-You also need to configure st2chatops, either:
-
-- by passing all required parameters for st2chatops to the stackstorm container via environment variables OR
-- by replacing `/opt/stackstorm/chatops/st2chatops.env` with one that is properly configured. The easiest way is to use bind-mount.
+You also need to configure st2chatops, replace `/opt/stackstorm/chatops/st2chatops.env` with one
+that is properly configured. The easiest way is to use bind-mount.
 
 See [st2chatops.env](https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env) for the required variables.
 

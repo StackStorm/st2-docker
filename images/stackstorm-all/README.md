@@ -4,7 +4,7 @@
 
 - This repo contains what's needed to build a Docker image for [stackstorm](https://stackstorm.com/). Has been tested with version  2.1.2.
 - This is an All-in-One type of image because all components and services required for StackStorm are included in the same image. This differs from a the classical microservices model of having one container per service.
-- This is less intended for a producation usage (or for smalle environements only)  but rather more intended for testing / prototyping / CI jobs etc ...
+- This is less intended for a producation usage (or for small environments only)  but rather more intended for testing / prototyping / CI jobs etc ...
 - All various modules are installed and available, with the exception of the ChatOps part (Roadmap).
 - Thanks to Baptiste Assmann who helped.
 
@@ -79,7 +79,7 @@ docker exec -it my_st2 ls -l my_pack
 ```
 
 Please note, that for st2, mounting data to the container at the right even at the right location, is the first step, but that is not enough to use that code. You'll need to go through few steps before being able to use it.
-- Setting up the virtual environements: ```st2 run packs.setup_virtualenv packs=my_pack```
+- Setting up the virtual environments: ```st2 run packs.setup_virtualenv packs=my_pack```
 - Register the pack ```st2ctl restart```
 - Then check if the pack and its actions have been registered: ```st2 pack list``` & ```st2 action list -p my_pack```
 
