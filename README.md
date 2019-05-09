@@ -14,8 +14,8 @@
   [VERSIONING.md](https://github.com/StackStorm/st2-docker/blob/master/VERSIONING.md)**.
 - If a specific image version is required, it is always best to be explicit and specify the image
   digest. See the example of setting `ST2_IMAGE_TAG` environment variable [below](#EnvVars).
-- kubernetes-1ppc is deprecated and will be removed early next year, in favor of the official
-  stackstorm-ha helm chart available at [helm.stackstorm.com](https://helm.stackstorm.com).
+- Kubernetes installation is available via Helm charts at https://docs.stackstorm.com/install/k8s_ha.html
+  and provides High Availability deployment for both StackStorm Community and Enterprise editions.
 
 
 ## TL;DR
@@ -29,8 +29,6 @@ docker-compose exec stackstorm bash
 ```
 
 Open `https://localhost` in your browser. StackStorm Username/Password can be found in: `cat conf/stackstorm.env`
-
-Running on Kubernetes? See [runtime/kubernetes-1ppc](./runtime/kubernetes-1ppc)
 
 
 ## Usage
