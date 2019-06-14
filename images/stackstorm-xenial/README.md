@@ -11,7 +11,7 @@ docker build -t stackstorm/stackstorm:xenial-2.8.1 --build-arg ST2_VERSION=2.8.1
 docker build -t stackstorm/stackstorm:xenial-dev --build-arg ST2_REPO=unstable --build-arg NODE_REPO=node_8.x .
 ```
 
-## st2-self-test
+## Running `st2-self-test`
 
 ```
 apt-get -y install uuid-runtime
@@ -36,4 +36,17 @@ Unlike vagrant, these insecure keys are not replaced at runtime by default. For 
 ## New envvars
 
 - `ST2_DISABLE_MISTRAL`
+    - Controls whether to enable Mistral or not. If any value is set, following steps will be skipped during the container startup.
+        - Modification of `/etc/mistral/mistral.conf` to set PostgreSQL/RabbitMQ connection configs
+        - Invocation of `mistral-db-manage` for schema migration/data population
+        - Configuration of mistral-api, mistral-server process under supervisord: this means that those processes can't be started with `supervisorctl start`, even not be listed at all with `supervisorctl list`
+    - default: (not set)
+
+- `ST2_ENABLE_ST2CHATOPS`
+    - Controls whether to start `st2chatops` or not. If any value is set, supervisord will launch st2chatops. If not, it will even skip the configuration of supervisord for `st2chatops`, so that it prevents from `st2ctl reload` or `st2ctl restart` or any similar command to accidentaly starts `st2chatops` process
+    - default: (not set)
+
 - `ST2_ENABLE_SSHD`
+    - Controls whether to start sshd daemon or not. If any value is set, supervisord will launch sshd. **Only meant for testing purpose.** Need to be enabled when you run `st2-self-check`, since it uses some `core.remote` actions during the tests
+    - default: (not set)
+
