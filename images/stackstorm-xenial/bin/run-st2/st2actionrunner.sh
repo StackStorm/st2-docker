@@ -12,4 +12,9 @@ set +o allexport
 # Load global locale settings
 test -f /etc/default/locale && . /etc/default/locale || true
 
-LANG=$LANG LC_ALL=$LANG exec /opt/stackstorm/st2/bin/$NAME ${DAEMON_ARGS}
+# 
+LANG=$LANG LC_ALL=$LANG exec /sbin/start-stop-daemon --start \
+  --pidfile /dev/null \
+  --group st2packs \
+  --umask 002 \
+  --exec /opt/stackstorm/st2/bin/$NAME -- ${DAEMON_ARGS}
