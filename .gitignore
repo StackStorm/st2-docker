@@ -1,4 +1,12 @@
 packs
-packs.dev
 *.pyc
 conf
+
+packs.dev/*
+!packs.dev/tutorial
+packs.dev/tutorial/*
+!packs.dev/tutorial/actions
+packs.dev/tutorial/actions/*
+!packs.dev/tutorial/actions/.gitkeep
+
+packs.dev/tutorial/actions/.gitkeep
