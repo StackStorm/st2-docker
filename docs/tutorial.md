@@ -6,9 +6,7 @@ We will add a simple action that runs a local shell command.
 Run the following from your docker host.
 
 ```
-sudo chown $USERNAME:$USERNAME packs.dev
 mkdir -p packs.dev/tutorial/actions
-sudo chown -R $USERNAME:$USERNAME packs.dev
 cp tutorial/actions/hello.yaml packs.dev/tutorial/actions
 ```
 
