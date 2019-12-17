@@ -28,7 +28,7 @@ docker-compose up -d
 docker-compose exec stackstorm bash
 ```
 
-Open `https://localhost` in your browser. StackStorm Username/Password can be found in: `cat conf/stackstorm.env`
+Open `https://localhost` in your browser. StackStorm Username/Password can be found in: `cat ~/.st2/config`
 
 
 ## Usage
