@@ -1,0 +1,194 @@
+version: '3'
+
+services:
+  st2web:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2web:${ST2_VERSION:-3.3dev}
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+      ST2WEB_HTTPS: ${ST2WEB_HTTPS:-0}
+    depends_on:
+      - st2auth
+      - st2api
+      - st2stream
+    ports:
+      - "${ST2_EXPOSE_HTTP:-8000}:80"
+      # - "${ST2_EXPOSE_HTTPS:-8443}:443"
+      # more work would be needed with certificate generate to make https work.
+    networks:
+      - private
+      - public
+    dns_search: .
+  st2api:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-3.3dev}
+    depends_on: ["mongo", "rabbitmq"]
+    networks:
+      - private
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+      - stackstorm-packs-configs:/opt/stackstorm/configs:rw
+      - stackstorm-packs:/opt/stackstorm/packs:rw
+      - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
+    dns_search: .
+  st2stream:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2scheduler:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2scheduler:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2workflowengine:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2workflowengine:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2auth:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+      - ./htpasswd:/etc/st2/htpasswd:ro
+    dns_search: .
+  st2actionrunner:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+      - stackstorm-packs-configs:/opt/stackstorm/configs:rw
+      - stackstorm-packs:/opt/stackstorm/packs:rw
+      - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
+      - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs:rw
+      - stackstorm-ssh:/home/stanley.ssh
+    dns_search: .
+  st2garbagecollector:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2notifier:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2resultstracker:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2resultstracker:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2rulesengine:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2rulesengine:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2sensorcontainer:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2sensorcontainer:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    dns_search: .
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./st2.user.conf:/etc/st2/st2.user.conf:ro
+      - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs:ro
+      - stackstorm-packs:/opt/stackstorm/packs:ro
+      - stackstorm-packs-configs:/opt/stackstorm/configs:ro
+      - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:ro
+  st2timersengine:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2timersengine:${ST2_VERSION:-3.3dev}
+    depends_on: ["st2api"]
+    networks:
+      - private
+    dns_search: .
+    volumes:
+      - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
+  st2client:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2:${ST2_VERSION:-3.3dev}
+    networks:
+      - private
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+    volumes:
+      - ./st2-cli.conf:/root/.st2/config
+  # external services
+  mongo:
+    image: mongo:3.4
+    networks:
+      - private
+    volumes:
+      - stackstorm-mongodb:/data/db
+    dns_search: .
+  rabbitmq:
+    image: rabbitmq:3.8
+    networks:
+      - private
+    dns_search: .
+    volumes:
+      - stackstorm-rabbitmq:/var/lib/rabbitmq
+  redis:
+    image: redis:6.0
+    networks:
+      - private
+    dns_search: .
+    volumes:
+      - stackstorm-redis:/data
+
+volumes:
+    stackstorm-mongodb:
+    stackstorm-rabbitmq:
+    stackstorm-redis:
+    stackstorm-postgres:
+    stackstorm-packs:
+    stackstorm-packs-configs:
+    stackstorm-virtualenvs:
+    stackstorm-ssh:
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
