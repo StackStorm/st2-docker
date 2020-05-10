@@ -13,8 +13,8 @@ services:
       - st2api
       - st2stream
     ports:
-      - "${ST2_EXPOSE_HTTP:-8000}:80"
-      # - "${ST2_EXPOSE_HTTPS:-8443}:443"
+      - "${ST2_EXPOSE_HTTP:-127.0.0.1:8000}:80"
+      # - "${ST2_EXPOSE_HTTPS:-127.0.0.1:8443}:443"
       # more work would be needed with certificate generate to make https work.
     networks:
       - private

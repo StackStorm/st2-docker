@@ -27,7 +27,7 @@ The image version, exposed ports, and "packs.dev" directory is configurable with
 
 - **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3dev)
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
-- **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `8000`, and you amy want to do `0.0.0.0:8000` to expose on all interfaces.
+- **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:8000`, and you may want to do `0.0.0.0:8000` to expose on all interfaces.
 - **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-dockerfiles, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
 
 ### Credentials
@@ -199,7 +199,7 @@ Next, use `docker cp` to copy your file into place.
 docker cp git.yaml compose_st2api_1:/opt/stackstorm/configs/git.yaml
 ```
 
-## Register the configs
+## Register the pack config
 
 If you copied the file in or, you will need to register it. st2client does not need access to the configs directory, as it will talk to st2api.
 
