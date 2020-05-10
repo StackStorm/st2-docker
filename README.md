@@ -201,7 +201,7 @@ docker cp git.yaml compose_st2api_1:/opt/stackstorm/configs/git.yaml
 
 ## Register the pack config
 
-If you copied the file in or, you will need to register it. st2client does not need access to the configs directory, as it will talk to st2api.
+If you used `docker cp` to copy the config in, you will need to manually load that configuration. The st2client service does not need access to the configs directory, as it will talk to st2api.
 
 ```shell
 $ docker-compose run st2client st2 run packs.load packs=git register=configs
