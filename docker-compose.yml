@@ -3,6 +3,7 @@ version: '3'
 services:
   st2web:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2web:${ST2_VERSION:-3.3dev}
+    restart: always
     environment:
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
       ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
@@ -12,6 +13,13 @@ services:
       - st2auth
       - st2api
       - st2stream
+    healthcheck:
+      test: ["CMD", "/st2web-healthcheck.sh"]
+      interval: 30s
+      timeout: 1s
+      retries: 1
+    volumes:
+      - ./st2web-healthcheck.sh:/st2web-healthcheck.sh
     ports:
       - "${ST2_EXPOSE_HTTP:-127.0.0.1:8000}:80"
       # - "${ST2_EXPOSE_HTTPS:-127.0.0.1:8443}:443"
