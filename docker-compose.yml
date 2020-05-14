@@ -105,7 +105,7 @@ services:
       - ./st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
   st2notifier:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3dev}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2notifier:${ST2_VERSION:-3.3dev}
     depends_on: ["st2api"]
     networks:
       - private
