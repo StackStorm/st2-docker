@@ -8,7 +8,7 @@ This docker-compose is provided as a way to allow someone to "get up and running
 git clone git@github.com:stackstorm/st2-dockerfiles
 cd st2-docker/stackstorm-compose
 docker-compose up -d
-docker-compose run st2api st2ctl reload --register-all  # you should only have to do this the first time
+docker-compose exec st2api st2ctl reload --register-all  # you should only have to do this the first time
 docker-compose run st2client bash  # this gives you access to the st2 command line
 ```
 
@@ -85,7 +85,7 @@ docker-compose down
 Fourth, if this is your first time running StackStorm in Docker Compose, you will need to force st2api to register everything.
 
 ```shell
-docker-compose run st2api st2ctl reload --register-all
+docker-compose exec st2api st2ctl reload --register-all
 ```
 
 ## Regular Usage
