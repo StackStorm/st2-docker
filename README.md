@@ -9,7 +9,7 @@ git clone git@github.com:stackstorm/st2-dockerfiles
 cd st2-docker/stackstorm-compose
 docker-compose up -d
 docker-compose exec st2api st2ctl reload --register-all  # you should only have to do this the first time
-docker-compose run st2client bash  # this gives you access to the st2 command line
+docker-compose exec st2client bash  # this gives you access to the st2 command line
 ```
 
 Open `http://localhost:8000` in your browser. StackStorm Username/Password by default is: st2admin/Ch@ngeMe.
@@ -93,13 +93,13 @@ docker-compose exec st2api st2ctl reload --register-all
 To run st2 commands, you can use the st2client service:
 
 ```shell
-docker-compose run st2client st2 <st2 command>
+docker-compose exec st2client st2 <st2 command>
 ```
 
 Example:
 
 ```shell
-$ docker-compose run st2client st2 run core.echo message=hello
+$ docker-compose exec st2client st2 run core.echo message=hello
 .
 id: 5eb30d77afe5aa8493f31187
 action.ref: core.echo
@@ -117,12 +117,12 @@ result:
   succeeded: true
 ```
 
-Alternatively, you could run `docker-compose run st2client bash` to be dropped into a container with st2. At that point, you can just run `st2` commands.
+Alternatively, you could run `docker-compose exec st2client bash` to be dropped into a container with st2. At that point, you can just run `st2` commands.
 
 Example:
 
 ```shell
-$ docker-compose run st2client bash
+$ docker-compose exec st2client bash
 Welcome to StackStorm HA v3.3dev (Ubuntu 16.04 LTS GNU/Linux x86_64)
  * Documentation: https://docs.stackstorm.com/
  * Community: https://stackstorm.com/community-signup
@@ -157,7 +157,7 @@ Pack configs will be in /opt/stackstorm/configs/$PACKNAME, which is a docker vol
 ### Use st2 pack config
 
 ```shell
-$ docker-compose run st2client st2 pack config git
+$ docker-compose exec st2client st2 pack config git
 repositories[0].url: https://github.com/StackStorm/st2-dockerfiles.git
 repositories[0].branch [master]:
 ~~~ Would you like to add another item to  "repositories" array / list? [y]: n
@@ -204,7 +204,7 @@ docker cp git.yaml compose_st2api_1:/opt/stackstorm/configs/git.yaml
 If you used `docker cp` to copy the config in, you will need to manually load that configuration. The st2client service does not need access to the configs directory, as it will talk to st2api.
 
 ```shell
-$ docker-compose run st2client st2 run packs.load packs=git register=configs
+$ docker-compose exec st2client st2 run packs.load packs=git register=configs
 .
 id: 5eb3171c566aa824ea88f538
 action.ref: packs.load

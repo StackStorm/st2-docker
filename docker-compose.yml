@@ -167,6 +167,7 @@ services:
   st2client:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
     restart: on-failure
+    command: sleep infinity
     networks:
       - private
     environment:
