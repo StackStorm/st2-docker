@@ -165,7 +165,7 @@ services:
     volumes:
       - ./st2.docker.conf:/etc/st2/st2.docker.conf:ro
   st2client:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2:${ST2_VERSION:-3.3dev}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
     restart: on-failure
     networks:
       - private
