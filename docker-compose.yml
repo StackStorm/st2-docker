@@ -178,14 +178,20 @@ services:
   st2client:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
     restart: on-failure
-    command: sleep infinity
+    depends_on:
+      - st2auth
+      - st2api
+      - st2stream
+    command: /st2client-startup.sh
     networks:
       - private
     environment:
+      ST2CLIENT: 1
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
       ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
       ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
     volumes:
+      - ./st2client-startup.sh:/st2client-startup.sh
       - ./st2-cli.conf:/root/.st2/config
   # external services
   mongo:
