@@ -1,4 +1,9 @@
-# StackStorm in Docker containers
+# StackStorm in all-in-one Docker container
+
+> **DEPRECATED!**
+>
+> This all-in-one Docker demo deployment wasn't supported for a long time and is deprecated.
+> Latest StackStorm release that supported all-in-one docker was `v3.1.0` based on outdated `Ubuntu Trusty` with `python 2`.
 
 [![Circle CI Build Status](https://circleci.com/gh/StackStorm/st2-docker/tree/master.svg?style=shield)](https://circleci.com/gh/StackStorm/st2-docker)
 [![Go to Docker Hub](https://img.shields.io/badge/Docker%20Hub-%E2%86%92-blue.svg)](https://hub.docker.com/r/stackstorm/stackstorm/)
