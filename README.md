@@ -6,7 +6,7 @@ This docker-compose is provided as a way to allow someone to "get up and running
 
 ```shell
 git clone git@github.com:stackstorm/st2-dockerfiles
-cd st2-docker/stackstorm-compose
+cd st2-dockerfiles/stackstorm-compose
 docker-compose up -d
 docker-compose exec st2client bash  # this gives you access to the st2 command line
 ```
