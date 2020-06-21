@@ -17,7 +17,7 @@ jobs:
       - run:
           when: always
           name: Show created services
-          command: docker-compose ps --all
+          command: docker-compose ps
 
 workflows:
   version: 2
