@@ -34,7 +34,7 @@ workflows:
   docker-compose:
     jobs:
       - docker-compose-lint
-      - docker-compose-up
+      - docker-compose-up:
           requires:
             - docker-compose-lint
 
@@ -42,7 +42,7 @@ workflows:
   docker-compose-nightly:
     jobs:
       - docker-compose-lint
-      - docker-compose-up
+      - docker-compose-up:
           requires:
             - docker-compose-lint
     triggers:
