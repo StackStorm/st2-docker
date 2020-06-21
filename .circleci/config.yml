@@ -3,7 +3,7 @@ jobs:
   # Verify docker-compose.yml format for any immediate linting issues
   docker-compose-lint:
     docker:
-      - image: lachlanevenson/k8s-helm:v2.16.9
+      - image: docker/compose:latest
     steps:
       - checkout
       - run:
