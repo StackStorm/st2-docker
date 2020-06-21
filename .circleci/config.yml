@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  # Run docker-compose install and verify st2 deployment
+  docker-compose-up:
+    working_directory: ~/docker
+    machine:
+      # Available images https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - name: Start ST2 in docker-compose
+        command: docker-compose up --detach
+
+workflows:
+  version: 2
+  docker-compose:
+    jobs:
+      - docker-compose-up
+  # Nightly run docker-compose install and ensure no regressions for st2 deployment in 'master' branch
+  docker-compose-nightly:
+    jobs:
+      - docker-compose-up
+    triggers:
+      - schedule:
+          cron: "0 1 * * *"
+          filters:
+            branches:
+              only:
+                - master
+
+experimental:
+  notify:
+    branches:
+      only:
+        - master
