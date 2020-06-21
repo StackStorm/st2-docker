@@ -8,8 +8,9 @@ jobs:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - name: Start ST2 in docker-compose
-        command: docker-compose up --detach
+      - run:
+          name: Start ST2 in docker-compose
+          command: docker-compose up --detach
 
 workflows:
   version: 2
