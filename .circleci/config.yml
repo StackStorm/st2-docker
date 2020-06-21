@@ -1,5 +1,15 @@
-version: 2
+version: 2.1
 jobs:
+  # Verify docker-compose.yml format for any immediate linting issues
+  docker-compose-lint:
+    docker:
+      - image: lachlanevenson/k8s-helm:v2.16.9
+    steps:
+      - checkout
+      - run:
+          name: Docker-compose lint check
+          command: docker-compose config
+
   # Run docker-compose install and verify st2 deployment
   docker-compose-up:
     working_directory: ~/docker
@@ -9,25 +19,32 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Pull StackStorm Docker Images
+          name: Pull Docker Images
           command: docker-compose pull
       - run:
           name: Start StackStorm in docker-compose
           command: docker-compose up --detach
       - run:
           when: always
-          name: Show created services
+          name: List created services
           command: docker-compose ps
 
 workflows:
   version: 2
   docker-compose:
     jobs:
+      - docker-compose-lint
       - docker-compose-up
+          requires:
+            - docker-compose-lint
+
   # Nightly run docker-compose install and ensure no regressions for st2 deployment in 'master' branch
   docker-compose-nightly:
     jobs:
+      - docker-compose-lint
       - docker-compose-up
+          requires:
+            - docker-compose-lint
     triggers:
       - schedule:
           cron: "0 1 * * *"
