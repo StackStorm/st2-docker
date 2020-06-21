@@ -9,8 +9,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Start ST2 in docker-compose
+          name: Pull StackStorm Docker Images
+          command: docker-compose pull
+      - run:
+          name: Start StackStorm in docker-compose
           command: docker-compose up --detach
+      - run:
+          when: always
+          name: Show created services
+          command: docker-compose ps --all
 
 workflows:
   version: 2
