@@ -26,8 +26,17 @@ jobs:
           command: docker-compose up --detach
       - run:
           when: always
-          name: List created services
+          name: List created Services
           command: docker-compose ps
+      - run:
+          name: Smoke-test StackStorm cluster
+          command: |
+            # TODO: Replace with more organized BATS tests
+            # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh
+            docker-compose exec st2client st2 action list --pack=core
+            docker-compose exec st2client st2 run core.local cmd=date
+            docker-compose exec st2client st2 pack install github
+            docker-compose exec st2client st2 execution list
 
 workflows:
   version: 2
