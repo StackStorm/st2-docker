@@ -25,21 +25,21 @@ jobs:
           name: Start StackStorm in docker-compose
           command: docker-compose up --detach
       - run:
-          when: always
-          name: List created Services
-          command: docker-compose ps
-      - run:
           name: Smoke-test StackStorm cluster
           command: |
             # TODO: Replace with 'docker-compose run status'
             # Examples: https://github.com/docker/compose/issues/374#issuecomment-310266246
-            sleep 30
+            sleep 45
             # TODO: Replace with more organized BATS tests 'docker-compose run tests'
             # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh
             docker-compose exec st2client st2 action list --pack=core
             docker-compose exec st2client st2 run core.local cmd=date
             docker-compose exec st2client st2 pack install github
             docker-compose exec st2client st2 execution list
+      - run:
+          when: always
+          name: List created Services
+          command: docker-compose ps
 
 workflows:
   version: 2
