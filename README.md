@@ -1,4 +1,5 @@
 # StackStorm in Docker Compose
+[![Circle CI Build Status](https://circleci.com/gh/StackStorm/st2-docker/tree/master.svg?style=shield)](https://circleci.com/gh/StackStorm/st2-docker)
 
 This docker-compose is provided as a way to allow someone to "get up and running" quickly with StackStorm using Docker. It is not designed to be used in production, but rather a way to test out StackStorm and facilitate pack development.
 
@@ -29,7 +30,7 @@ The image version, exposed ports, and "packs.dev" directory is configurable with
 
 ### Credentials
 
-The `files/htpasswd` file is created with a default username of `st2admin` and a default password of `Ch@ngeMe`. This can be changed using the [htpasswd utility](https://httpd.apache.org/docs/2.4/programs/htpasswd.html).
+The `files/htpasswd` file is provided with a default username of `st2admin` and a default password of `Ch@ngeMe`. This can be changed using the [htpasswd utility](https://httpd.apache.org/docs/2.4/programs/htpasswd.html).
 
 Another file (`files/st2-cli.conf`) contains default credentials and is mounted into the "st2client" container. If you change credentials in htpasswd, you will probably want to change them in st2-cli.conf.  
 
@@ -114,7 +115,7 @@ Example:
 
 ```shell
 $ docker-compose exec st2client bash
-Welcome to StackStorm v3.2.0 (Ubuntu 18.04.4 LTS GNU/Linux x86_64)
+Welcome to StackStorm v3.3dev (Ubuntu 18.04.4 LTS GNU/Linux x86_64)
  * Documentation: https://docs.stackstorm.com/
  * Community: https://stackstorm.com/community-signup
  * Forum: https://forum.stackstorm.com/
