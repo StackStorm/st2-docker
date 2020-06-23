@@ -5,13 +5,11 @@ This docker-compose is provided as a way to allow someone to "get up and running
 ## TL;DR
 
 ```shell
-git clone git@github.com:stackstorm/st2-dockerfiles
-cd st2-dockerfiles/stackstorm-compose
 docker-compose up -d
 docker-compose exec st2client bash  # this gives you access to the st2 command line
 ```
 
-Open `http://localhost:8000` in your browser. StackStorm Username/Password by default is: st2admin/Ch@ngeMe.
+Open `http://localhost:8000/` in your browser. StackStorm Username/Password by default is: `st2admin/Ch@ngeMe`.
 
 ## Usage
 
@@ -27,23 +25,23 @@ The image version, exposed ports, and "packs.dev" directory is configurable with
 - **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3dev)
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
 - **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:8000`, and you may want to do `0.0.0.0:8000` to expose on all interfaces.
-- **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-dockerfiles, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
+- **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
 
 ### Credentials
 
-The `htpasswd` file is created with a default username of `st2admin` and a default password of `Ch@ngeMe`. This can be changed using the [htpasswd utility](https://httpd.apache.org/docs/2.4/programs/htpasswd.html).
+The `files/htpasswd` file is created with a default username of `st2admin` and a default password of `Ch@ngeMe`. This can be changed using the [htpasswd utility](https://httpd.apache.org/docs/2.4/programs/htpasswd.html).
 
-Another file (`st2-cli.conf`) contains default credentials and is mounted into the "st2client" container. If you change credentials in htpasswd, you will probably want to change them in st2-cli.conf.  
+Another file (`files/st2-cli.conf`) contains default credentials and is mounted into the "st2client" container. If you change credentials in htpasswd, you will probably want to change them in st2-cli.conf.  
 
 ### Further configuration
 
 The base st2 docker images have a built-in `/etc/st2/st2.conf` configuration file. Each st2 Docker image will load:
 
-- /etc/st2/st2.conf
+- /etc/st2/st2.conf (default [st2.conf](https://github.com/StackStorm/st2/blob/master/conf/st2.package.conf))
 - /etc/st2/st2.docker.conf (values here will override st2.conf)
 - /etc/st2/st2.user.conf (values here will override st2.docker.conf)
 
-Review `../base/files/st2.tmp.conf` and `st2.docker.conf` for currently set values, and it is recommended to place overrides in `st2.user.conf`.
+Review `st2.docker.conf` for currently set values, and it is recommended to place overrides in `st2.user.conf`.
 
 ### Step by step first time instructions
 
@@ -56,11 +54,11 @@ export ST2_PACKS_DEV=$HOME/projects/stackstorm-packs
 export ST2_EXPOSE_HTTP=0.0.0.0:8000
 ```
 
-Secondly make any customizations to st2.user.conf, htpasswd, and st2-cli.conf.
+Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, and `files/st2-cli.conf`.
 
 Example:
 
-To enable [sharing code between actions and sensors](https://docs.stackstorm.com/reference/sharing_code_sensors_actions.html), add these two lines to st2.user.conf:
+To enable [sharing code between actions and sensors](https://docs.stackstorm.com/reference/sharing_code_sensors_actions.html), add these two lines to `files/st2.user.conf`:
 
 ```ini
 [packs]
@@ -116,14 +114,16 @@ Example:
 
 ```shell
 $ docker-compose exec st2client bash
-Welcome to StackStorm HA v3.3dev (Ubuntu 16.04 LTS GNU/Linux x86_64)
+Welcome to StackStorm v3.2.0 (Ubuntu 18.04.4 LTS GNU/Linux x86_64)
  * Documentation: https://docs.stackstorm.com/
  * Community: https://stackstorm.com/community-signup
  * Forum: https://forum.stackstorm.com/
- * Enterprise: https://stackstorm.com/#product
 
- Warning! Do not edit configs, packs or any content inplace as they will be overridden. Modify Helm values.yaml instead!
- It's recommended to use st2client container to work with StackStorm cluster.
+ Here you can use StackStorm CLI. Examples:
+   st2 action list --pack=core
+   st2 run core.local cmd=date
+   st2 run core.local_sudo cmd='apt-get update' --tail
+   st2 execution list
 
 root@aaabd11745f0:/opt/stackstorm# st2 run core.echo message="from the inside"
 .
@@ -145,7 +145,7 @@ result:
 
 ## Pack Configuration
 
-Pack configs will be in /opt/stackstorm/configs/$PACKNAME, which is a docker volume shared between st2api, st2actionrunner, and st2sensorcontainer. You can use the `st2 pack config <packname>` in the st2client container in order to configure a pack.
+Pack configs will be in `/opt/stackstorm/configs/$PACKNAME`, which is a docker volume shared between st2api, st2actionrunner, and st2sensorcontainer. You can use the `st2 pack config <packname>` in the st2client container in order to configure a pack.
 
 ### Use st2 pack config
 
@@ -224,7 +224,7 @@ If you are working on a development pack, you will need to register it and insta
 
 ### packs.dev directory
 
-As mentioned above, your default `packs.dev` directory is relative to your `docker-compose.yml` file. However, if you start developing here, git will not like being inside another git directory. You will want to set `ST2_PACKS_DEV` to a directory outside of `st2-dockerfiles` and restart the docker-compose services.
+As mentioned above, your default `packs.dev` directory is relative to your `docker-compose.yml` file. However, if you start developing here, git will not like being inside another git directory. You will want to set `ST2_PACKS_DEV` to a directory outside of `st2-docker` and restart the docker-compose services.
 
 Example: We have a pack called helloworld in `packs.dev/helloworld`. The directory name has to match the pack name. So even if you have a git repo named "st2-helloworld", it should be cloned locally as "helloworld".
 

@@ -22,10 +22,10 @@ jobs:
           name: Pull Docker Images
           command: docker-compose pull
       - run:
-          name: Start StackStorm in docker-compose
+          name: Start st2 with docker-compose
           command: docker-compose up --detach
       - run:
-          name: Smoke-test StackStorm cluster
+          name: Run st2 Smoke-Tests
           command: |
             # TODO: Replace with 'docker-compose run status'
             # Examples: https://github.com/docker/compose/issues/374#issuecomment-310266246
