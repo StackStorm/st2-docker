@@ -195,7 +195,7 @@ services:
       - ./files/st2-cli.conf:/root/.st2/config
   # external services
   mongo:
-    image: mongo:3.4
+    image: mongo:4.0
     restart: on-failure
     networks:
       - private
