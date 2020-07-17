@@ -25,10 +25,10 @@ jobs:
           name: Start st2 with docker-compose
           command: docker-compose up --detach
       - run:
-          name: Run st2 Smoke-Tests
+          name: Run st2 smoke-tests
           command: |
             # TODO: Replace with 'docker-compose run status'
-            # Examples: https://github.com/docker/compose/issues/374#issuecomment-310266246
+            # Example: https://github.com/docker/compose/issues/374#issuecomment-310266246
             sleep 45
             # TODO: Replace with more organized BATS tests 'docker-compose run tests'
             # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh

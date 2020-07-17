@@ -1,7 +1,8 @@
 # StackStorm in Docker Compose
 [![Circle CI Build Status](https://circleci.com/gh/StackStorm/st2-docker/tree/master.svg?style=shield)](https://circleci.com/gh/StackStorm/st2-docker)
 
-This docker-compose is provided as a way to allow someone to "get up and running" quickly with StackStorm using Docker. It is not designed to be used in production, but rather a way to test out StackStorm and facilitate pack development.
+This docker-compose is provided as a way to allow "get up and running" quickly with StackStorm using Docker (based on [st2-dockerfiles](https://github.com/stackstorm/st2-dockerfiles)). It is not designed to be used in production, but rather a way to test out StackStorm and facilitate pack development.
+> If you need Highly Availability experience, there is Kubernetes installation available via Helm charts at https://docs.stackstorm.com/install/k8s_ha.html.
 
 ## TL;DR
 
