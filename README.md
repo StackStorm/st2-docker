@@ -1,259 +1,308 @@
-# StackStorm in all-in-one Docker container
-
-> **DEPRECATED!**
->
-> This all-in-one Docker demo deployment wasn't supported for a long time and is deprecated.
-> Latest StackStorm release that supported all-in-one docker was `v3.1.0` based on outdated `Ubuntu Trusty` with `python 2`.
-
+# StackStorm in Docker Compose
 [![Circle CI Build Status](https://circleci.com/gh/StackStorm/st2-docker/tree/master.svg?style=shield)](https://circleci.com/gh/StackStorm/st2-docker)
-[![Go to Docker Hub](https://img.shields.io/badge/Docker%20Hub-%E2%86%92-blue.svg)](https://hub.docker.com/r/stackstorm/stackstorm/)
 
-
-## READ FIRST!!
-
-- **Check the [CHANGELOG.rst](https://github.com/StackStorm/st2-docker/blob/master/CHANGELOG.rst)**
-  file for any potential changes that may require restarting containers.
-- Be sure to use the latest `docker-compose.yml`. Run `git pull` in your `st2-docker` workspace!
-- Run `st2ctl reload --register-all` to reload all services.
-- **For information on how the stackstorm docker image is versioned, see
-  [VERSIONING.md](https://github.com/StackStorm/st2-docker/blob/master/VERSIONING.md)**.
-- If a specific image version is required, it is always best to be explicit and specify the image
-  digest. See the example of setting `ST2_IMAGE_TAG` environment variable [below](#EnvVars).
-- Kubernetes installation is available via Helm charts at https://docs.stackstorm.com/install/k8s_ha.html
-  and provides High Availability deployment for both StackStorm Community and Enterprise editions.
-
+This docker-compose is provided as a way to allow "get up and running" quickly with StackStorm using Docker (based on [st2-dockerfiles](https://github.com/stackstorm/st2-dockerfiles)). It is not designed to be used in production, but rather a way to test out StackStorm and facilitate pack development.
+> If you need Highly Availability experience, there is Kubernetes installation available via Helm charts at https://docs.stackstorm.com/install/k8s_ha.html.
 
 ## TL;DR
 
-```
-git clone git@github.com:stackstorm/st2-docker
-cd st2-docker
-make env
+```shell
 docker-compose up -d
-docker-compose exec stackstorm bash
+docker-compose exec st2client bash  # this gives you access to the st2 command line
 ```
 
-Open `https://localhost` in your browser. StackStorm Username/Password can be found in: `cat conf/stackstorm.env`
-
+Open `http://localhost/` in your browser. StackStorm Username/Password by default is: `st2admin/Ch@ngeMe`.
 
 ## Usage
 
 ### Prerequisites
 
-- Docker Engine 1.13.0+
+- Docker Engine 18.09+
+- Docker Compose 1.12+
 
+### Compose Configuration
 
-### Container configuration
+The image version, exposed ports, and "packs.dev" directory is configurable with environment variables.
 
-The default container configuration is as follows:
+- **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3dev)
+- **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
+- **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:80`, and you may want to do `0.0.0.0:80` to expose on all interfaces.
+- **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
 
- - stackstorm (st2 + st2web + st2mistral)
- - mongo
- - rabbitmq
- - postgres
- - redis
+### Credentials
 
+The `files/htpasswd` file is provided with a default username of `st2admin` and a default password of `Ch@ngeMe`. This can be changed using the [htpasswd utility](https://httpd.apache.org/docs/2.4/programs/htpasswd.html).
 
-### Step by step instructions
+Another file (`files/st2-cli.conf`) contains default credentials and is mounted into the "st2client" container. If you change credentials in htpasswd, you will probably want to change them in st2-cli.conf.  
 
-We use Version 3 of the compose file format, so if you want to run docker-compose, you'll need to
-ensure you're running Docker Engine release 1.13.0+.
+### Further configuration
 
-First, execute
+The base st2 docker images have a built-in `/etc/st2/st2.conf` configuration file. Each st2 Docker image will load:
 
-  ```
-  make env
-  ```
+- /etc/st2/st2.conf (default [st2.conf](https://github.com/StackStorm/st2/blob/master/conf/st2.package.conf))
+- /etc/st2/st2.docker.conf (values here will override st2.conf)
+- /etc/st2/st2.user.conf (values here will override st2.docker.conf)
 
-to create the environment files used by `docker-compose`. You may want to change the values of the
-variables as necessary, but the defaults should be okay if you are not using any off-cluster
-services (e.g. mongo, redis, postgres, rabbitmq).
+Review `st2.docker.conf` for currently set values, and it is recommended to place overrides in `st2.user.conf`.
 
-NOTE: `make env` only needs to be run once.
+### Step by step first time instructions
 
-As an example, if you want to change the username and password used by StackStorm, change the
-`ST2_USER` and `ST2_PASSWORD` variables in `conf/stackstorm.env` prior to bringing up your docker
-environment.
+First, optionally set and export all the environment variables you want to change. You could make a .env file with customizations.
 
-Second, start the docker environment. execute
+Example:
 
-  ```
-  docker-compose up -d
-  ```
+```shell
+export ST2_PACKS_DEV=$HOME/projects/stackstorm-packs
+export ST2_EXPOSE_HTTP=0.0.0.0:80
+```
+
+Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, and `files/st2-cli.conf`.
+
+Example:
+
+To enable [sharing code between actions and sensors](https://docs.stackstorm.com/reference/sharing_code_sensors_actions.html), add these two lines to `files/st2.user.conf`:
+
+```ini
+[packs]
+enable_common_libs = True
+```
+
+Third, start the docker environment:
+
+```shell
+docker-compose up -d
+```
 
 This will pull the required images from docker hub, and then start them.
 
 To stop the docker environment, run:
 
-  ```
-  docker-compose down
-  ```
-
-## Building the stackstorm image
-
-The pre-built `stackstorm/stackstorm` image may not meet your requirements. You may need to install
-additional libraries, packages or files into the image. For example, if you want to install the
-Ansible pack, you must first install the `libkrb5-dev` package. While the package could be installed
-using a script in `/st2-docker/entrypoint.d`, this will increase the startup time of the container
-and may result in containers that execute different code than others.
-
-Make any necessary changes to `images/stackstorm/Dockerfile`. For example, append `libkrb5-dev` to
-the first `apt-get install` command. Next, run:
-
-  ```
-  REPO=stable
-  docker build --build-arg ST2_REPO=${REPO} -t stackstorm/stackstorm:${REPO} images/stackstorm
-  ```
-
-where REPO is one of 'stable', 'unstable', 'staging-stable', 'staging-unstable'.  Otherwise,
-the following `docker-compose` command will download the specified image from docker hub.
-
-
-### Getting started: Simple Tutorial Tour
-
-After you spin up the environment, you can play around with st2 *in container-ized environment* by following [this tutorial guide](./docs/tutorial.md).
-
-
-## Data persistence
-
-It's designed to suffice the ordinary use case by default. If you need to customize it, check below and modify `docker-compose.yml`
-
-- The mongo, rabbitmq, postgres and redis containers store their data on persistent storage
-- The stackstorm container persists the contents in following directories
-    - `/var/log`
-    - `/opt/stackstorm/packs`
-    - `/opt/stackstorm/virtualenvs`
-    - `/opt/stackstorm/configs`
-
-Since data directories may persist between invocations of `docker-compose`, you may see the following error:
-
-```
-2018-02-21 16:36:21.453 UTC [1] FATAL:  database files are incompatible with server
-2018-02-21 16:36:21.453 UTC [1] DETAIL:  The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 10.2 (Debian 10.2-1.pgdg90+1).
+```shell
+docker-compose down
 ```
 
-In `docker-compose.yml`, pin the postgres version to `9.6` and you will not see the error again.
+## Regular Usage
 
+To run st2 commands, you can use the st2client service:
+
+```shell
+docker-compose exec st2client st2 <st2 command>
 ```
--    image: postgres:latest
-+    image: postgres:9.6
+
+Example:
+
+```shell
+$ docker-compose exec st2client st2 run core.echo message=hello
+.
+id: 5eb30d77afe5aa8493f31187
+action.ref: core.echo
+context.user: st2admin
+parameters:
+  message: hello
+status: succeeded
+start_timestamp: Wed, 06 May 2020 19:18:15 UTC
+end_timestamp: Wed, 06 May 2020 19:18:15 UTC
+result:
+  failed: false
+  return_code: 0
+  stderr: ''
+  stdout: hello
+  succeeded: true
 ```
 
-## Environment variables <a name="EnvVars"></a>
+Alternatively, you could run `docker-compose exec st2client bash` to be dropped into a container with st2. At that point, you can just run `st2` commands.
 
-Below is the complete list of available options that can be used to customize your container.
+Example:
 
-| Parameter | Description |
-|-----------|-------------|
-| `ST2_USER`     | StackStorm account username |
-| `ST2_PASSWORD` | StackStorm account password |
-| `MONGO_HOST` | MongoDB server hostname |
-| `MONGO_PORT` | MongoDB server port (typically `27017`) |
-| `MONGO_DB`   | *(Optional)* MongoDB dbname (will use `st2` if not specified) |
-| `MONGO_USER` | *(Optional)* MongoDB username (will connect without credentials if this and `MONGO_PASS` are not specified) |
-| `MONGO_PASS` | *(Optional)* MongoDB password |
-| `RABBITMQ_HOST`         | RabbitMQ server hostname |
-| `RABBITMQ_PORT`         | RabbitMQ server port (typically `5672`) |
-| `RABBITMQ_DEFAULT_USER` | RabbitMQ username |
-| `RABBITMQ_DEFAULT_PASS` | RabbitMQ password |
-| `POSTGRES_HOST`     | PostgreSQL server hostname |
-| `POSTGRES_PORT`     | PostgreSQL server port (typically `5432`) |
-| `POSTGRES_DB`       | PostgreSQL database |
-| `POSTGRES_USER`     | PostgreSQL username |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `REDIS_HOST`     | Redis server hostname |
-| `REDIS_PORT`     | Redis server port |
-| `REDIS_PASSWORD` | *(Optional)* Redis password |
+```shell
+$ docker-compose exec st2client bash
+Welcome to StackStorm v3.3dev (Ubuntu 18.04.4 LTS GNU/Linux x86_64)
+ * Documentation: https://docs.stackstorm.com/
+ * Community: https://stackstorm.com/community-signup
+ * Forum: https://forum.stackstorm.com/
 
-Also, you can export an additional variable to control which StackStorm version to run by specifying
-the exact Docker image tag:
+ Here you can use StackStorm CLI. Examples:
+   st2 action list --pack=core
+   st2 run core.local cmd=date
+   st2 run core.local_sudo cmd='apt-get update' --tail
+   st2 execution list
 
-  ```
-  export ST2_IMAGE_TAG="2.7.1@sha256:4920fd479c907149d9a062c939f158291f0f641fcd1730d9dd2df2696cad2dae"
-  docker-compose up -d
-  ```
+root@aaabd11745f0:/opt/stackstorm# st2 run core.echo message="from the inside"
+.
+id: 5eb310f571af8f57a4582430
+action.ref: core.echo
+context.user: st2admin
+parameters:
+  message: from the inside
+status: succeeded
+start_timestamp: Wed, 06 May 2020 19:33:09 UTC
+end_timestamp: Wed, 06 May 2020 19:33:09 UTC
+result:
+  failed: false
+  return_code: 0
+  stderr: ''
+  stdout: from the inside
+  succeeded: true
+```
 
-## Running custom shell scripts on boot
+## Pack Configuration
 
-The `stackstorm` container supports running arbitrary shell scripts when the container launches:
+Pack configs will be in `/opt/stackstorm/configs/$PACKNAME`, which is a docker volume shared between st2api, st2actionrunner, and st2sensorcontainer. You can use the `st2 pack config <packname>` in the st2client container in order to configure a pack.
 
-* Scripts located in `/st2-docker/entrypoint.d` are executed before the init process starts any
-stackstorm services.
-* Scripts located in `/st2-docker/st2.d` are executed after stackstorm services are running.
+### Use st2 pack config
 
-NOTE: Only scripts with a suffix of `.sh` will be executed, and in alphabetical order of the file
-name.
+```shell
+$ docker-compose exec st2client st2 pack config git
+repositories[0].url: https://github.com/StackStorm/st2-dockerfiles.git
+repositories[0].branch [master]:
+~~~ Would you like to add another item to  "repositories" array / list? [y]: n
+---
+Do you want to preview the config in an editor before saving? [y]: n
+---
+Do you want me to save it? [y]: y
++----------+--------------------------------------------------------------+
+| Property | Value                                                        |
++----------+--------------------------------------------------------------+
+| id       | 5eb3164f566aa824ea88f536                                     |
+| pack     | git                                                          |
+| values   | {                                                            |
+|          |     "repositories": [                                        |
+|          |         {                                                    |
+|          |             "url":                                           |
+|          | "https://github.com/StackStorm/st2-dockerfiles.git",         |
+|          |             "branch": "master"                               |
+|          |         }                                                    |
+|          |     ]                                                        |
+|          | }                                                            |
++----------+--------------------------------------------------------------+
+```
 
-### /st2-docker/entrypoint.d
+### Copy a config file into a container
 
-For example, if you want to modify `/etc/st2/st2.conf` to set `system_packs_base_path` parameter,
-create `modify-st2-config.sh` with the follwing content:
+First, find the actual container name of st2api by running `docker-compose ps st2api`.
 
-  ```
-  #/bin/bash
-  crudini --set /etc/st2/st2.conf content system_packs_base_path /opt/stackstorm/custom_packs
-  ```
+```shell
+$ docker-compose ps st2api
+      Name                    Command               State    Ports  
+--------------------------------------------------------------------
+compose_st2api_1   /opt/stackstorm/st2/bin/st ...   Up      9101/tcp
+```
 
-Then bind mount it to `/st2-docker/entrypoint.d/modify-st2-config.sh`
+Next, use `docker cp` to copy your file into place.
 
-- via `docker run`
+```shell
+docker cp git.yaml compose_st2api_1:/opt/stackstorm/configs/git.yaml
+```
 
-  ```
-  docker run -it -d --privileged \
-    -v /path/to/modify-st2-config.sh:/st2-docker/entrypoint.d/modify-st2-config.sh \
-    stackstorm/stackstorm:latest
-  ```
+## Register the pack config
 
-- via `docker-compose.yml`
+If you used `docker cp` to copy the config in, you will need to manually load that configuration. The st2client service does not need access to the configs directory, as it will talk to st2api.
 
-  ```
-  services:
-    stackstorm:
-      image: stackstorm/stackstorm:${ST2_IMAGE_TAG:-latest}
-       : (snip)
-      volumes:
-        - /path/to/modify-st2-config.sh:/st2-docker/entrypoint.d/modify-st2-config.sh
-  ```
+```shell
+$ docker-compose exec st2client st2 run packs.load packs=git register=configs
+.
+id: 5eb3171c566aa824ea88f538
+action.ref: packs.load
+context.user: st2admin
+parameters:
+  packs:
+  - git
+  register: configs
+status: succeeded
+start_timestamp: Wed, 06 May 2020 19:59:24 UTC
+end_timestamp: Wed, 06 May 2020 19:59:25 UTC
+result:
+  exit_code: 0
+  result:
+    configs: 1
+  stdout: ''
+```
 
-The above example shows just modifying st2 config but basically there is no limitation so you can
-do almost anything.
+## Local Pack Development
 
-You can also bind mount a specific directory to `/st2-docker/entrypoint.d` then place scripts as
-much as you want.
+See [Create and Contribute a Pack](https://docs.stackstorm.com/reference/packs.html) for how to actually develop a pack.
 
-### /st2-docker/st2.d
+If you are working on a development pack, you will need to register it and install the virutalenv (if it's python).
 
-Scripts in this directory can be used to register packs, reload or restart services, etc.
-You can bind mount these scripts as mentioned in the previous section.
+### packs.dev directory
 
-NOTE: These scripts are currently not available when running in 1ppc mode.
+As mentioned above, your default `packs.dev` directory is relative to your `docker-compose.yml` file. However, if you start developing here, git will not like being inside another git directory. You will want to set `ST2_PACKS_DEV` to a directory outside of `st2-docker` and restart the docker-compose services.
 
+Example: We have a pack called helloworld in `packs.dev/helloworld`. The directory name has to match the pack name. So even if you have a git repo named "st2-helloworld", it should be cloned locally as "helloworld".
 
-## To enable chatops
+For these examples, we will be operating inside the st2client container.
 
-Chatops is installed in the `stackstorm` image, but not started by default.
+### Register the pack
 
-To enable chatops, delete the file `/etc/init/st2chatops.override` using a script in
-`/st2-docker/entrypoint.d`.
+Register the pack by running `st2 run packs.load packs=<pack1>,<pack2> register=all`.  Alternatively you can specify different register option (like register=actions) to focus on the parts you need to (re)register.  You will be running this command a lot as you develop actions, sensors, rules and workflows.
 
-  ```
-  #!/bin/bash
+```shell
+root@aaabd11745f0:/opt/stackstorm# st2 run packs.load packs=helloworld register=all
+.
+id: 5eb3100f71af8f57a458241f
+action.ref: packs.load
+context.user: st2admin
+parameters:
+  packs:
+  - helloworld
+  register: all
+status: succeeded
+start_timestamp: Wed, 06 May 2020 19:29:19 UTC
+end_timestamp: Wed, 06 May 2020 19:29:21 UTC
+result:
+  exit_code: 0
+  result:
+    actions: 13
+    aliases: 0
+    configs: 0
+    policies: 0
+    policy_types: 3
+    rule_types: 2
+    rules: 0
+    runners: 15
+    sensors: 0
+    triggers: 0
+```
 
-  sudo rm /etc/init/st2chatops.override
-  ```
+### Create the Python Virtual Environment
 
-You also need to configure st2chatops, replace `/opt/stackstorm/chatops/st2chatops.env` with one
-that is properly configured. The easiest way is to use bind-mount.
+If you are using python-runners in your locally developed pack, you will need to create the virtual environment by hand. You should typically only have to run this if you have changed your requirements.txt.
 
-See [st2chatops.env](https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env) for the required variables.
+To setup the virtual environment: `st2 run packs.setup_virtualenv packs=<pack1>,<pack2>`
 
-## packs.dev directory
+```shell
+root@aaabd11745f0:/opt/stackstorm# st2 run packs.setup_virtualenv packs=helloworld
+....
+id: 5eb311f871af8f57a4582433
+action.ref: packs.setup_virtualenv
+context.user: st2admin
+parameters:
+  packs:
+  - helloworld
+status: succeeded
+start_timestamp: Wed, 06 May 2020 19:37:28 UTC
+end_timestamp: Wed, 06 May 2020 19:37:36 UTC
+result:
+  exit_code: 0
+  result: 'Successfully set up virtualenv for the following packs: helloworld'
+  stderr: 'st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Setting up virtualenv for pack "helloworld" (/opt/stackstorm/packs.dev/helloworld)
+    st2.actions.python.SetupVirtualEnvironmentAction: INFO     Virtualenv path "/opt/stackstorm/virtualenvs/helloworld" doesn''t exist
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Creating virtualenv for pack "helloworld" in "/opt/stackstorm/virtualenvs/helloworld"
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Creating virtualenv in "/opt/stackstorm/virtualenvs/helloworld" using Python binary "/opt/stackstorm/st2/bin/python"
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Running command "/opt/stackstorm/st2/bin/virtualenv -p /opt/stackstorm/st2/bin/python --always-copy --no-download /opt/stackstorm/virtualenvs/helloworld" to create virtualenv.
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Installing base requirements
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Installing requirement six>=1.9.0,<2.0 with command /opt/stackstorm/virtualenvs/helloworld/bin/pip install six>=1.9.0,<2.0.
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Installing pack specific requirements from "/opt/stackstorm/packs.dev/helloworld/requirements.txt"
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Installing requirements from file /opt/stackstorm/packs.dev/helloworld/requirements.txt with command /opt/stackstorm/virtualenvs/helloworld/bin/pip install -U -r /opt/stackstorm/packs.dev/helloworld/requirements.txt.
+    st2.actions.python.SetupVirtualEnvironmentAction: DEBUG    Virtualenv for pack "helloworld" successfully created in "/opt/stackstorm/virtualenvs/helloworld"
+    '
+  stdout: ''
+```
 
-By default, `./packs.dev` directory is bind-mounted to `/opt/stackstorm/packs.dev` in `stackstorm` container and registered as a secondary pack location. This is done by the startup script at [./runtime/entrypoint.d/add-packs-dev.sh](./runtime/entrypoint.d/add-packs-dev.sh)
+# Remove everything
 
-This feature exists just for convenience, for testing and developing packs, and for [tutorial](./docs/tutorial.md). You can use it for arbitrary purpose, or ignore, or even disable it completely by removing corresponding entries and files.
-Refer to the official StackStorm document for the list of available configuration parameters for `st2chatops`.
+If you want to uninstall, or start from a "clean" installation, docker-compose can remove all the containers and volumes in one comamnd.
 
-## Advanced: using 1ppc image
-
-Official image now supports running in 1ppc mode: stands for *One Process Per Container*. Interested? Check [runtime/compose-1ppc](./runtime/compose-1ppc)
+```shell
+docker-compose down --remove-orphans -v
+```

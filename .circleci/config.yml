@@ -1,135 +1,72 @@
-#
-defaults: &defaults
-  working_directory: /build
-  docker:
-    - image: docker:18.06.0-ce-git
-
-version: 2
+version: 2.1
 jobs:
-  nightly-build:
-    <<: *defaults
+  # Verify docker-compose.yml format for any immediate linting issues
+  docker-compose-lint:
+    docker:
+      - image: docker/compose:latest
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
-          name: Install bash
-          command: apk add --no-cache bash coreutils
-      - run:
-          name: Build image
-          command: bin/build.sh
-          environment:
-            BUILD_DEV: true
-      - run:
-          name: Save image
-          command: bin/save.sh
-          environment:
-            BUILD_DEV: true
-      - persist_to_workspace:
-          root: /workspace
-          paths:
-            - tar
-  nightly-deploy:
-    <<: *defaults
+          name: Docker-compose lint check
+          command: docker-compose config
+
+  # Run docker-compose install and verify st2 deployment
+  docker-compose-up:
+    working_directory: ~/docker
+    machine:
+      # Available images https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - attach_workspace:
-          at: /workspace
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
-          name: Install bash
-          command: apk add --no-cache bash coreutils
+          name: Pull Docker Images
+          command: docker-compose pull
       - run:
-          name: Load image
-          command: bin/load.sh
+          name: Start st2 with docker-compose
+          command: docker-compose up --detach
       - run:
-          name: Deploy image to Docker Hub
+          name: Run st2 smoke-tests
           command: |
-            docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
-            bin/deploy.sh
-          environment:
-            BUILD_DEV: true
-  build:
-    <<: *defaults
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+            # TODO: Replace with 'docker-compose run status'
+            # Example: https://github.com/docker/compose/issues/374#issuecomment-310266246
+            sleep 45
+            # TODO: Replace with more organized BATS tests 'docker-compose run tests'
+            # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh
+            docker-compose exec st2client st2 action list --pack=core
+            docker-compose exec st2client st2 run core.local cmd=date
+            docker-compose exec st2client st2 pack install github
+            docker-compose exec st2client st2 execution list
       - run:
-          name: Install bash
-          command: apk add --no-cache bash coreutils
-      - run:
-          name: Build image
-          command: bin/build.sh
-      - run:
-          name: Save image
-          command: bin/save.sh
-      - persist_to_workspace:
-          root: /workspace
-          paths:
-            - tar
-  deploy:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /workspace
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Install bash
-          command: apk add --no-cache bash coreutils
-      - run:
-          name: Load image from workspace
-          command: bin/load.sh
-      - run:
-          name: Deploy image to Docker Hub
-          command: |
-            docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
-            bin/deploy.sh
+          when: always
+          name: List created Services
+          command: docker-compose ps
 
 workflows:
   version: 2
-  nightly-workflow:
+  docker-compose:
+    jobs:
+      - docker-compose-lint
+      - docker-compose-up:
+          requires:
+            - docker-compose-lint
+
+  # Nightly run docker-compose install and ensure no regressions for st2 deployment in 'master' branch
+  docker-compose-nightly:
+    jobs:
+      - docker-compose-lint
+      - docker-compose-up:
+          requires:
+            - docker-compose-lint
     triggers:
       - schedule:
-          cron: "0 9 * * *"
+          cron: "0 1 * * *"
           filters:
             branches:
               only:
                 - master
-    jobs:
-      - nightly-build:
-          filters:
-            tags:
-              only:
-                - /.*/
-      - nightly-deploy:
-          requires:
-            - nightly-build
-          filters:
-            branches:
-              only:
-                - master
-            tags:
-              only:
-                - /^v.*/
-  commit-workflow:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only:
-                - /.*/
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - master
-                - feature/circleci
-            tags:
-              only:
-                - /^v.*/
+
+experimental:
+  notify:
+    branches:
+      only:
+        - master

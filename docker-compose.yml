@@ -1,92 +1,234 @@
 version: '3'
 
 services:
-  stackstorm:
-    image: stackstorm/stackstorm:${ST2_IMAGE_TAG:-latest}
-    env_file:
-      - conf/stackstorm.env
-      - conf/mongo.env
-      - conf/rabbitmq.env
-      - conf/postgres.env
-      - conf/redis.env
-    ports:
-      - "443:443"
+  st2web:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2web:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+      ST2WEB_HTTPS: ${ST2WEB_HTTPS:-0}
     depends_on:
-      - mongo
-      - postgres
-      - rabbitmq
-      - redis
+      - st2auth
+      - st2api
+      - st2stream
+    healthcheck:
+      test: ["CMD", "/st2web-healthcheck.sh"]
+      interval: 30s
+      timeout: 1s
+      retries: 1
+    volumes:
+      - ./scripts/st2web-healthcheck.sh:/st2web-healthcheck.sh
+    ports:
+      - "${ST2_EXPOSE_HTTP:-127.0.0.1:80}:80"
+      # - "${ST2_EXPOSE_HTTPS:-127.0.0.1:443}:443"
+      # more work would be needed with certificate generate to make https work.
     networks:
+      - private
       - public
-      - private
-    volumes:
-      - stackstorm-packs-volume:/opt/stackstorm/packs
-      - stackstorm-virtualenvs-volume:/opt/stackstorm/virtualenvs
-      - stackstorm-configs-volume:/opt/stackstorm/configs
-      - stackstorm-log-volume:/var/log
-      - ./packs.dev:/opt/stackstorm/packs.dev
-      - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
-      - ./runtime/st2.d:/st2-docker/st2.d
-      - ./conf/stackstorm.env:/st2-docker/env
     dns_search: .
-
-### External Services
-
-  mongo:
-    image: mongo:3.4
-    env_file:
-      - conf/mongo.env
+  st2makesecrets:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
+    restart: on-failure
     networks:
       - private
     volumes:
-      - mongo-volume:/data/db
-      - mongo-configdb-volume:/data/configdb
+      - ./scripts/makesecrets.sh:/makesecrets.sh
+      - stackstorm-keys:/etc/st2/keys:rw
+    dns_search: .
+    command: /makesecrets.sh
+  st2api:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["mongo", "rabbitmq", "st2makesecrets"]
+    networks:
+      - private
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+      - stackstorm-keys:/etc/st2/keys:rw
+      - stackstorm-packs-configs:/opt/stackstorm/configs:rw
+      - stackstorm-packs:/opt/stackstorm/packs:rw
+      - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
+    dns_search: .
+  st2stream:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2scheduler:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2scheduler:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2workflowengine:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2workflowengine:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2auth:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+      - ./files/htpasswd:/etc/st2/htpasswd:ro
+    dns_search: .
+  st2actionrunner:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+      - stackstorm-packs-configs:/opt/stackstorm/configs:rw
+      - stackstorm-packs:/opt/stackstorm/packs:rw
+      - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
+      - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs:rw
+      - stackstorm-ssh:/home/stanley.ssh
+    dns_search: .
+  st2garbagecollector:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2notifier:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2notifier:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2resultstracker:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2resultstracker:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2rulesengine:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2rulesengine:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+    dns_search: .
+  st2sensorcontainer:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2sensorcontainer:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    dns_search: .
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+      - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs:ro
+      - stackstorm-packs:/opt/stackstorm/packs:ro
+      - stackstorm-packs-configs:/opt/stackstorm/configs:ro
+      - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:ro
+  st2timersengine:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2timersengine:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on: ["st2api"]
+    networks:
+      - private
+    dns_search: .
+    volumes:
+      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
+  st2client:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3dev}
+    restart: on-failure
+    depends_on:
+      - st2auth
+      - st2api
+      - st2stream
+    command: /st2client-startup.sh
+    networks:
+      - private
+    environment:
+      ST2CLIENT: 1
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+    volumes:
+      - ./scripts/st2client-startup.sh:/st2client-startup.sh
+      - ./files/st2-cli.conf:/root/.st2/config
+  # external services
+  mongo:
+    image: mongo:4.0
+    restart: on-failure
+    networks:
+      - private
+    volumes:
+      - stackstorm-mongodb:/data/db
     dns_search: .
   rabbitmq:
-    image: rabbitmq:3.6-management
-    env_file:
-      - conf/rabbitmq.env
+    image: rabbitmq:3.8
+    restart: on-failure
     networks:
       - private
-    volumes:
-      - rabbitmq-volume:/var/lib/rabbitmq
     dns_search: .
-  postgres:
-    image: postgres:9.6
-    env_file:
-      - conf/postgres.env
-    networks:
-      - private
     volumes:
-      - postgres-volume:/var/lib/postgresql/data
-    dns_search: .
+      - stackstorm-rabbitmq:/var/lib/rabbitmq
   redis:
-    image: redis:4.0
-    env_file:
-      - conf/redis.env
+    image: redis:6.0
+    restart: on-failure
     networks:
       - private
-    volumes:
-      - redis-volume:/data
     dns_search: .
-    command: [
-      "bash", "-c",
-      '
-       docker-entrypoint.sh
-       --requirepass "$$REDIS_PASSWORD"
-      '
-    ]
+    volumes:
+      - stackstorm-redis:/data
 
 volumes:
-  mongo-volume:
-  mongo-configdb-volume:
-  postgres-volume:
-  rabbitmq-volume:
-  redis-volume:
-  stackstorm-packs-volume:
-  stackstorm-virtualenvs-volume:
-  stackstorm-configs-volume:
-  stackstorm-log-volume:
+    stackstorm-mongodb:
+    stackstorm-rabbitmq:
+    stackstorm-redis:
+    stackstorm-postgres:
+    stackstorm-packs:
+    stackstorm-packs-configs:
+    stackstorm-keys:
+    stackstorm-virtualenvs:
+    stackstorm-ssh:
 
 networks:
   public:
