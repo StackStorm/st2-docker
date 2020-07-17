@@ -11,7 +11,7 @@ docker-compose up -d
 docker-compose exec st2client bash  # this gives you access to the st2 command line
 ```
 
-Open `http://localhost:8000/` in your browser. StackStorm Username/Password by default is: `st2admin/Ch@ngeMe`.
+Open `http://localhost/` in your browser. StackStorm Username/Password by default is: `st2admin/Ch@ngeMe`.
 
 ## Usage
 
@@ -26,7 +26,7 @@ The image version, exposed ports, and "packs.dev" directory is configurable with
 
 - **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3dev)
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
-- **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:8000`, and you may want to do `0.0.0.0:8000` to expose on all interfaces.
+- **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:80`, and you may want to do `0.0.0.0:80` to expose on all interfaces.
 - **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
 
 ### Credentials
@@ -53,7 +53,7 @@ Example:
 
 ```shell
 export ST2_PACKS_DEV=$HOME/projects/stackstorm-packs
-export ST2_EXPOSE_HTTP=0.0.0.0:8000
+export ST2_EXPOSE_HTTP=0.0.0.0:80
 ```
 
 Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, and `files/st2-cli.conf`.
