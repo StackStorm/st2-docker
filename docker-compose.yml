@@ -42,8 +42,11 @@ services:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-3.3dev}
     restart: on-failure
     depends_on: ["mongo", "rabbitmq", "st2makesecrets"]
+    ports:
+      - "${ST2_EXPOSE_API:-127.0.0.1:9101}:9101"
     networks:
       - private
+      - public
     environment:
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
       ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
@@ -60,8 +63,11 @@ services:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-3.3dev}
     restart: on-failure
     depends_on: ["st2api"]
+    ports:
+      - "${ST2_EXPOSE_STREAM:-127.0.0.1:9102}:9102"
     networks:
       - private
+      - public
     volumes:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
@@ -90,8 +96,11 @@ services:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-3.3dev}
     restart: on-failure
     depends_on: ["st2api"]
+    ports:
+      - "${ST2_EXPOSE_AUTH:-127.0.0.1:9100}:9100"
     networks:
       - private
+      - public
     volumes:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
