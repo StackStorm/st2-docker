@@ -24,7 +24,7 @@ Open `http://localhost/` in your browser. StackStorm Username/Password by defaul
 
 The image version, exposed ports, and "packs.dev" directory is configurable with environment variables.
 
-- **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3dev)
+- **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3.0)
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
 - **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:80`, and you may want to do `0.0.0.0:80` to expose on all interfaces.
 - **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
@@ -116,7 +116,7 @@ Example:
 
 ```shell
 $ docker-compose exec st2client bash
-Welcome to StackStorm v3.3dev (Ubuntu 18.04.4 LTS GNU/Linux x86_64)
+Welcome to StackStorm v3.3.0 (Ubuntu 18.04.4 LTS GNU/Linux x86_64)
  * Documentation: https://docs.stackstorm.com/
  * Community: https://stackstorm.com/community-signup
  * Forum: https://forum.stackstorm.com/
