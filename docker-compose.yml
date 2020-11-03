@@ -41,7 +41,7 @@ services:
   st2api:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: 
+    depends_on:
       - mongo
       - rabbitmq
       - redis
@@ -63,7 +63,7 @@ services:
   st2stream:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: 
+    depends_on:
       - st2api
     networks:
       - private
@@ -97,7 +97,7 @@ services:
   st2auth:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: 
+    depends_on:
       - st2api
     networks:
       - private
