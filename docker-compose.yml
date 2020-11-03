@@ -44,6 +44,7 @@ services:
     depends_on: 
       - mongo
       - rabbitmq
+      - redis
       - st2makesecrets
     networks:
       - private
@@ -74,6 +75,7 @@ services:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2scheduler:${ST2_VERSION:-3.3.0}
     restart: on-failure
     depends_on:
+      - redis
       - st2api
     networks:
       - private
@@ -107,7 +109,8 @@ services:
   st2actionrunner:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: 
+    depends_on:
+      - redis
       - st2api
     networks:
       - private
