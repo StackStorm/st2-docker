@@ -87,6 +87,7 @@ services:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2workflowengine:${ST2_VERSION:-3.3.0}
     restart: on-failure
     depends_on:
+      - redis
       - st2api
     networks:
       - private
