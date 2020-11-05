@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-11-05
+* Deprecate st2resultstracker which is obsolete since the Mistral deprecation with st2 `v3.3.0`.
+
 ## 2020-07-17
 * Replace docker-compose with a new deployment based on [stackstorm/st2-dockerfiles](https://github.com/StackStorm/st2-dockerfiles/) images relying on `Ubuntu Bionic` and `python 3` since st2 `v3.3dev` (#192)
 
