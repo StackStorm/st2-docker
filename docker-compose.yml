@@ -41,7 +41,11 @@ services:
   st2api:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["mongo", "rabbitmq", "st2makesecrets"]
+    depends_on:
+      - mongo
+      - rabbitmq
+      - redis
+      - st2makesecrets
     networks:
       - private
     environment:
@@ -59,7 +63,8 @@ services:
   st2stream:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - st2api
     networks:
       - private
     volumes:
@@ -69,7 +74,9 @@ services:
   st2scheduler:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2scheduler:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - redis
+      - st2api
     networks:
       - private
     volumes:
@@ -79,7 +86,9 @@ services:
   st2workflowengine:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2workflowengine:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - redis
+      - st2api
     networks:
       - private
     volumes:
@@ -89,7 +98,8 @@ services:
   st2auth:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - st2api
     networks:
       - private
     volumes:
@@ -100,7 +110,9 @@ services:
   st2actionrunner:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - redis
+      - st2api
     networks:
       - private
     volumes:
@@ -115,7 +127,8 @@ services:
   st2garbagecollector:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - st2api
     networks:
       - private
     volumes:
@@ -125,7 +138,9 @@ services:
   st2notifier:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2notifier:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - redis
+      - st2api
     networks:
       - private
     volumes:
@@ -135,7 +150,8 @@ services:
   st2rulesengine:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2rulesengine:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - st2api
     networks:
       - private
     volumes:
@@ -145,7 +161,8 @@ services:
   st2sensorcontainer:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2sensorcontainer:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - st2api
     networks:
       - private
     dns_search: .
@@ -159,7 +176,8 @@ services:
   st2timersengine:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2timersengine:${ST2_VERSION:-3.3.0}
     restart: on-failure
-    depends_on: ["st2api"]
+    depends_on:
+      - st2api
     networks:
       - private
     dns_search: .
