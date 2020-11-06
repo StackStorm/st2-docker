@@ -147,17 +147,6 @@ services:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
-  st2resultstracker:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2resultstracker:${ST2_VERSION:-3.3.0}
-    restart: on-failure
-    depends_on:
-      - st2api
-    networks:
-      - private
-    volumes:
-      - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
-      - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
-    dns_search: .
   st2rulesengine:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2rulesengine:${ST2_VERSION:-3.3.0}
     restart: on-failure

@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-11-05
+* Deprecate st2resultstracker which is obsolete since the Mistral deprecation with st2 `v3.3.0`.
+
 ## 2020-11-03
 * Update st2 configuration to use redis as coordination backend. (#195)
 
