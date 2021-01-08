@@ -45,6 +45,18 @@ The base st2 docker images have a built-in `/etc/st2/st2.conf` configuration fil
 
 Review `st2.docker.conf` for currently set values, and it is recommended to place overrides in `st2.user.conf`.
 
+### Gotchas
+
+If your system has SELinux enabled you will likely see problems with st2 startup, specifically
+the `st2makesecrets` container will repeatedly restart and `docker logs` shows:
+
+```/bin/bash: /makesecrets.sh: Permission denied```
+
+The fix is to disable SELinux (or to put it in permissive mode).
+
+* Disable temporarily with: `setenforce 0`
+* Change to use permissive mode on the next reboot with: `sed -ie 's|^SELINUX=.*|SELINUX=permissive|' /etc/selinux/config`
+
 ### Step by step first time instructions
 
 First, optionally set and export all the environment variables you want to change. You could make a .env file with customizations.
