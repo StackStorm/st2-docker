@@ -123,6 +123,9 @@ services:
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
       - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs:rw
       - stackstorm-ssh:/home/stanley.ssh
+      # Action runner needs access to keys since action definitions (Jinja
+      # templates) can reference secrets
+      - stackstorm-keys:/etc/st2/keys:rw
     dns_search: .
   st2garbagecollector:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3.0}
