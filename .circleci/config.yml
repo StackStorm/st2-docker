@@ -31,9 +31,6 @@ jobs:
             # Example: https://github.com/docker/compose/issues/374#issuecomment-310266246
             sleep 45
 
-            # Display logs to help troubleshoot build failures, etc
-            docker-compose logs --tail="500" st2api
-
             # TODO: Replace with more organized BATS tests 'docker-compose run tests'
             # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh
             docker-compose exec st2client st2 action list --pack=core
@@ -41,9 +38,13 @@ jobs:
             docker-compose exec st2client st2 pack install github
             docker-compose exec st2client st2 execution list
       - run:
-          when: always
-          name: List created Services
-          command: docker-compose ps
+          when: on_fail
+          name: Troubleshooting the build failure
+          command: |
+            docker-compose ps
+            # Display logs to help troubleshoot build failures, etc
+            docker-compose logs --tail="500" st2api
+
 
 workflows:
   version: 2
