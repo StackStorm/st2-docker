@@ -22,18 +22,20 @@ Open `http://localhost/` in your browser. StackStorm Username/Password by defaul
 
 ### Compose Configuration
 
-The image version, exposed ports, and "packs.dev" directory is configurable with environment variables.
+The image version, exposed ports, chatops, and "packs.dev" directory are configurable with environment variables.
 
 - **ST2_VERSION** this is the tag at the end of the docker image (ie: stackstorm/st2api:v3.3.0)
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
 - **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:80`, and you may want to do `0.0.0.0:80` to expose on all interfaces.
 - **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
+- **HUBOT_ADAPTER** Chat service adapter to use (see https://docs.stackstorm.com/chatops/)
+- **HUBOT_SLACK_TOKEN** If using the [Slack](https://github.com/slackapi/hubot-slack) adapter, this is your "Bot User OAuth Access Token"
 
 ### Credentials
 
 The `files/htpasswd` file is provided with a default username of `st2admin` and a default password of `Ch@ngeMe`. This can be changed using the [htpasswd utility](https://httpd.apache.org/docs/2.4/programs/htpasswd.html).
 
-Another file (`files/st2-cli.conf`) contains default credentials and is mounted into the "st2client" container. If you change credentials in htpasswd, you will probably want to change them in st2-cli.conf.  
+Another file (`files/st2-cli.conf`) contains default credentials and is mounted into the "st2client" container. If you change credentials in htpasswd, you will probably want to change them in `st2-cli.conf`.  
 
 ### Further configuration
 
@@ -45,30 +47,25 @@ The base st2 docker images have a built-in `/etc/st2/st2.conf` configuration fil
 
 Review `st2.docker.conf` for currently set values, and it is recommended to place overrides in `st2.user.conf`.
 
-### Gotchas
+#### Chatops configuration
 
-If your system has SELinux enabled you will likely see problems with st2 startup, specifically
-the `st2makesecrets` container will repeatedly restart and `docker logs` shows:
+The file `files/st2chatops.env` is mounted into the "st2chatops" container.  If you need to change/use hubot
+adapter settings (other than the `slack` adapter which _should_ work with only the environment settings), edit this file as necessary.
 
-```/bin/bash: /makesecrets.sh: Permission denied```
-
-The fix is to disable SELinux (or to put it in permissive mode).
-
-* Disable temporarily with: `setenforce 0`
-* Change to use permissive mode on the next reboot with: `sed -ie 's|^SELINUX=.*|SELINUX=permissive|' /etc/selinux/config`
 
 ### Step by step first time instructions
 
-First, optionally set and export all the environment variables you want to change. You could make a .env file with customizations.
+First, optionally set and export all the environment variables you want to change. You could make an `.env` file with customizations.
 
 Example:
 
 ```shell
 export ST2_PACKS_DEV=$HOME/projects/stackstorm-packs
 export ST2_EXPOSE_HTTP=0.0.0.0:80
+export HUBOT_SLACK_TOKEN=xoxb-MY-SLACK-TOKEN
 ```
 
-Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, and `files/st2-cli.conf`.
+Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, `files/st2-cli.conf`, and `files/st2chatops.env`.
 
 Example:
 
@@ -79,7 +76,15 @@ To enable [sharing code between actions and sensors](https://docs.stackstorm.com
 enable_common_libs = True
 ```
 
-Third, start the docker environment:
+Third, if you are using chatops, create an st2 api key for authentication to st2 from the chatops container:
+
+```
+st2 apikey create -k -m '{"usage": "st2chatops"}'
+```
+
+and make sure you set the `ST2_API_KEY` environment variable to the key returned by the above command.
+
+Fourth, start the docker environment:
 
 ```shell
 docker-compose up -d
@@ -92,6 +97,29 @@ To stop the docker environment, run:
 ```shell
 docker-compose down
 ```
+
+### Gotchas
+
+#### Startup errors
+
+If your system has SELinux enabled you will likely see problems with st2 startup, specifically
+the `st2makesecrets` container will repeatedly restart and `docker logs` shows:
+
+```/bin/bash: /makesecrets.sh: Permission denied```
+
+The fix is to disable SELinux (or to put it in permissive mode).
+
+* Disable temporarily with: `setenforce 0`
+* Change to use permissive mode on the next reboot with: `sed -ie 's|^SELINUX=.*|SELINUX=permissive|' /etc/selinux/config`
+
+#### Chatops
+
+* Chatops has been minimally tested using the Slack hubot adapter.  Other adapter types may require some
+tweaking to the environment settings in `docker-compose.yml`
+
+* The git status output on the `!packs get` command doesn't appear to work fully.
+
+* Use `docker-compose logs st2chatops` to check the chatops logs if you are having problems getting chatops to work
 
 ## Regular Usage
 
