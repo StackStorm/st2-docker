@@ -245,7 +245,6 @@ volumes:
     stackstorm-mongodb:
     stackstorm-rabbitmq:
     stackstorm-redis:
-    stackstorm-postgres:
     stackstorm-packs:
     stackstorm-packs-configs:
     stackstorm-keys:
