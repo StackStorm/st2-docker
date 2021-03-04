@@ -28,6 +28,7 @@ The image version, exposed ports, chatops, and "packs.dev" directory are configu
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
 - **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:80`, and you may want to do `0.0.0.0:80` to expose on all interfaces.
 - **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
+- **COMPOSE_FILE** Compose file(s) to use.  To enable chatops, you will need to include the `docker-compose-chatops.yml` file, ie. set to `docker-compose.yml:docker-compose-chatops.yml`).  (see [compose docs](https://docs.docker.com/compose/reference/envvars/#compose_file#compose_file) for details)
 - **HUBOT_ADAPTER** Chat service adapter to use (see https://docs.stackstorm.com/chatops/)
 - **HUBOT_SLACK_TOKEN** If using the [Slack](https://github.com/slackapi/hubot-slack) adapter, this is your "Bot User OAuth Access Token"
 
@@ -76,13 +77,16 @@ To enable [sharing code between actions and sensors](https://docs.stackstorm.com
 enable_common_libs = True
 ```
 
-Third, if you are using chatops, create an st2 api key for authentication to st2 from the chatops container:
+Third, if you want to use chatops you will need to:
 
-```
-st2 apikey create -k -m '{"usage": "st2chatops"}'
-```
+* define your `COMPOSE_FILE` to include the `docker-compose-chatops.yml` file, ie.
+  `COMPOSE_FILE=docker-compose.yml:docker-compose-chatops.yml` (either in your shell environment or
+  an `.env` file)
 
-and make sure you set the `ST2_API_KEY` environment variable to the key returned by the above command.
+* create an st2 api key for authentication to st2 from the chatops container, and
+ensure that you set the `ST2_API_KEY` environment variable to the key returned by the command:
+
+   * `st2 apikey create -k -m '{"usage": "st2chatops"}'`
 
 Fourth, start the docker environment:
 
@@ -115,7 +119,7 @@ The fix is to disable SELinux (or to put it in permissive mode).
 #### Chatops
 
 * Chatops has been minimally tested using the Slack hubot adapter.  Other adapter types may require some
-tweaking to the environment settings in `docker-compose.yml`
+tweaking to the environment settings in `docker-compose-chatops.yml`
 
 * The git status output on the `!packs get` command doesn't appear to work fully.
 
