@@ -2,7 +2,7 @@ version: '3'
 
 services:
   st2web:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2web:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2web:${ST2_VERSION:-latest}
     restart: on-failure
     environment:
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
@@ -29,7 +29,7 @@ services:
       - public
     dns_search: .
   st2makesecrets:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
     restart: on-failure
     networks:
       - private
@@ -39,7 +39,7 @@ services:
     dns_search: .
     command: /makesecrets.sh
   st2api:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2api:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - mongo
@@ -61,7 +61,7 @@ services:
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
     dns_search: .
   st2stream:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2api
@@ -72,7 +72,7 @@ services:
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
   st2scheduler:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2scheduler:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2scheduler:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - redis
@@ -84,7 +84,7 @@ services:
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
   st2workflowengine:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2workflowengine:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2workflowengine:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - redis
@@ -97,7 +97,7 @@ services:
       - stackstorm-keys:/etc/st2/keys:ro
     dns_search: .
   st2auth:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2api
@@ -109,7 +109,7 @@ services:
       - ./files/htpasswd:/etc/st2/htpasswd:ro
     dns_search: .
   st2actionrunner:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - redis
@@ -129,7 +129,7 @@ services:
       - stackstorm-keys:/etc/st2/keys:ro
     dns_search: .
   st2garbagecollector:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2api
@@ -140,7 +140,7 @@ services:
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
   st2notifier:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2notifier:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2notifier:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - redis
@@ -152,7 +152,7 @@ services:
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
   st2rulesengine:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2rulesengine:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2rulesengine:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2api
@@ -163,7 +163,7 @@ services:
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
     dns_search: .
   st2sensorcontainer:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2sensorcontainer:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2sensorcontainer:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2api
@@ -178,7 +178,7 @@ services:
       - stackstorm-packs-configs:/opt/stackstorm/configs:ro
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:ro
   st2timersengine:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2timersengine:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2timersengine:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2api
@@ -188,7 +188,7 @@ services:
     volumes:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
   st2client:
-    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-3.3.0}
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
       - st2auth
