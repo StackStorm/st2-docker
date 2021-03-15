@@ -6,8 +6,8 @@ counter=0
 while [ "$counter" -lt 5 ]; do
   ACTIONS=$(st2 action list)
   if [ "$?" -ne 0 ]; then
-    echo "unable to reach downstream, will try again"
     counter=$((counter+1))
+    echo "unable to reach downstream, will try again in $counter seconds..."
     sleep $((counter*5))
   elif [ "$ACTIONS" == "No matching items found" ]; then
     echo "No packs registered, will register"
@@ -18,5 +18,5 @@ while [ "$counter" -lt 5 ]; do
   fi
 done
 
-echo "No packs were able to be registered due to st2 failures. You may need to load them manually"
+echo "Error! No packs were able to be registered due to st2 connect failures! You may need to load them manually."
 sleep infinity
