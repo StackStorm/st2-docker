@@ -1,7 +1,13 @@
 # Changelog
 
+## 2021-03-14
+* Create counter for st2client startup script (#220)
+
 ## 2021-03-13
 * Switch to using `latest` tag for st2 Docker images (#222)
+
+## 2021-02-21
+* Add stackstorm-keys volume to workflowengine (#214)
 
 ## 2020-11-05
 * Deprecate st2resultstracker which is obsolete since the Mistral deprecation with st2 `v3.3.0`.
