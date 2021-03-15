@@ -28,7 +28,7 @@ The image version, exposed ports, chatops, and "packs.dev" directory are configu
 - **ST2_IMAGE_REPO** The image or path to the images. Default is "stackstorm/".  You may change this is using the Enterprise version or a private docker repository.
 - **ST2_EXPOSE_HTTP**  Port to expose st2web port 80 on.  Default is `127.0.0.1:80`, and you may want to do `0.0.0.0:80` to expose on all interfaces.
 - **ST2_PACKS_DEV** Directory to development packs, absolute or relative to docker-compose.yml. This allows you to develop packs locally. Default is `./packs.dev`. When making a number of packs, it is recommended to make a directory outside of st2-docker, with each subdirectory underneath that being an independent git repo.  Example: `ST2_PACKS_DEV=${HOME}/mypacks`, with `${HOME}/mypacks/st2-helloworld` being a git repo for the "helloworld" pack.
-- **COMPOSE_FILE** Compose file(s) to use.  To enable chatops, you will need to include the `docker-compose-chatops.yml` file, ie. set to `docker-compose.yml:docker-compose-chatops.yml`).  (see [compose docs](https://docs.docker.com/compose/reference/envvars/#compose_file#compose_file) for details)
+- **ST2_CHATOPS_ENABLE** To enable chatops, set this variable to any non-zero value.  Also ensure that your environment settings are configured for your chatops adapter (see the `st2chatops` service `environment` comments/settings for more info)
 - **HUBOT_ADAPTER** Chat service adapter to use (see https://docs.stackstorm.com/chatops/)
 - **HUBOT_SLACK_TOKEN** If using the [Slack](https://github.com/slackapi/hubot-slack) adapter, this is your "Bot User OAuth Access Token"
 
@@ -50,9 +50,10 @@ Review `st2.docker.conf` for currently set values, and it is recommended to plac
 
 #### Chatops configuration
 
-The file `files/st2chatops.env` is mounted into the "st2chatops" container.  If you need to change/use hubot
-adapter settings (other than the `slack` adapter which _should_ work with only the environment settings), edit this file as necessary.
+Chatops settings are configured in the `environment` section for the `st2chatops` service in `docker-compose.yml`
 
+Set `ST2_CHATOPS_ENABLE` to any non-zero value, then edit the various `HUBOT_` variables specific to your chatops adapter.
+See https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env for the full list of supported adapters and example ENV variables.
 
 ### Step by step first time instructions
 
@@ -63,10 +64,11 @@ Example:
 ```shell
 export ST2_PACKS_DEV=$HOME/projects/stackstorm-packs
 export ST2_EXPOSE_HTTP=0.0.0.0:80
+export ST2_CHATOPS_ENABLE=1
 export HUBOT_SLACK_TOKEN=xoxb-MY-SLACK-TOKEN
 ```
 
-Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, `files/st2-cli.conf`, and `files/st2chatops.env`.
+Secondly make any customizations to `files/st2.user.conf`, `files/htpasswd`, and `files/st2-cli.conf`.
 
 Example:
 
@@ -77,18 +79,7 @@ To enable [sharing code between actions and sensors](https://docs.stackstorm.com
 enable_common_libs = True
 ```
 
-Third, if you want to use chatops you will need to:
-
-* define your `COMPOSE_FILE` to include the `docker-compose-chatops.yml` file, ie.
-  `COMPOSE_FILE=docker-compose.yml:docker-compose-chatops.yml` (either in your shell environment or
-  an `.env` file)
-
-* create an st2 api key for authentication to st2 from the chatops container, and
-ensure that you set the `ST2_API_KEY` environment variable to the key returned by the command:
-
-   * `st2 apikey create -k -m '{"usage": "st2chatops"}'`
-
-Fourth, start the docker environment:
+Third, start the docker environment:
 
 ```shell
 docker-compose up -d
@@ -119,7 +110,7 @@ The fix is to disable SELinux (or to put it in permissive mode).
 #### Chatops
 
 * Chatops has been minimally tested using the Slack hubot adapter.  Other adapter types may require some
-tweaking to the environment settings in `docker-compose-chatops.yml`
+tweaking to the environment settings for the `st2chatops` service in `docker-compose.yml`
 
 * The git status output on the `!packs get` command doesn't appear to work fully.
 

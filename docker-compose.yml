@@ -216,6 +216,34 @@ services:
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
       - ./files/st2-cli.conf:/root/.st2/config
       - ./scripts/st2client-startup.sh:/st2client-startup.sh
+  st2chatops:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2chatops:${ST2_VERSION:-3.3.0}
+    restart: on-failure:5
+    depends_on:
+      - st2api
+      - st2auth
+      - st2stream
+    command: /st2chatops-startup.sh
+    networks:
+      - private
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+      ST2_API_KEY: ${ST2_API_KEY:-change-to-your-st2-api-key}
+      TZ: ${TZ:-UTC}
+      # enable chatops by setting this variable to any non-zero value
+      # and enable/set your hubot adapter specific variables below
+      ST2_CHATOPS_ENABLE: ${ST2_CHATOPS_ENABLE:-0}
+      # Custom hubot adapter ENV variables to pass through which will override st2chatops.env defaults.
+      # See https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env
+      # for the full list of supported adapters and example ENV variables.
+      HUBOT_ADAPTER: ${HUBOT_ADAPTER:-slack}
+      HUBOT_LOG_LEVEL: ${HUBOT_LOG_LEVEL:-debug}
+      HUBOT_SLACK_TOKEN: ${HUBOT_SLACK_TOKEN:-}
+    volumes:
+      - ./scripts/st2chatops-startup.sh:/st2chatops-startup.sh
+    dns_search: .
   # external services
   mongo:
     image: mongo:4.0
