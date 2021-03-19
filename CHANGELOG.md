@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-03-15
+* Added `st2chatops` support and service startup script. (#206)
+
 ## 2021-03-14
 * Create counter for st2client startup script (#220)
 
