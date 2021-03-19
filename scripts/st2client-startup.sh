@@ -7,10 +7,10 @@ backoff=10
 while [ "$counter" -lt 5 ]; do
   ACTIONS=$(st2 action list)
   if [ "$?" -ne 0 ]; then
-    counter=$((counter+1))
     echo "unable to reach downstream, will try again in $backoff seconds..."
-    backoff=$(awk -v backoff="$backoff" 'BEGIN{ printf "%.f", backoff * 1.5 }')
     sleep "$backoff"
+    counter=$((counter+1))
+    backoff=$(awk -v backoff="$backoff" 'BEGIN{ printf "%.f", backoff * 1.5 }')
   elif [ "$ACTIONS" == "No matching items found" ]; then
     echo "No packs registered, will register"
     st2 pack register
