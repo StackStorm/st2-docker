@@ -29,7 +29,7 @@ jobs:
           command: |
             # TODO: Replace with 'docker-compose run status'
             # Example: https://github.com/docker/compose/issues/374#issuecomment-310266246
-            sleep 45
+            sleep 60
 
             # TODO: Replace with more organized BATS tests 'docker-compose run tests'
             # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh
