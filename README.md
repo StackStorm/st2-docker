@@ -116,6 +116,10 @@ tweaking to the environment settings for the `st2chatops` service in `docker-com
 
 * Use `docker-compose logs st2chatops` to check the chatops logs if you are having problems getting chatops to work
 
+#### RBAC
+
+RBAC requires running `st2-apply-rbac-definitions`, but since the db config is in `/etc/st2/st2.docker.conf` you need to specify `--config-file` flag e.g. `st2-apply-rbac-definitions --config-file /etc/st2/st2.docker.conf`
+
 ## Regular Usage
 
 To run st2 commands, you can use the st2client service:
@@ -336,7 +340,7 @@ result:
 
 # Remove everything
 
-If you want to uninstall, or start from a "clean" installation, docker-compose can remove all the containers and volumes in one comamnd.
+If you want to uninstall, or start from a "clean" installation, docker-compose can remove all the containers and volumes in one command.
 
 ```shell
 docker-compose down --remove-orphans -v
