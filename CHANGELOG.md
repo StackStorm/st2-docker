@@ -1,10 +1,10 @@
 # Changelog
 
+## 2021-03-22
+* Create counter for st2client startup script (#220)
+
 ## 2021-03-15
 * Added `st2chatops` support and service startup script. (#206)
-
-## 2021-03-14
-* Create counter for st2client startup script (#220)
 
 ## 2021-03-13
 * Switch to using `latest` tag for st2 Docker images (#222)
