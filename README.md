@@ -55,6 +55,31 @@ Chatops settings are configured in the `environment` section for the `st2chatops
 Set `ST2_CHATOPS_ENABLE` to any non-zero value, then edit the various `HUBOT_` variables specific to your chatops adapter.
 See https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env for the full list of supported adapters and example ENV variables.
 
+#### RBAC Configuration
+
+Starting with v3.4.0 RBAC is now included, but not enabled, by default. There are some default assignments, mappings, and roles
+that ship with st2-docker. All the configuration files for RBAC are kept in `./files/rbac`. 
+Consult the [st2 RBAC documentation](https://docs.stackstorm.com/rbac.html) for further information.
+
+To enable RBAC you can edit st2.user.conf and add the following options:
+```ini
+[rbac]
+enable = True
+backend = default
+```
+
+Any changes made to RBAC assignments, mappings, or roles have to be synced in order to take effect. Normally running `st2-apply-rbac-definitions`
+will sync the files, but because all database information is not in the standard st2.conf file you need to specify the config file
+
+To sync RBAC changes in st2client:
+```shell
+st2-apply-rbac-definitions --config-file /etc/st2/st2.docker.conf
+````
+
+LDAP is also a feature that is now included, but not enabled, by default. Roles to LDAP groups can be configured in `./files/rbac/mappings`.
+Consult the [st2 LDAP documentation](https://docs.stackstorm.com/authentication.html#ldap) for further information
+
+
 ### Step by step first time instructions
 
 First, optionally set and export all the environment variables you want to change. You could make an `.env` file with customizations.
@@ -115,10 +140,6 @@ tweaking to the environment settings for the `st2chatops` service in `docker-com
 * The git status output on the `!packs get` command doesn't appear to work fully.
 
 * Use `docker-compose logs st2chatops` to check the chatops logs if you are having problems getting chatops to work
-
-#### RBAC
-
-RBAC requires running `st2-apply-rbac-definitions`, but since the db config is in `/etc/st2/st2.docker.conf` you need to specify `--config-file` flag e.g. `st2-apply-rbac-definitions --config-file /etc/st2/st2.docker.conf`
 
 ## Regular Usage
 

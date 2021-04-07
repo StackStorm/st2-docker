@@ -1,0 +1,5 @@
+# See: https://docs.stackstorm.com/rbac.html#defining-user-role-assignments
+---
+username: stanley
+roles:
+  - admin

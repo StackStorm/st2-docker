@@ -1,7 +1,7 @@
 # Changelog
 
-## 2021-03-22
-* Add stackstorm-rbac volume to st2api and st2client to keep files in sync. (#219)
+## 2021-04-07
+* Add rbac sample files and mount to st2api and st2client (#219)
 
 ## 2021-03-22
 * Create counter for st2client startup script (#220)

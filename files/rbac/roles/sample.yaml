@@ -1,0 +1,4 @@
+# sample RBAC role file, see https://docs.stackstorm.com/rbac.html#defining-roles-and-permission-grants
+---
+name: "sample"
+description: "Example Role which contains no permission grants and serves for demonstration purposes"

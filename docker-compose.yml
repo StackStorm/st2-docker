@@ -58,7 +58,7 @@ services:
       - stackstorm-keys:/etc/st2/keys:ro
       - stackstorm-packs-configs:/opt/stackstorm/configs:rw
       - stackstorm-packs:/opt/stackstorm/packs:rw
-      - stackstorm-rbac:/opt/stackstorm/rbac:rw
+      - ./files/rbac:/opt/stackstorm/rbac:rw
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
     dns_search: .
   st2stream:
@@ -214,7 +214,7 @@ services:
       - stackstorm-keys:/etc/st2/keys:ro
       - stackstorm-packs-configs:/opt/stackstorm/configs:rw
       - stackstorm-packs:/opt/stackstorm/packs:rw
-      - stackstorm-rbac:/opt/stackstorm/rbac:rw
+      - ./files/rbac:/opt/stackstorm/rbac:rw
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
       - ./files/st2-cli.conf:/root/.st2/config
       - ./scripts/st2client-startup.sh:/st2client-startup.sh
@@ -282,7 +282,6 @@ volumes:
     stackstorm-keys:
     stackstorm-virtualenvs:
     stackstorm-ssh:
-    stackstorm-rbac:
 
 networks:
   public:

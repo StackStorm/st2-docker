@@ -1,0 +1,7 @@
+# StackStorm RBAC LDAP groups-to-roles mapping rules, shipped in '/opt/stackstorm/rbac/mappings/'
+# See RBAC Roles Based on LDAP Groups: https://docs.stackstorm.com/rbac.html#automatically-granting-roles-based-on-ldap-group-membership
+---
+group: "CN=stormers,OU=groups,DC=stackstorm,DC=net"
+description: "Automatically grant admin role to all stormers group members."
+roles:
+  - "admin"
