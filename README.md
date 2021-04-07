@@ -48,6 +48,9 @@ The base st2 docker images have a built-in `/etc/st2/st2.conf` configuration fil
 
 Review `st2.docker.conf` for currently set values, and it is recommended to place overrides in `st2.user.conf`.
 
+If you want to utilize a custom config for StackStorm Web UI (st2web container), you can do that by editing
+`files/config.js` file and mounting it as a volume inside the container as per example in `docker-compose.yml`.
+
 #### Chatops configuration
 
 Chatops settings are configured in the `environment` section for the `st2chatops` service in `docker-compose.yml`
