@@ -1,4 +1,7 @@
-# Changelog
+# Changelo
+
+## 2021-04-10
+* Upgrade used Redis Docker image to 6.2.
 
 ## 2021-04-06
 * Add information on how to utilize a custom config with st2web container. (#225)

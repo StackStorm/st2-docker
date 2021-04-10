@@ -265,7 +265,7 @@ services:
     volumes:
       - stackstorm-rabbitmq:/var/lib/rabbitmq
   redis:
-    image: redis:6.0
+    image: redis:6.2
     restart: on-failure
     networks:
       - private
