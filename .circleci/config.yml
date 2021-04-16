@@ -12,7 +12,7 @@ jobs:
 
   # Run docker-compose install and verify st2 deployment
   docker-compose-up:
-    working_directory: ~/docker
+    working_directory: ~/st2-docker
     machine:
       # Available images https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
       image: ubuntu-1604:201903-01
