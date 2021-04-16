@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  st2test:
+    image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
+    environment:
+      ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+      ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+      ST2WEB_HTTPS: ${ST2WEB_HTTPS:-0}
+      BATS_HELPERS_DIR: /tools/bats-helpers/
+      ST2_AUTH_USERNAME: ${ST2_AUTH_USERNAME:-st2admin}
+      ST2_AUTH_PASSWORD: ${ST2_AUTH_PASSWORD:-Ch@ngeMe}
+    command: bash -c "ln -s /tools/bats/libexec/bats /sbin/bats && /st2tests.sh"
+    volumes:
+      - ./st2tests.sh:/st2tests.sh:ro
+      - tools:/tools
+    networks:
+      - st2-docker_private
+    stop_signal: SIGKILL
+    depends_on:
+      - st2test-tools
+  st2test-tools:
+    image: dduportal/bats:latest
+    environment:
+      BATS_HELPERS_DIR: /tools/bats-helpers/
+      BATS_DIR: /tools/bats/
+    command: /st2tests.sh
+    volumes:
+      - tools:/tools
+      - ./st2tests-tools.sh:/st2tests.sh:ro
+
+volumes:
+    tools:
+
+networks:
+  st2-docker_private:
+    external: true

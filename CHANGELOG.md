@@ -1,4 +1,7 @@
-# Changelo
+# Changelog
+
+## 2021-04-15
+* Add BATS testing
 
 ## 2021-04-10
 * Upgrade used Redis Docker image to 6.2.
