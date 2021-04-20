@@ -369,3 +369,18 @@ If you want to uninstall, or start from a "clean" installation, docker-compose c
 ```shell
 docker-compose down --remove-orphans -v
 ```
+
+# Testing
+
+Testing st2-docker is now powered by [BATS](https://github.com/sstephenson/bats) Bash Automated Testing System. 
+A "sidecar" like container loads the BATS libraries and binaries into a st2client-like container to run the tests
+
+To run the tests
+```shell
+docker-compose -f tests/st2tests.yaml up
+```
+
+To do a clean teardown
+```shell
+docker-compose -f tests/st2tests.yaml down -v
+```

@@ -12,7 +12,7 @@ jobs:
 
   # Run docker-compose install and verify st2 deployment
   docker-compose-up:
-    working_directory: ~/docker
+    working_directory: ~/st2-docker
     machine:
       # Available images https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
       image: ubuntu-1604:201903-01
@@ -27,16 +27,8 @@ jobs:
       - run:
           name: Run st2 smoke-tests
           command: |
-            # TODO: Replace with 'docker-compose run status'
-            # Example: https://github.com/docker/compose/issues/374#issuecomment-310266246
             sleep 60
-
-            # TODO: Replace with more organized BATS tests 'docker-compose run tests'
-            # Example: https://github.com/StackStorm/stackstorm-ha/blob/master/tests/st2tests.sh
-            docker-compose exec st2client st2 action list --pack=core
-            docker-compose exec st2client st2 run core.local cmd=date
-            docker-compose exec st2client st2 pack install github
-            docker-compose exec st2client st2 execution list
+            docker-compose -f tests/st2tests.yaml up
       - run:
           when: on_fail
           name: Troubleshooting the build failure
