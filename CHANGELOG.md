@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-12-02
+* Removed `dns_search: .` from all services in `docker-compose.yml` per discussion in #231
+
 ## 2021-04-15
 * Add BATS testing
 
