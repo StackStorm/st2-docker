@@ -58,6 +58,14 @@ Chatops settings are configured in the `environment` section for the `st2chatops
 Set `ST2_CHATOPS_ENABLE` to any non-zero value, then edit the various `HUBOT_` variables specific to your chatops adapter.
 See https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env for the full list of supported adapters and example ENV variables.
 
+You will also need an st2 API key for chatops.  This should be set in `ST2_API_KEY`.
+
+To generate an API key, see the [StackStorm documentation](https://docs.stackstorm.com/authentication.html#api-keys).
+
+_Note:_ If you are standing up st2 for the first time, you may first need to start with chatops initially disabled so you can generate
+an API key.  Once this is done, set it in `ST2_API_KEY`, enable chatops as per above and `docker-compose restart` to
+restart your st2 stack.
+
 #### RBAC Configuration
 
 Starting with v3.4.0 RBAC is now included, but not enabled, by default. There are some default assignments, mappings, and roles
