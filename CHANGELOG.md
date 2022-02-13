@@ -1,5 +1,8 @@
 # Changelog
 
+## 2022-02-12
+* Migrate to Ubuntu 20 / Python 3.8 based containers
+
 ## 2021-12-02
 * Removed `dns_search: .` from all services in `docker-compose.yml` per discussion in #231
 
