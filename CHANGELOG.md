@@ -1,5 +1,8 @@
 # Changelog
 
+## 2022-05-04
+* Upgrade MongoDB `v4.0` -> `v4.4` as 4.0 has reached its EOL. (#243)
+
 ## 2021-12-02
 * Removed `dns_search: .` from all services in `docker-compose.yml` per discussion in #231
 
