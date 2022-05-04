@@ -1,5 +1,8 @@
 # Changelog
 
+## 2022-05-04
+* Updated stackstorm-ssh volume mount path in docker-compose.yml st2actionrunner service
+
 ## 2021-12-02
 * Removed `dns_search: .` from all services in `docker-compose.yml` per discussion in #231
 
