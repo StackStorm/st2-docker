@@ -1,7 +1,8 @@
 # Changelog
 
 ## 2022-05-04
-* Updated stackstorm-ssh volume mount path in docker-compose.yml st2actionrunner service
+* Upgrade MongoDB `v4.0` -> `v4.4` as 4.0 has reached its EOL. (#243)
+* Fix stackstorm-ssh volume mount path in docker-compose.yml st2actionrunner service (#244)
 
 ## 2021-12-02
 * Removed `dns_search: .` from all services in `docker-compose.yml` per discussion in #231
