@@ -120,7 +120,7 @@ services:
       - stackstorm-packs:/opt/stackstorm/packs:rw
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
       - stackstorm-virtualenvs:/opt/stackstorm/virtualenvs:rw
-      - stackstorm-ssh:/home/stanley.ssh
+      - stackstorm-ssh:/home/stanley/.ssh
       # Action runner needs access to keys since action definitions (Jinja
       # templates) can reference secrets
       - stackstorm-keys:/etc/st2/keys:ro
@@ -237,7 +237,7 @@ services:
       - ./scripts/st2chatops-startup.sh:/st2chatops-startup.sh
   # external services
   mongo:
-    image: mongo:4.0
+    image: mongo:4.4
     restart: on-failure
     networks:
       - private
