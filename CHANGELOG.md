@@ -1,5 +1,8 @@
 # Changelog
 
+## 2022-05-06
+* Migrate to Ubuntu 20 / Python 3.8 based containers
+
 ## 2022-05-04
 * Upgrade MongoDB `v4.0` -> `v4.4` as 4.0 has reached its EOL. (#243)
 * Fix stackstorm-ssh volume mount path in docker-compose.yml st2actionrunner service (#244)
