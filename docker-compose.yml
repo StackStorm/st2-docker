@@ -113,7 +113,10 @@ services:
       - st2api
     networks:
       - private
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
     volumes:
+      - /run/host-services/ssh-auth.sock:/ssh-agent
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
       - stackstorm-packs-configs:/opt/stackstorm/configs:rw
