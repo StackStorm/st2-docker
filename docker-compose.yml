@@ -249,8 +249,6 @@ services:
       - private
     volumes:
       - stackstorm-mongodb:/data/db
-    ports:
-      - "${ST2_EXPOSE_KEYCLOAK_HTTP:-127.0.0.1:27017}:27017"
   rabbitmq:
     image: rabbitmq:3.8
     restart: on-failure
