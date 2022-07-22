@@ -13,6 +13,7 @@ services:
       - st2auth
       - st2api
       - st2stream
+      - st2client #required for initialization of packs and rbac
     healthcheck:
       test: [ "CMD", "/st2web-healthcheck.sh" ]
       interval: 30s
@@ -22,7 +23,7 @@ services:
       - ./scripts/st2web-healthcheck.sh:/st2web-healthcheck.sh
       # If you want to use a custom st2web config, edit ./files/config.js accordingly and
       # uncomment the line below
-      #- ./files/config.js:/opt/stackstorm/static/webui/config.js:ro
+      - ./files/config.js:/opt/stackstorm/static/webui/config.js:ro
     ports:
       - "${ST2_EXPOSE_HTTP:-127.0.0.1:80}:80"
       # - "${ST2_EXPOSE_HTTPS:-127.0.0.1:443}:443"
@@ -186,7 +187,10 @@ services:
       - st2auth
       - st2api
       - st2stream
-    command: /st2client-startup.sh
+    command: 
+      - /bin/bash
+      - -c
+      - /setup-rbac.sh && /st2client-startup.sh
     networks:
       - private
     environment:
@@ -209,6 +213,7 @@ services:
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
       - ./files/st2-cli.conf:/root/.st2/config
       - ./scripts/st2client-startup.sh:/st2client-startup.sh
+      - ./scripts/setup-rbac.sh:/setup-rbac.sh
   st2chatops:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2chatops:${ST2_VERSION:-latest}
     restart: on-failure:5
@@ -244,6 +249,8 @@ services:
       - private
     volumes:
       - stackstorm-mongodb:/data/db
+    ports:
+      - "${ST2_EXPOSE_KEYCLOAK_HTTP:-127.0.0.1:27017}:27017"
   rabbitmq:
     image: rabbitmq:3.8
     restart: on-failure
@@ -261,7 +268,14 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:18.0.2
     restart: on-failure
-    command: start-dev --log-level=info --hostname=localhost --import-realm
+    command:
+      [
+        "start-dev", # dev needed otherwise we need https certs
+        "--http-port 3011",
+        "--log-level=info",
+        "--hostname=localhost",
+        "--import-realm"
+      ]
     environment:
       KEYCLOAK_LOGLEVEL: INFO
       KEYCLOAK_ADMIN: admin
@@ -272,7 +286,7 @@ services:
       - private
       - public
     ports:
-      - "${ST2_EXPOSE_KEYCLOAK_HTTP:-127.0.0.1:3011}:8080"
+      - "${ST2_EXPOSE_KEYCLOAK_HTTP:-127.0.0.1:3011}:3011"
 
 volumes:
   stackstorm-mongodb:
