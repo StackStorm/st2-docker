@@ -133,9 +133,9 @@ docker-compose down
 
 By default, SAML comes already configured as the default SSO backend. You also get an instance of keycloak running to test at http://localhost:3011/.
 
-Password is `admin/admin` and you can access the console at http://localhost:3011/admin/master/console/ by default :)
+Password is `admin/admin` and you can access the console at http://localhost:3011/admin/master/console/#/realms/StackStorm by default :)
 
-You also get access to user `stanley` (stanley@stackstorm.com) out of the box on the master keycloak realm. Password is `Ch@ngeMe` and this user is mapped to the `stackstorm-system-admin` role.
+You also get access to user `stanley` (stanley@stackstorm.com) out of the box on the StackStorm keycloak realm. Password is `Ch@ngeMe` and this user is mapped to the `stackstorm-system-admin` role, which is in turn mapped to internal `system_admin` role via RBAC.
 
 These roles are already configured by default on keycloak for the sake of testing:
 - stackstorm-admin
