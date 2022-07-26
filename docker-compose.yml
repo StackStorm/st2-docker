@@ -18,7 +18,7 @@ services:
       test: [ "CMD", "/st2web-healthcheck.sh" ]
       interval: 30s
       timeout: 1s
-      retries: 1
+      retries: 3
     volumes:
       - ./scripts/st2web-healthcheck.sh:/st2web-healthcheck.sh
       # If you want to use a custom st2web config, edit ./files/config.js accordingly and
