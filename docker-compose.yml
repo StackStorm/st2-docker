@@ -232,7 +232,7 @@ services:
       # for the full list of supported adapters and example ENV variables.
       HUBOT_ADAPTER: ${HUBOT_ADAPTER:-slack}
       HUBOT_LOG_LEVEL: ${HUBOT_LOG_LEVEL:-debug}
-      HUBOT_SLACK_TOKEN: ${HUBOT_SLACK_TOKEN:-}
+      HUBOT_SLACK_TOKEN: ${HUBOT_SLACK_TOKEN:-token}
     volumes:
       - ./scripts/st2chatops-startup.sh:/st2chatops-startup.sh
   # external services
