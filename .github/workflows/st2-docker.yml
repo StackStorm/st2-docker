@@ -1,9 +1,11 @@
 name: st2-docker
 
 on:
+  pull_request:
   push:
     branches:
       - main
+      - master
   schedule:
     - cron: 0 1 * * *
 
