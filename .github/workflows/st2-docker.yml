@@ -21,6 +21,7 @@ jobs:
 
   docker-compose-up:
     runs-on: ubuntu-latest
+    needs: [docker-compose-lint]
     steps:
       - uses: actions/checkout@v3
 
@@ -32,10 +33,24 @@ jobs:
         run: |
           docker-compose up --detach
 
-      - name: Run st2 smoke-tests
+      - name: Sleep
         run: |
           sleep 60
-          docker-compose -f tests/st2tests.yaml up
+
+      - name: Run st2 smoke-tests
+        run: |
+          docker-compose --file tests/st2tests.yaml up --no-color 2>&1 \
+            | tee /tmp/compose.log
+
+          rc="$(grep -q 'tests_st2test-tools_1 exited with code 0' /tmp/compose.log 2>/dev/null; echo $?)"
+          if [[ $rc -ne 0 ]]; then
+            exit 1
+          fi
+
+          rc="$(grep -q 'tests_st2test_1 exited with code 0' /tmp/compose.log 2>/dev/null; echo $?)"
+          if [[ $rc -ne 0 ]]; then
+            exit 1
+          fi
 
       - name: Troubleshooting the build failure
         if: ${{ failure() }}
@@ -43,3 +58,4 @@ jobs:
           docker-compose ps
           # Display logs to help troubleshoot build failures, etc
           docker-compose logs --tail="500" st2api
+          exit 1
