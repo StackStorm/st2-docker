@@ -6,7 +6,6 @@ on:
     branches:
       - main
       - master
-      - issue-251
   schedule:
     - cron: 0 1 * * *
   workflow_dispatch:
@@ -37,21 +36,6 @@ jobs:
       - name: Sleep
         run: |
           sleep 60
-
-      # - name: Run st2 smoke-tests
-      #   run: |
-      #     docker-compose --file tests/st2tests.yaml up --no-color 2>&1 \
-      #       | tee /tmp/compose.log
-
-      #     rc="$(grep -q 'tests_st2test-tools_1 exited with code 0' /tmp/compose.log 2>/dev/null; echo $?)"
-      #     if [[ $rc -ne 0 ]]; then
-      #       exit 1
-      #     fi
-
-      #     rc="$(grep -q 'tests_st2test_1 exited with code 0' /tmp/compose.log 2>/dev/null; echo $?)"
-      #     if [[ $rc -ne 0 ]]; then
-      #       exit 1
-      #     fi
 
       - name: Run st2 smoke-tests
         run: |
