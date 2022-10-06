@@ -9,7 +9,7 @@ load "${BATS_HELPERS_DIR}/bats-file/load.bash"
   assert_success
   # st2 3.3dev (9ea417346), on Python 3.6.9
   assert_line --partial "st2 ${ST2_VERSION}"
-  assert_line --partial 'on Python 3.6.9'
+  assert_line --partial 'on Python 3.8.10'
 }
 
 @test 'ST2_AUTH_URL service endpoint is accessible and working' {
