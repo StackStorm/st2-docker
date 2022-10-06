@@ -55,7 +55,7 @@ jobs:
 
       - name: Run st2 smoke-tests
         run: |
-          docker-compose --file tests/st2tests.yaml run st2test-tools
+          docker-compose --file tests/st2tests.yaml run st2test
 
       - name: Troubleshooting the build failure
         if: ${{ failure() }}
