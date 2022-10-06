@@ -54,7 +54,6 @@ jobs:
       #     fi
 
       - name: Run st2 smoke-tests
-        working-directory: tests
         run: |
           docker-compose --file tests/st2tests.yaml run st2test-tools
 
