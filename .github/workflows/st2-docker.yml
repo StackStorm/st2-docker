@@ -12,7 +12,7 @@ on:
 
 jobs:
   docker-compose-lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
 
@@ -20,7 +20,7 @@ jobs:
         run: docker-compose config
 
   docker-compose-up:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [docker-compose-lint]
     steps:
       - uses: actions/checkout@v3
