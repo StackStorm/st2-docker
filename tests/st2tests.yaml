@@ -21,7 +21,7 @@ services:
     depends_on:
       - st2test-tools
   st2test-tools:
-    image: dduportal/bats:latest
+    image: bats/bats:v1.10.0
     environment:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       BATS_DIR: /tools/bats/
