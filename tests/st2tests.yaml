@@ -2,6 +2,7 @@ version: '3'
 
 services:
   st2test:
+    platform: linux/amd64
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
     environment:
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
@@ -21,7 +22,7 @@ services:
     depends_on:
       - st2test-tools
   st2test-tools:
-    image: dduportal/bats:latest
+    image: zoeleah/bats:latest
     environment:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       BATS_DIR: /tools/bats/
