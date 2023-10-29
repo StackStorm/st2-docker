@@ -2,7 +2,6 @@ version: '3'
 
 services:
   st2test:
-    platform: linux/amd64
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
     environment:
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
