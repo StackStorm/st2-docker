@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-10-28
+* Update st2test image to zoeleah/bats:latest
+* Fix ST2_AUTH_URL and ST2_STREAM_URL
+
 ## 2022-05-06
 * Migrate to Ubuntu 20 / Python 3.8 based containers
 
