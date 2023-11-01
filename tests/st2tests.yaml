@@ -8,7 +8,7 @@ services:
       ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
       ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
       ST2WEB_HTTPS: ${ST2WEB_HTTPS:-0}
-      BATS_HELPERS_DIR: /tools/bats-helpers/
+      BATS_HELPERS_DIR: /tools/
       ST2_AUTH_USERNAME: ${ST2_AUTH_USERNAME:-st2admin}
       ST2_AUTH_PASSWORD: ${ST2_AUTH_PASSWORD:-Ch@ngeMe}
     command: bash -c "du /tools/ && /st2tests.sh"
@@ -21,25 +21,31 @@ services:
     depends_on:
       - st2test-tools
   st2test-tools:
-    image: bats/bats:latest
-    environment:
-      BATS_HELPERS_DIR: /tools/bats-helpers/
-      BATS_DIR: /tools/bats/
+    image: alpine/git:latest
     command:
-      - bash
+      - ash
       - -ec
       - |
-        cp -R /opt/bats /tools/
         git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
           https://github.com/ztombol/bats-assert /tools/bats-assert
         git clone --config advice.detachedHead=false --depth 1 --branch v0.2.0 \
           https://github.com/ztombol/bats-file /tools/bats-file
         git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
           https://github.com/ztombol/bats-support /tools/bats-support
-        /st2tests.sh
     volumes:
       - tools:/tools
       - ./st2tests-tools.sh:/st2tests.sh:ro
+    depends_on:
+      - st2test-bats
+  st2test-bats:
+    image: bats/bats:latest
+    command:
+      - bash
+      - -ec
+      - |
+        cp -R /opt/bats /tools/
+    volumes:
+      - tools:/tools
 
 volumes:
     tools:
