@@ -1,7 +1,8 @@
 # Changelog
 
 ## 2023-10-28
-* Update st2test image to bats/bats:latest
+* Refactor st2test, install BATS via `apt install`
+* Remove unneeded file st2test-tools.sh
 * Fix ST2_AUTH_URL and ST2_STREAM_URL
 
 ## 2022-05-06
