@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2023-10-28
-* Update st2test image to zoeleah/bats:latest
+* Update st2test image to bats/bats:latest
 * Fix ST2_AUTH_URL and ST2_STREAM_URL
 
 ## 2022-05-06
