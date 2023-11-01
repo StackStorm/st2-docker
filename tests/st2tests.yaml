@@ -21,11 +21,21 @@ services:
     depends_on:
       - st2test-tools
   st2test-tools:
-    image: zoeleah/bats:latest
+    image: bats/bats:latest
     environment:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       BATS_DIR: /tools/bats/
-    command: /st2tests.sh
+    command:
+      - bash
+      - -ec
+      - |
+        git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
+          https://github.com/ztombol/bats-assert /tools/bats-helpers/bats-assert
+        git clone --config advice.detachedHead=false --depth 1 --branch v0.2.0 \
+          https://github.com/ztombol/bats-file /tools/bats-helpers/bats-file
+        git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
+          https://github.com/ztombol/bats-support /tools/bats-helpers/bats-support
+        /st2tests.sh
     volumes:
       - tools:/tools
       - ./st2tests-tools.sh:/st2tests.sh:ro
