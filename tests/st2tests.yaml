@@ -11,7 +11,7 @@ services:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       ST2_AUTH_USERNAME: ${ST2_AUTH_USERNAME:-st2admin}
       ST2_AUTH_PASSWORD: ${ST2_AUTH_PASSWORD:-Ch@ngeMe}
-    command: bash -c "/st2tests.sh"
+    command: bash -c "du /tools/ && /st2tests.sh"
     volumes:
       - ./st2tests.sh:/st2tests.sh:ro
       - tools:/tools
@@ -26,7 +26,7 @@ services:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       BATS_DIR: /tools/bats/
     command:
-      - ash
+      - bash
       - -ec
       - |
         cp -R /opt/bats /tools/
