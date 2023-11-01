@@ -11,7 +11,8 @@ services:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       ST2_AUTH_USERNAME: ${ST2_AUTH_USERNAME:-st2admin}
       ST2_AUTH_PASSWORD: ${ST2_AUTH_PASSWORD:-Ch@ngeMe}
-    command: bash -c "ln -s /tools/bats/libexec/bats /usr/sbin/bats && /st2tests.sh"
+      PATH: "/tools/bats/libexec/:$PATH"
+    command: bash -c "/st2tests.sh"
     volumes:
       - ./st2tests.sh:/st2tests.sh:ro
       - tools:/tools
@@ -26,15 +27,16 @@ services:
       BATS_HELPERS_DIR: /tools/bats-helpers/
       BATS_DIR: /tools/bats/
     command:
-      - bash
+      - ash
       - -ec
       - |
+        cp -R /opt/bats /tools/
         git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
-          https://github.com/ztombol/bats-assert /tools/bats-helpers/bats-assert
+          https://github.com/ztombol/bats-assert /tools/bats-assert
         git clone --config advice.detachedHead=false --depth 1 --branch v0.2.0 \
-          https://github.com/ztombol/bats-file /tools/bats-helpers/bats-file
+          https://github.com/ztombol/bats-file /tools/bats-file
         git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
-          https://github.com/ztombol/bats-support /tools/bats-helpers/bats-support
+          https://github.com/ztombol/bats-support /tools/bats-support
         /st2tests.sh
     volumes:
       - tools:/tools
