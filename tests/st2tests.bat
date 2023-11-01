@@ -1,8 +1,8 @@
-#!/usr/bin/env bats
+# bats smoke-tests
 
-load "${BATS_HELPERS_DIR}/bats-support/load.bash"
-load "${BATS_HELPERS_DIR}/bats-assert/load.bash"
-load "${BATS_HELPERS_DIR}/bats-file/load.bash"
+load "/tools/bats-support/load.bash"
+load "/tools/bats-assert/load.bash"
+load "/tools/bats-file/load.bash"
 
 @test 'st2 version deployed and python env are as expected' {
   run st2 --version
