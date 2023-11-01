@@ -1,4 +1,4 @@
-#!/usr/bin/env bats
+#!/tools/bats/libexec/bats
 
 load "${BATS_HELPERS_DIR}/bats-support/load.bash"
 load "${BATS_HELPERS_DIR}/bats-assert/load.bash"
