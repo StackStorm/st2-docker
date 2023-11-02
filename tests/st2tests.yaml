@@ -8,30 +8,27 @@ services:
       ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
       ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
       ST2WEB_HTTPS: ${ST2WEB_HTTPS:-0}
-      BATS_HELPERS_DIR: /tools/bats-helpers/
       ST2_AUTH_USERNAME: ${ST2_AUTH_USERNAME:-st2admin}
       ST2_AUTH_PASSWORD: ${ST2_AUTH_PASSWORD:-Ch@ngeMe}
-    command: bash -c "ln -s /tools/bats/libexec/bats /sbin/bats && /st2tests.sh"
+    command:
+      - bash
+      - -ec
+      - |
+        apt update > /dev/null 2>&1
+        apt install bats -y > /dev/null 2>&1
+        mkdir /tools
+        git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
+          https://github.com/ztombol/bats-assert /tools/bats-assert > /dev/null 2>&1
+        git clone --config advice.detachedHead=false --depth 1 --branch v0.2.0 \
+          https://github.com/ztombol/bats-file /tools/bats-file > /dev/null 2>&1
+        git clone --config advice.detachedHead=false --depth 1 --branch v0.3.0 \
+          https://github.com/ztombol/bats-support /tools/bats-support > /dev/null 2>&1
+        bats /opt/stackstorm/st2tests.bat
     volumes:
-      - ./st2tests.sh:/st2tests.sh:ro
-      - tools:/tools
+      - ./st2tests.bat:/opt/stackstorm/st2tests.bat:ro
     networks:
       - st2-docker_private
     stop_signal: SIGKILL
-    depends_on:
-      - st2test-tools
-  st2test-tools:
-    image: dduportal/bats:latest
-    environment:
-      BATS_HELPERS_DIR: /tools/bats-helpers/
-      BATS_DIR: /tools/bats/
-    command: /st2tests.sh
-    volumes:
-      - tools:/tools
-      - ./st2tests-tools.sh:/st2tests.sh:ro
-
-volumes:
-    tools:
 
 networks:
   st2-docker_private:

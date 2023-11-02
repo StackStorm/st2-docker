@@ -1,19 +1,19 @@
-#!/usr/bin/env bats
+# bats smoke-tests
 
-load "${BATS_HELPERS_DIR}/bats-support/load.bash"
-load "${BATS_HELPERS_DIR}/bats-assert/load.bash"
-load "${BATS_HELPERS_DIR}/bats-file/load.bash"
+load "/tools/bats-support/load.bash"
+load "/tools/bats-assert/load.bash"
+load "/tools/bats-file/load.bash"
 
 @test 'st2 version deployed and python env are as expected' {
   run st2 --version
   assert_success
-  # st2 3.7.0, on Python 3.8.10
+  # st2 3.8.0, on Python 3.8.10
   assert_line --partial "st2 ${ST2_VERSION}"
   assert_line --partial 'on Python 3.8.10'
 }
 
 @test 'ST2_AUTH_URL service endpoint is accessible and working' {
-  run curl -v ${ST2_API_URL}
+  run curl -v ${ST2_AUTH_URL}
   assert_line --partial 'Content-Type: application/json'
   assert_line --partial 'St2-Api-Key'
 }
@@ -25,7 +25,7 @@ load "${BATS_HELPERS_DIR}/bats-file/load.bash"
 }
 
 @test 'ST2_STREAM_URL service endpoint is accessible and working' {
-  run curl -v ${ST2_API_URL}
+  run curl -v ${ST2_STREAM_URL}
   assert_line --partial 'Content-Type: application/json'
   assert_line --partial 'St2-Api-Key'
 }

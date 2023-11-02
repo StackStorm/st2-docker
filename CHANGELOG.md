@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023-10-28
+* Refactor st2test, install BATS via `apt install`
+* Remove unneeded file st2test-tools.sh
+* Fix ST2_AUTH_URL and ST2_STREAM_URL
+
 ## 2022-05-06
 * Migrate to Ubuntu 20 / Python 3.8 based containers
 
