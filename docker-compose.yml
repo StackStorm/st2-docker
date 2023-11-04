@@ -237,21 +237,21 @@ services:
       - ./scripts/st2chatops-startup.sh:/st2chatops-startup.sh
   # external services
   mongo:
-    image: mongo:4.4
+    image: mongo:7.0
     restart: on-failure
     networks:
       - private
     volumes:
       - stackstorm-mongodb:/data/db
   rabbitmq:
-    image: rabbitmq:3.8
+    image: rabbitmq:3.12
     restart: on-failure
     networks:
       - private
     volumes:
       - stackstorm-rabbitmq:/var/lib/rabbitmq
   redis:
-    image: redis:6.2
+    image: redis:7.2
     restart: on-failure
     networks:
       - private
