@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023-11-04
+* Upgrade to MongoDB v7.0
+* Upgrade to RabbitMQ v3.12
+* Upgrade to Redis v7.2
+
 ## 2023-10-28
 * Refactor st2test, install BATS via `apt install`
 * Remove unneeded file st2test-tools.sh
