@@ -237,7 +237,7 @@ services:
       - ./scripts/st2chatops-startup.sh:/st2chatops-startup.sh
   # external services
   mongo:
-    image: mongo:7.0
+    image: mongo:4.4
     restart: on-failure
     networks:
       - private

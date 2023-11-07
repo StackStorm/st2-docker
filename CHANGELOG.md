@@ -1,7 +1,6 @@
 # Changelog
 
-## 2023-11-04
-* Upgrade to MongoDB v7.0
+## 2023-11-07
 * Upgrade to RabbitMQ v3.12
 * Upgrade to Redis v7.2
 
