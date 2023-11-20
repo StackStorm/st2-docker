@@ -13,16 +13,17 @@ services:
       - st2auth
       - st2api
       - st2stream
+      - st2client #required for initialization of packs and rbac
     healthcheck:
-      test: ["CMD", "/st2web-healthcheck.sh"]
+      test: [ "CMD", "/st2web-healthcheck.sh" ]
       interval: 30s
       timeout: 1s
-      retries: 1
+      retries: 3
     volumes:
       - ./scripts/st2web-healthcheck.sh:/st2web-healthcheck.sh
       # If you want to use a custom st2web config, edit ./files/config.js accordingly and
       # uncomment the line below
-      #- ./files/config.js:/opt/stackstorm/static/webui/config.js:ro
+      - ./files/config.js:/opt/stackstorm/static/webui/config.js:ro
     ports:
       - "${ST2_EXPOSE_HTTP:-127.0.0.1:80}:80"
       # - "${ST2_EXPOSE_HTTPS:-127.0.0.1:443}:443"
@@ -98,6 +99,7 @@ services:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2auth:${ST2_VERSION:-latest}
     restart: on-failure
     depends_on:
+      - keycloak
       - st2api
     networks:
       - private
@@ -185,7 +187,10 @@ services:
       - st2auth
       - st2api
       - st2stream
-    command: /st2client-startup.sh
+    command: 
+      - /bin/bash
+      - -c
+      - /setup-rbac.sh && /st2client-startup.sh
     networks:
       - private
     environment:
@@ -208,6 +213,7 @@ services:
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
       - ./files/st2-cli.conf:/root/.st2/config
       - ./scripts/st2client-startup.sh:/st2client-startup.sh
+      - ./scripts/setup-rbac.sh:/setup-rbac.sh
   st2chatops:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2chatops:${ST2_VERSION:-latest}
     restart: on-failure:5
@@ -257,16 +263,40 @@ services:
       - private
     volumes:
       - stackstorm-redis:/data
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.2
+    restart: on-failure
+    command:
+      [
+        "start-dev", # dev needed otherwise we need https certs
+        "--http-port 3011",
+        "--log-level=info",
+        "--hostname=localhost",
+        "--import-realm"
+      ]
+    environment:
+      KEYCLOAK_LOGLEVEL: INFO
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./files/keycloak/:/opt/keycloak/data/import/:ro
+    networks:
+      - private
+      - public
+    ports:
+      - "${ST2_EXPOSE_KEYCLOAK_HTTP:-127.0.0.1:3011}:3011"
 
 volumes:
-    stackstorm-mongodb:
-    stackstorm-rabbitmq:
-    stackstorm-redis:
-    stackstorm-packs:
-    stackstorm-packs-configs:
-    stackstorm-keys:
-    stackstorm-virtualenvs:
-    stackstorm-ssh:
+  stackstorm-mongodb:
+  stackstorm-rabbitmq:
+  stackstorm-redis:
+  stackstorm-packs:
+  stackstorm-packs-configs:
+  stackstorm-keys:
+  stackstorm-virtualenvs:
+  stackstorm-ssh:
+  keycloak:
+
 
 networks:
   public:

@@ -130,6 +130,35 @@ To stop the docker environment, run:
 docker-compose down
 ```
 
+### SSO/SAML configuration
+
+By default, SAML comes already configured as the default SSO backend. You also get an instance of keycloak running to test at http://localhost:3011/.
+
+Password is `admin/admin` and you can access the console at http://localhost:3011/admin/master/console/#/realms/StackStorm by default :)
+
+You also get access to user `stanley` (stanley@stackstorm.com) out of the box on the StackStorm keycloak realm. Password is `Ch@ngeMe` and this user is mapped to the `stackstorm-system-admin` role, which is in turn mapped to internal `system_admin` role via RBAC.
+
+These roles are already configured by default on keycloak for the sake of testing:
+- stackstorm-admin
+- stackstorm-system-admin
+- stackstorm-observer
+
+And they map directly to the standard stackstorm RBAC groups:
+```
+    SYSTEM_ADMIN = "system_admin"  # Special role which can't be revoked.
+    ADMIN = "admin"
+    OBSERVER = "observer"
+```
+
+The mapping is done at `files/rbac/mappings`. More details here https://docs.stackstorm.com/rbac.html
+
+For Keycloak to work with the SAML flow, there's a realm called `StackStorm`, and within it: 
+ - the associated roles above, 
+ - a client endpoint for SAML handling
+ - the stanley user
+
+This is contained in an exported file at `files/keycloak/stackstorn.json`, which is automatically imported during keycloak startup :)
+
 ### Gotchas
 
 #### Startup errors

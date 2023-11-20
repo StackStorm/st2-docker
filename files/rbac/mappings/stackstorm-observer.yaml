@@ -1,0 +1,4 @@
+---
+group: "stackstorm-observer"
+roles:
+  - "observer"
