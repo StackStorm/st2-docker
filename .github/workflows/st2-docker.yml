@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Docker-compose lint check
-        run: docker-compose config
+        run: docker compose config
 
   docker-compose-up:
     runs-on: ubuntu-latest
@@ -27,11 +27,11 @@ jobs:
 
       - name: Pull Docker Images
         run: |
-          docker-compose pull
+          docker compose pull
 
-      - name: Start st2 with docker-compose
+      - name: Start st2 with docker compose
         run: |
-          docker-compose up --detach
+          docker compose up --detach
 
       - name: Sleep
         run: |
@@ -39,12 +39,12 @@ jobs:
 
       - name: Run st2 smoke-tests
         run: |
-          docker-compose --file tests/st2tests.yaml run st2test
+          docker compose --file tests/st2tests.yaml run st2test
 
       - name: Troubleshooting the build failure
         if: ${{ failure() }}
         run: |
-          docker-compose ps
+          docker compose ps
           # Display logs to help troubleshoot build failures, etc
-          docker-compose logs --tail="500" st2api
+          docker compose logs --tail="500" st2api
           exit 1
