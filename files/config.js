@@ -34,5 +34,7 @@ angular.module('main')
     //     auth: '//172.168.90.50:9101/auth',
     //   },
     // ],
+
+    ssoEnabled: true
   });
 

@@ -1,0 +1,4 @@
+---
+group: "stackstorm-system-admin"
+roles:
+  - "system_admin"
