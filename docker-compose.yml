@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   st2web:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2web:${ST2_VERSION:-latest}
@@ -24,7 +22,7 @@ services:
       # uncomment the line below
       #- ./files/config.js:/opt/stackstorm/static/webui/config.js:ro
     ports:
-      - "${ST2_EXPOSE_HTTP:-127.0.0.1:80}:80"
+      - "${ST2_EXPOSE_HTTP:-127.0.0.1:8080}:80"
       # - "${ST2_EXPOSE_HTTPS:-127.0.0.1:443}:443"
       # more work would be needed with certificate generate to make https work.
     networks:
@@ -53,6 +51,8 @@ services:
       ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
       ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
       ST2_STREAM_URL: ${ST2_STREAM_URL:-http://st2stream:9102/}
+      ST2_API_KEY_URL: ${ST2_API_URL:-http://st2api:9101}
+      ST2_API_KEY: OGZhZDM5OTk5MTE0ODIzZjQ1ZWZiZTMyMzc5ODA0OTYwNjQyOGI2NDhjNjQ4MTcyZGM2NDExNjg2Mjk1MWI1NA
     volumes:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
@@ -61,6 +61,8 @@ services:
       - stackstorm-packs:/opt/stackstorm/packs:rw
       - ./files/rbac:/opt/stackstorm/rbac:rw
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
+    ports:
+      - "9101:9101"
   st2stream:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2stream:${ST2_VERSION:-latest}
     restart: on-failure
@@ -105,6 +107,9 @@ services:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
       - ./files/htpasswd:/etc/st2/htpasswd:ro
+    environment:
+      ST2_API_KEY_URL: ${ST2_API_URL:-http://st2api:9101}
+      ST2_API_KEY: OGZhZDM5OTk5MTE0ODIzZjQ1ZWZiZTMyMzc5ODA0OTYwNjQyOGI2NDhjNjQ4MTcyZGM2NDExNjg2Mjk1MWI1NA
   st2actionrunner:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2actionrunner:${ST2_VERSION:-latest}
     restart: on-failure
@@ -116,6 +121,7 @@ services:
     volumes:
       - ./files/st2.docker.conf:/etc/st2/st2.docker.conf:ro
       - ./files/st2.user.conf:/etc/st2/st2.user.conf:ro
+      #- ./files/.bashrc:/root/.bashrc
       - stackstorm-packs-configs:/opt/stackstorm/configs:rw
       - stackstorm-packs:/opt/stackstorm/packs:rw
       - ${ST2_PACKS_DEV:-./packs.dev}:/opt/stackstorm/packs.dev:rw
@@ -124,6 +130,12 @@ services:
       # Action runner needs access to keys since action definitions (Jinja
       # templates) can reference secrets
       - stackstorm-keys:/etc/st2/keys:ro
+    environment:
+      ST2_API_KEY_URL: ${ST2_API_URL:-http://st2api:9101}
+      ST2_API_KEY: OGZhZDM5OTk5MTE0ODIzZjQ1ZWZiZTMyMzc5ODA0OTYwNjQyOGI2NDhjNjQ4MTcyZGM2NDExNjg2Mjk1MWI1NA
+     # ST2_AUTH_URL: ${ST2_AUTH_URL:-http://st2auth:9100/}
+      ST2_API_URL: ${ST2_API_URL:-http://st2api:9101/}
+     # ST2_API_KEY: MDExYzU2ODkyNWNhMDhmZGM2NDA0MmM4MWYxYTFjMzFjYWNiNDVhMTYzMjk5NmVhMGRhOTYxMDdjMjhkYjA5Zg
   st2garbagecollector:
     image: ${ST2_IMAGE_REPO:-stackstorm/}st2garbagecollector:${ST2_VERSION:-latest}
     restart: on-failure
@@ -257,7 +269,6 @@ services:
       - private
     volumes:
       - stackstorm-redis:/data
-
 volumes:
     stackstorm-mongodb:
     stackstorm-rabbitmq:
@@ -267,7 +278,6 @@ volumes:
     stackstorm-keys:
     stackstorm-virtualenvs:
     stackstorm-ssh:
-
 networks:
   public:
     driver: bridge
