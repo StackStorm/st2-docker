@@ -4,11 +4,11 @@
 
 # check downstream services and mark container unhealthy if downstream is not unreachable
 DOWNSTREAM_API_STATUS=$(curl --write-out "%{http_code}\n" --silent --output /dev/null $ST2_API_URL/v1)
-if [ "${DOWNSTREAM_API_STATUS}" != "404" ]; then
+if [ "${DOWNSTREAM_API_STATUS}" != "404" ] && [ "${DOWNSTREAM_API_STATUS}" != "401" ]; then
   echo "st2api downstream failure"; exit 1;
 fi
 DOWNSTREAM_STREAM_STATUS=$(curl --write-out "%{http_code}\n" --silent --output /dev/null $ST2_STREAM_URL/v1/stream)
-if [ "${DOWNSTREAM_STREAM_STATUS}" != "404" ]; then
+if [ "${DOWNSTREAM_STREAM_STATUS}" != "404" ] && [ "${DOWNSTREAM_API_STATUS}" != "401" ]; then
   echo "st2stream downstream failure"; exit 1;
 fi
 DOWNSTREAM_AUTH_STATUS=$(curl --write-out "%{http_code}\n" --silent --output /dev/null  $ST2_AUTH_URL/v1)
